@@ -4,7 +4,6 @@ import "./globals.css";
 import Navbar from "@/components/Navbar";
 import { ThemeProvider } from "@/components/ThemeProvider";
 import { Toaster } from "react-hot-toast";
-import AutoSyncProvider from "@/components/AutoSyncProvider";
 import NotificationBanner from "@/components/NotificationBanner";
 import SupabaseSyncProvider from "@/components/SupabaseSyncProvider";
 
@@ -25,7 +24,6 @@ export default function RootLayout({
       <body className={`${spaceGrotesk.className} bg-gray-50 dark:bg-slate-900 text-gray-900 dark:text-gray-100 min-h-screen flex flex-col transition-colors duration-300`}>
         <ThemeProvider>
           <SupabaseSyncProvider />
-          <AutoSyncProvider />
           <Navbar />
           <NotificationBanner />
           <main className="flex-1 w-full flex flex-col">
