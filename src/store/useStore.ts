@@ -1221,7 +1221,7 @@ export const useStore = create<StoreState>()(
         if (typeof window !== "undefined") {
           try { localStorage.removeItem("pickleball_auth_token"); } catch(e) {}
           // Silme isteğini Supabase'e gönder
-          supabase.rpc('delete_user').catch(err => console.error("Kullanıcı silinemedi:", err));
+          supabase.rpc('delete_user').then(({error}) => { if (error) console.error("Kullanıcı silinemedi:", error) });
           
           setTimeout(() => {
             fetch("/api/sync", {

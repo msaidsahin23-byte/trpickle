@@ -10,10 +10,11 @@ export default function SupabaseSyncProvider() {
       async (event, session) => {
         if (session?.user) {
           // Fetch ALL users, posts, and messages from Supabase
-          const [ { data: allUsers }, { data: allPosts }, { data: allMessages } ] = await Promise.all([
+          const [ { data: allUsers }, { data: allPosts }, { data: allMessages }, { data: allNotifications } ] = await Promise.all([
             supabase.from("users").select("*"),
             supabase.from("posts").select("*").order("time", { ascending: false }),
-            supabase.from("messages").select("*").order("created_at", { ascending: true })
+            supabase.from("messages").select("*").order("created_at", { ascending: true }),
+            supabase.from("notifications").select("*").order("created_at", { ascending: false })
           ]);
 
           if (allUsers) {
@@ -124,12 +125,29 @@ export default function SupabaseSyncProvider() {
                 isRead: m.is_read
               }));
 
+              const mappedNotifications: any[] = (allNotifications || []).map(n => ({
+                id: n.id,
+                postId: n.post_id,
+                matchId: n.match_id,
+                type: n.type,
+                message: n.message,
+                isRead: n.is_read,
+                createdAt: n.created_at,
+                _userId: n.user_id // internal reference
+              }));
+
               const finalUsers = mappedUsers.map(mu => {
                 const existing = state.users.find(eu => eu.id === mu.id);
-                // Keep local-only properties, BUT also keep existing values if mu has default empty values
+                
+                const userNotifs = mappedNotifications.filter(n => n._userId === mu.id).map(n => {
+                  const { _userId, ...rest } = n;
+                  return rest;
+                });
+
                 return existing ? { 
                   ...existing, 
                   ...mu,
+                  notifications: userNotifs.length > 0 ? userNotifs : existing.notifications,
                   level: existing.level || mu.level,
                   xp: existing.xp || mu.xp,
                   paddle: existing.paddle || mu.paddle,
@@ -206,6 +224,36 @@ export default function SupabaseSyncProvider() {
                       };
                     }
                     return state;
+                  });
+                }
+              )
+              .on(
+                'postgres_changes',
+                {
+                  event: 'INSERT',
+                  schema: 'public',
+                  table: 'notifications',
+                },
+                (payload) => {
+                  const n = payload.new as any;
+                  useStore.setState((state) => {
+                    const newUsers = state.users.map(u => {
+                      if (u.id === n.user_id) {
+                        const newNotif = {
+                          id: n.id,
+                          postId: n.post_id,
+                          matchId: n.match_id,
+                          type: n.type,
+                          message: n.message,
+                          isRead: n.is_read,
+                          createdAt: n.created_at
+                        };
+                        return { ...u, notifications: [newNotif, ...(u.notifications || [])] };
+                      }
+                      return u;
+                    });
+                    const newCurrentUser = state.currentUser ? (newUsers.find(x => x.id === state.currentUser!.id) || state.currentUser) : state.currentUser;
+                    return { users: newUsers, currentUser: newCurrentUser };
                   });
                 }
               )
