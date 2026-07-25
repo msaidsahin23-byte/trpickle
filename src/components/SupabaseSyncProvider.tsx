@@ -37,7 +37,50 @@ export default function SupabaseSyncProvider() {
                 bannerUrl: userData.banner_url,
               }));
 
-              const currentUser = mappedUsers.find(u => u.id === session.user.id) || null;
+              let currentUser = mappedUsers.find(u => u.id === session.user.id) || null;
+
+              if (!currentUser) {
+                // Auto-heal missing public.users record
+                const newEmail = session.user.email || "";
+                currentUser = {
+                  id: session.user.id,
+                  email: newEmail,
+                  name: session.user.user_metadata?.name || newEmail.split("@")[0] || "Kullanıcı",
+                  username: newEmail.split("@")[0] || "user",
+                  firstName: "Yeni",
+                  lastName: "Kullanıcı",
+                  singlesRating: 2.5,
+                  doublesRating: 2.5,
+                  tags: [],
+                  role: "user",
+                  city: "İstanbul",
+                  gender: "male",
+                  birthdate: "2000-01-01",
+                  followers: [],
+                  following: [],
+                  bio: "",
+                  avatarUrl: "",
+                  bannerUrl: "",
+                };
+                
+                // Insert async in background to avoid blocking
+                supabase.from("users").insert({
+                  id: currentUser.id,
+                  email: currentUser.email,
+                  name: currentUser.name,
+                  username: currentUser.username,
+                  city: currentUser.city,
+                  gender: currentUser.gender,
+                  birthdate: currentUser.birthdate,
+                  singles_rating: currentUser.singlesRating,
+                  doubles_rating: currentUser.doublesRating,
+                  role: currentUser.role
+                }).then(({error}) => {
+                  if (error) console.error("Auto-heal insert error:", error);
+                });
+                
+                mappedUsers.push(currentUser);
+              }
 
               return {
                 currentUser: currentUser,
