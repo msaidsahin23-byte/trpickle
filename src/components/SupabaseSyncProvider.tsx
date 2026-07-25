@@ -158,6 +158,86 @@ export default function SupabaseSyncProvider() {
                 activeSessions: finalCurrentUser ? [finalCurrentUser] : []
               };
             });
+            
+            // Set up Realtime Subscriptions
+            const channel = supabase.channel('schema-db-changes')
+              .on(
+                'postgres_changes',
+                {
+                  event: '*',
+                  schema: 'public',
+                  table: 'posts',
+                },
+                (payload) => {
+                  const p = payload.new as any;
+                  useStore.setState((state) => {
+                    if (payload.eventType === 'DELETE') {
+                      const oldP = payload.old as any;
+                      return { posts: state.posts.filter(x => x.id.toString() !== oldP.id) };
+                    }
+                    if (payload.eventType === 'INSERT') {
+                      if (state.posts.some(existing => existing.id.toString() === p.id)) return state;
+                      const mappedNewPost = {
+                        id: p.id,
+                        authorId: p.author_id,
+                        author: p.author_name,
+                        rating: p.rating,
+                        content: p.content,
+                        time: p.time,
+                        likedBy: p.liked_by || [],
+                        comments: p.comments || [],
+                        imageUrl: p.image_url,
+                        linkedMatchId: p.linked_match_id
+                      };
+                      return { posts: [mappedNewPost, ...state.posts] };
+                    }
+                    if (payload.eventType === 'UPDATE') {
+                      return {
+                        posts: state.posts.map(x => {
+                          if (x.id.toString() === p.id) {
+                            return {
+                              ...x,
+                              likedBy: p.liked_by || [],
+                              comments: p.comments || []
+                            };
+                          }
+                          return x;
+                        })
+                      };
+                    }
+                    return state;
+                  });
+                }
+              )
+              .on(
+                'postgres_changes',
+                {
+                  event: 'UPDATE',
+                  schema: 'public',
+                  table: 'users',
+                },
+                (payload) => {
+                  const u = payload.new as any;
+                  useStore.setState((state) => {
+                    const newUsers = state.users.map(existing => {
+                      if (existing.id === u.id) {
+                         return {
+                           ...existing,
+                           followers: u.followers || existing.followers,
+                           following: u.following || existing.following,
+                           avatarUrl: u.avatar_url || existing.avatarUrl,
+                           bannerUrl: u.banner_url || existing.bannerUrl,
+                           bio: u.bio || existing.bio
+                         };
+                      }
+                      return existing;
+                    });
+                    const newCurrentUser = state.currentUser ? (newUsers.find(x => x.id === state.currentUser!.id) || state.currentUser) : state.currentUser;
+                    return { users: newUsers, currentUser: newCurrentUser };
+                  });
+                }
+              )
+              .subscribe();
           }
         } else {
           // Logged out
