@@ -51,6 +51,7 @@ function AuthContent() {
   const [selectedGender, setSelectedGender] = useState<'male' | 'female'>('male');
   const [selectedBirthdate, setSelectedBirthdate] = useState("");
   const [authError, setAuthError] = useState("");
+  const [isSignUpSuccess, setIsSignUpSuccess] = useState(false);
   
   const login = useStore(state => state.login);
 
@@ -97,7 +98,7 @@ function AuthContent() {
           }
         }
         
-        router.push("/feed");
+        setIsSignUpSuccess(true);
       } catch (err: any) {
         setAuthError(err.message);
       }
@@ -127,7 +128,31 @@ function AuthContent() {
         animate={{ opacity: 1, y: 0 }}
         className="w-full max-w-md bg-white  rounded-3xl p-8 shadow-sm border border-gray-100  "
       >
-        {/* Logo and Header */}
+        {isSignUpSuccess ? (
+          <div className="flex flex-col items-center text-center py-8">
+            <div className="w-20 h-20 bg-green-100 text-pb-green rounded-full flex items-center justify-center mb-6">
+              <CheckCircle2 className="w-10 h-10" />
+            </div>
+            <h2 className="text-2xl font-bold text-pb-dark mb-4">E-posta Adresinizi Doğrulayın</h2>
+            <p className="text-gray-600 mb-6 font-medium">
+              Kayıt işlemini tamamlamak için <b>{email}</b> adresine bir doğrulama bağlantısı gönderdik. Lütfen e-posta kutunuzu (ve gerekiyorsa Spam/Gereksiz klasörünü) kontrol edin.
+            </p>
+            <p className="text-sm text-gray-400 mb-8">
+              Bağlantıya tıkladıktan sonra giriş yapabilirsiniz.
+            </p>
+            <button 
+              onClick={() => {
+                setIsSignUpSuccess(false);
+                setActiveTab("login");
+              }}
+              className="w-full bg-pb-green text-pb-dark font-bold py-3.5 rounded-xl shadow-sm hover:shadow-md transition-all duration-300"
+            >
+              Giriş Ekranına Dön
+            </button>
+          </div>
+        ) : (
+          <>
+            {/* Logo and Header */}
         <div className="flex flex-col items-center mb-8">
           <div className="flex items-center justify-center mb-2">
             <Image alt="TRPickle Logo" className="object-contain" height={80} src={logoPic} width={80} />
