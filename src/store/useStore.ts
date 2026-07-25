@@ -186,7 +186,6 @@ export type StoreState = {
   toggleTheme: () => void;
   login: (email: string, password?: string, isSignup?: boolean, firstName?: string, lastName?: string, username?: string, city?: string, gender?: 'male' | 'female', birthdate?: string) => void;
   logout: () => void;
-  switchAccount: (userId: number | string) => void;
   addMatch: (match: Omit<MatchRecord, "id">) => void;
   deleteMatch: (id: number | string) => void;
   approveMatch: (matchId: number | string, userName: string) => void;
@@ -341,25 +340,10 @@ export const useStore = create<StoreState>()(
         }
       }),
       
-      logout: () => set((state) => {
-        if (!state.currentUser) return {};
-        const activeSessions = state.activeSessions || [];
-        const remainingSessions = activeSessions.filter(u => u.id !== state.currentUser?.id);
-        const nextUser = remainingSessions.length > 0 ? remainingSessions[0] : null;
-        return { currentUser: nextUser, activeSessions: remainingSessions };
-      }),
-
-      switchAccount: (userId) => set((state) => {
-        const user = state.users.find(u => u.id === userId);
-        if (user) {
-          const activeSessions = state.activeSessions || [];
-          const updatedSessions = activeSessions.map(s => state.users.find(u => u.id === s.id) || s);
-          const alreadyInSessions = updatedSessions.some(s => s.id === user.id);
-          const newActiveSessions = alreadyInSessions ? updatedSessions : [...updatedSessions, user];
-          return { currentUser: user, activeSessions: newActiveSessions };
-        }
-        return {};
-      }),
+      logout: () => {
+        supabase.auth.signOut();
+        set({ currentUser: null, activeSessions: [] });
+      },
 
       addMatch: async (match) => {
         const { data, error } = await supabase.from('matches').insert({

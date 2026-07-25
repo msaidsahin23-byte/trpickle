@@ -43,13 +43,13 @@ export default function Navbar() {
   const logout = useStore(state => state.logout);
   const directMessages = useStore(state => state.directMessages);
   const activeSessions = useStore(state => state.activeSessions);
-  const switchAccount = useStore(state => state.switchAccount);
+  
   const users = useStore(state => state.users);
   const pathname = usePathname();
   
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [dropdownOpen, setDropdownOpen] = useState(false);
-  const [showAccountSwitcher, setShowAccountSwitcher] = useState(false);
+  
   
   const dropdownRef = useRef<HTMLDivElement>(null);
 
@@ -82,7 +82,6 @@ export default function Navbar() {
   };
 
   return (
-    <>
       <nav className="sticky top-0 z-[100] w-full bg-[#17212f] text-white border-b border-slate-800 shadow-sm transition-colors duration-300">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
@@ -173,12 +172,6 @@ export default function Navbar() {
                         
                         <div className="h-px bg-slate-700/50 my-1 mx-3"></div>
                         
-                        <button onClick={() => { setShowAccountSwitcher(true); closeMenu(); }} className="w-full flex items-center gap-4 px-5 py-3 font-semibold text-sm text-slate-200 hover:bg-slate-800/80 transition-colors text-left">
-                          <Repeat size={18} className="text-slate-400" /> Hesap Değiştir
-                        </button>
-
-                        <div className="h-px bg-slate-700/50 my-1 mx-3"></div>
-                        
                         <button onClick={() => { logout(); closeMenu(); }} className="w-full flex items-center gap-4 px-5 py-3 font-semibold text-sm text-red-400 hover:bg-slate-800/80 transition-colors text-left">
                           <LogOut size={18} /> Çıkış Yap
                         </button>
@@ -247,13 +240,6 @@ export default function Navbar() {
                   </Link>
                   
                   <div className="h-px bg-slate-700 my-2 mx-1"></div>
-                  
-                  <button onClick={() => { setShowAccountSwitcher(true); closeMenu(); }} className="flex items-center gap-3 px-3 py-3 rounded-lg text-sm font-semibold text-slate-300 hover:text-white hover:bg-slate-800 text-left w-full">
-                    <Repeat size={20} className="text-slate-400" />
-                    <span>Hesap Değiştir</span>
-                  </button>
-
-                  <div className="h-px bg-slate-700 my-2 mx-1"></div>
 
                   <button onClick={() => { logout(); closeMenu(); }} className="flex items-center gap-3 px-3 py-3 rounded-lg text-sm font-semibold text-red-400 hover:bg-red-500/10 text-left w-full">
                     <LogOut size={20} />
@@ -270,72 +256,5 @@ export default function Navbar() {
         )}
       </AnimatePresence>
     </nav>
-
-      <AnimatePresence>
-        {showAccountSwitcher && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="fixed inset-0 z-[200] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm"
-          >
-            <motion.div
-              initial={{ scale: 0.95, opacity: 0, y: 20 }}
-              animate={{ scale: 1, opacity: 1, y: 0 }}
-              exit={{ scale: 0.95, opacity: 0, y: 20 }}
-              className="bg-white dark:bg-slate-900 rounded-3xl shadow-2xl w-full max-w-md overflow-hidden flex flex-col"
-            >
-              <div className="px-6 py-5 border-b border-gray-100 dark:border-slate-800 flex justify-between items-center">
-                <h2 className="text-xl font-bold text-gray-800 dark:text-white">Hesap Değiştir</h2>
-                <button onClick={() => setShowAccountSwitcher(false)} className="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-slate-800 text-gray-500 transition-colors">
-                  <X size={20} />
-                </button>
-              </div>
-              
-              <div className="p-4 max-h-[60vh] overflow-y-auto">
-                {activeSessions && activeSessions.length > 0 ? (
-                  <div className="flex flex-col gap-2">
-                    {activeSessions.map(session => {
-                      const realUser = users.find(u => u.id === session.id) || session;
-                      return (
-                        <button
-                          key={realUser.id}
-                          onClick={() => { switchAccount(realUser.id); setShowAccountSwitcher(false); }}
-                          className={`flex items-center justify-between p-3 rounded-2xl border transition-all ${
-                            realUser.id === currentUser?.id 
-                              ? 'border-pb-green bg-pb-green/10' 
-                              : 'border-gray-100 dark:border-slate-800 hover:border-pb-blue/50 hover:bg-gray-50 dark:hover:bg-slate-800/50'
-                          }`}
-                        >
-                          <div className="flex items-center gap-3">
-                            <Avatar src={realUser.avatarUrl} name={realUser.name} size={40} />
-                            <div className="flex flex-col items-start">
-                              <span className="font-bold text-gray-800 dark:text-white">{realUser.name}</span>
-                              <span className="text-xs text-gray-500 dark:text-gray-400">@{realUser.username}</span>
-                            </div>
-                          </div>
-                          {realUser.id === currentUser?.id && (
-                            <div className="w-3 h-3 rounded-full bg-pb-green shadow-[0_0_8px_rgba(34,197,94,0.6)]"></div>
-                          )}
-                        </button>
-                      );
-                    })}
-                  </div>
-                ) : (
-                  <div className="text-center text-sm text-gray-500 py-4">Başka aktif hesap bulunamadı.</div>
-                )}
-              </div>
-              
-              <div className="p-4 border-t border-gray-100 dark:border-slate-800 flex flex-col gap-3 bg-gray-50 dark:bg-slate-800/30">
-                <Link href="/auth?addAccount=true" onClick={() => setShowAccountSwitcher(false)} className="w-full flex items-center justify-center gap-2 py-3 rounded-xl border-2 border-pb-green text-pb-green font-bold hover:bg-pb-green hover:text-white dark:hover:text-pb-dark transition-all">
-                  <PlusCircle size={20} />
-                  Yeni Hesap Ekle / Giriş Yap
-                </Link>
-              </div>
-            </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
-    </>
   );
 }
