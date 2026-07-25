@@ -705,7 +705,7 @@ export const useStore = create<StoreState>()(
         return { users: newUsers, currentUser: newCurrentUser };
       }),
 
-      addPost: (post) => set((state) => {
+      addPost: (post) => { set((state) => {
         const now = Date.now();
         const newUsers = state.users.map((u, i) => {
           if (u.id === post.authorId) return u;
@@ -733,7 +733,21 @@ export const useStore = create<StoreState>()(
           users: newUsers,
           currentUser: newCurrentUser
         };
-      }),
+      });
+        
+        supabase.from('posts').insert({
+          id: post.id.toString(),
+          author_id: post.authorId.toString(),
+          author_name: post.author,
+          rating: post.rating,
+          content: post.content,
+          time: post.time,
+          liked_by: (post.likedBy || []).map(String),
+          comments: post.comments || [],
+          image_url: post.imageUrl || null,
+          linked_match_id: post.linkedMatchId ? post.linkedMatchId.toString() : null
+        }).then(({error}) => { if (error) console.error('Post insert error:', error) });
+      },
 
       shareMatchToFeed: (matchId, content) => set((state) => {
         if (!state.currentUser) return state;
