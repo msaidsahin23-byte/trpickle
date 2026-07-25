@@ -31,10 +31,10 @@ function AuthContent() {
   const users = useStore(state => state.users);
 
   useEffect(() => {
-    if (currentUser && !isAddAccount) {
+    if (currentUser && !isAddAccount && !isSignUpSuccess) {
       router.push("/feed");
     }
-  }, [currentUser, isAddAccount, router]);
+  }, [currentUser, isAddAccount, isSignUpSuccess, router]);
 
   useEffect(() => {
     if (isAddAccount) {
@@ -91,7 +91,9 @@ function AuthContent() {
           const { error: dbError } = await supabase.from('users').insert({
             id: data.user.id,
             email,
-            name: `${firstName.trim()} ${lastName.trim()}`
+            name: `${firstName.trim()} ${lastName.trim()}`,
+            singles_rating: 2.5,
+            doubles_rating: 2.5
           });
           if (dbError) {
              console.error("DB Insert Error", dbError);

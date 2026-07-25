@@ -6,6 +6,7 @@ import { useEffect, useState } from "react";
 import { EditProfileModal } from "@/components/EditProfileModal";
 import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
+import { supabase } from "@/lib/supabase";
 
 export default function SettingsPage() {
   const [mounted, setMounted] = useState(false);
@@ -18,6 +19,15 @@ export default function SettingsPage() {
   const deleteOwnAccount = useStore(state => state.deleteOwnAccount);
   const router = useRouter();
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  
+  // Security States
+  const [newEmail, setNewEmail] = useState("");
+  const [newPassword, setNewPassword] = useState("");
+  const [emailStatus, setEmailStatus] = useState("");
+  const [passwordStatus, setPasswordStatus] = useState("");
+  const [isEmailLoading, setIsEmailLoading] = useState(false);
+  const [isPasswordLoading, setIsPasswordLoading] = useState(false);
+
   const [deletePassword, setDeletePassword] = useState("");
   const [deleteError, setDeleteError] = useState("");
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
@@ -72,6 +82,41 @@ export default function SettingsPage() {
     });
 
     doc.save(`TRPickle_Hesap_Ozeti_${currentUser.name.replace(/\s+/g, '_')}.pdf`);
+  };
+
+  const handleChangeEmail = async () => {
+    if (!newEmail || newEmail.trim() === "") return;
+    setIsEmailLoading(true);
+    setEmailStatus("");
+    try {
+      const { data, error } = await supabase.auth.updateUser({ email: newEmail });
+      if (error) throw error;
+      setEmailStatus("Onay e-postası gönderildi. Lütfen hem eski hem de yeni e-postanızı kontrol edin.");
+      setNewEmail("");
+    } catch (err: any) {
+      setEmailStatus(`Hata: ${err.message}`);
+    } finally {
+      setIsEmailLoading(false);
+    }
+  };
+
+  const handleChangePassword = async () => {
+    if (!newPassword || newPassword.length < 8) {
+      setPasswordStatus("Şifre en az 8 karakter olmalıdır.");
+      return;
+    }
+    setIsPasswordLoading(true);
+    setPasswordStatus("");
+    try {
+      const { data, error } = await supabase.auth.updateUser({ password: newPassword });
+      if (error) throw error;
+      setPasswordStatus("Şifreniz başarıyla güncellendi.");
+      setNewPassword("");
+    } catch (err: any) {
+      setPasswordStatus(`Hata: ${err.message}`);
+    } finally {
+      setIsPasswordLoading(false);
+    }
   };
 
   const blockedUsersDetails = (currentUser.blockedUsers || [])
@@ -134,9 +179,85 @@ export default function SettingsPage() {
           </div>
         </section>
 
-        {/* Category 2: Gizlilik ve Güvenlik */}
+        {/* Category 2: Hesap Guvenligi */}
         <section>
-          <h2 className="text-sm font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-4 px-2">Gizlilik ve Güvenlik</h2>
+          <h2 className="text-sm font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-4 px-2">Hesap Güvenliği</h2>
+          <div className="bg-white dark:bg-slate-800 rounded-3xl shadow-sm border border-gray-100 dark:border-slate-700 overflow-hidden divide-y divide-gray-100 dark:divide-slate-700">
+            
+            {/* Email Change */}
+            <div className="p-6">
+              <div className="flex items-center gap-4 mb-4">
+                <div className="w-10 h-10 rounded-full bg-blue-50 dark:bg-blue-900/30 flex items-center justify-center text-pb-blue">
+                  <Shield className="w-5 h-5" />
+                </div>
+                <div>
+                  <h3 className="font-bold text-pb-dark dark:text-white">E-posta Adresini Değiştir</h3>
+                  <p className="text-sm text-gray-500 dark:text-gray-400">Yeni e-posta adresinize ve mevcut adresinize doğrulama bağlantısı gönderilecektir.</p>
+                </div>
+              </div>
+              <div className="flex flex-col sm:flex-row gap-3">
+                <input
+                  type="email"
+                  placeholder="Yeni e-posta adresi"
+                  value={newEmail}
+                  onChange={(e) => setNewEmail(e.target.value)}
+                  className="flex-1 px-4 py-2.5 rounded-xl border border-gray-200 dark:border-slate-600 bg-gray-50 dark:bg-slate-700 text-sm text-pb-dark dark:text-white outline-none focus:border-pb-blue"
+                />
+                <button
+                  onClick={handleChangeEmail}
+                  disabled={isEmailLoading || !newEmail}
+                  className="px-6 py-2.5 bg-pb-blue hover:bg-pb-blue/90 disabled:opacity-50 text-white font-bold text-sm rounded-xl transition-colors shrink-0"
+                >
+                  {isEmailLoading ? "Gönderiliyor..." : "E-posta Değiştir"}
+                </button>
+              </div>
+              {emailStatus && (
+                <p className={`mt-3 text-sm font-bold ${emailStatus.startsWith('Hata') ? 'text-red-500' : 'text-pb-green'}`}>
+                  {emailStatus}
+                </p>
+              )}
+            </div>
+
+            {/* Password Change */}
+            <div className="p-6">
+              <div className="flex items-center gap-4 mb-4">
+                <div className="w-10 h-10 rounded-full bg-emerald-50 dark:bg-emerald-900/30 flex items-center justify-center text-emerald-600">
+                  <Unlock className="w-5 h-5" />
+                </div>
+                <div>
+                  <h3 className="font-bold text-pb-dark dark:text-white">Şifre Değiştir</h3>
+                  <p className="text-sm text-gray-500 dark:text-gray-400">En az 8 karakter uzunluğunda yeni bir şifre belirleyin.</p>
+                </div>
+              </div>
+              <div className="flex flex-col sm:flex-row gap-3">
+                <input
+                  type="password"
+                  placeholder="Yeni şifre (en az 8 karakter)"
+                  value={newPassword}
+                  onChange={(e) => setNewPassword(e.target.value)}
+                  className="flex-1 px-4 py-2.5 rounded-xl border border-gray-200 dark:border-slate-600 bg-gray-50 dark:bg-slate-700 text-sm text-pb-dark dark:text-white outline-none focus:border-pb-green"
+                />
+                <button
+                  onClick={handleChangePassword}
+                  disabled={isPasswordLoading || newPassword.length < 8}
+                  className="px-6 py-2.5 bg-pb-green hover:bg-pb-green/90 disabled:opacity-50 text-pb-dark font-bold text-sm rounded-xl transition-colors shrink-0 shadow-sm"
+                >
+                  {isPasswordLoading ? "Güncelleniyor..." : "Şifreyi Güncelle"}
+                </button>
+              </div>
+              {passwordStatus && (
+                <p className={`mt-3 text-sm font-bold ${passwordStatus.startsWith('Hata') ? 'text-red-500' : 'text-pb-green'}`}>
+                  {passwordStatus}
+                </p>
+              )}
+            </div>
+
+          </div>
+        </section>
+
+        {/* Category 3: Gizlilik */}
+        <section>
+          <h2 className="text-sm font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-4 px-2">Gizlilik</h2>
           <div className="bg-white dark:bg-slate-800 rounded-3xl shadow-sm border border-gray-100 dark:border-slate-700 overflow-hidden divide-y divide-gray-100 dark:divide-slate-700">
             <div className="flex items-center justify-between p-6">
               <div className="flex items-center gap-4">
