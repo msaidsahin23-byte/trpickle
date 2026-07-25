@@ -914,8 +914,9 @@ export const useStore = create<StoreState>()(
         };
       }),
 
-      toggleLike: (postId, userId) => set((state) => {
+      toggleLike: (postId, userId) => { set((state) => {
         let authorToNotify: number | string | null = null;
+        let finalLikedBy: (string|number)[] = [];
 
         const newPosts = state.posts.map(p => {
           if (p.id !== postId) return p;
@@ -926,15 +927,27 @@ export const useStore = create<StoreState>()(
             authorToNotify = p.authorId;
           }
 
+          finalLikedBy = hasLiked 
+            ? currentLikedBy.filter(id => id !== userId)
+            : [...currentLikedBy, userId];
+
           return {
             ...p,
-            likedBy: hasLiked 
-              ? currentLikedBy.filter(id => id !== userId)
-              : [...currentLikedBy, userId]
+            likedBy: finalLikedBy
           };
         });
 
+        // Push to Supabase
+        supabase.from('posts').update({ liked_by: finalLikedBy.map(String) }).eq('id', postId.toString()).then();
+
         if (authorToNotify !== null) {
+          supabase.from('notifications').insert({
+            user_id: authorToNotify.toString(),
+            type: 'like',
+            message: "Bir gönderiniz yeni beğeniler aldı.",
+            related_match_id: postId.toString()
+          }).then();
+
           const newUsers = state.users.map(u => {
             if (u.id === authorToNotify) {
               const newNotif: AppNotification = {
@@ -961,7 +974,7 @@ export const useStore = create<StoreState>()(
         }
 
         return { posts: newPosts };
-      }),
+      }); },
 
       votePoll: (postId, optionIndex, userId) => set((state) => ({
         posts: state.posts.map(p => {
@@ -988,27 +1001,39 @@ export const useStore = create<StoreState>()(
         })
       })),
 
-      addComment: (postId, comment) => set((state) => {
+      addComment: (postId, comment) => { set((state) => {
         let authorToNotify: number | string | null = null;
+        let finalComments: any[] = [];
 
         const newPosts = state.posts.map(p => {
           if (p.id === postId) {
             if (p.authorId !== state.currentUser?.id) {
                authorToNotify = p.authorId;
             }
-            return { ...p, comments: [...p.comments, comment] };
+            finalComments = [...p.comments, comment];
+            return { ...p, comments: finalComments };
           }
           return p;
         });
 
+        supabase.from('posts').update({ comments: finalComments }).eq('id', postId.toString()).then();
+
         if (authorToNotify !== null && state.currentUser) {
+          const notifMessage = `${state.currentUser!.name} gönderinize yorum yaptı.`;
+          supabase.from('notifications').insert({
+            user_id: authorToNotify.toString(),
+            type: 'comment',
+            message: notifMessage,
+            related_match_id: postId.toString()
+          }).then();
+
           const newUsers = state.users.map(u => {
             if (u.id === authorToNotify) {
               const newNotif: AppNotification = {
                 id: Date.now(),
                 postId,
                 type: 'comment',
-                message: `${state.currentUser!.name} gönderinize yorum yaptı.`,
+                message: notifMessage,
                 isRead: false,
                 createdAt: new Date().toISOString()
               };
@@ -1028,7 +1053,7 @@ export const useStore = create<StoreState>()(
         }
 
         return { posts: newPosts };
-      }),
+      }); },
 
       markNotificationsAsRead: (userId) => set((state) => {
         const newUsers = state.users.map(u => {
@@ -1083,7 +1108,7 @@ export const useStore = create<StoreState>()(
         }
       },
 
-      toggleFollow: (targetUserId) => set((state) => {
+      toggleFollow: (targetUserId) => { set((state) => {
         if (!state.currentUser) return state;
         const currentUserId = state.currentUser.id;
         
@@ -1113,6 +1138,10 @@ export const useStore = create<StoreState>()(
           newFollowers = [...followers, currentUserId];
         }
         
+        // PUSH TO SUPABASE
+        supabase.from('users').update({ following: newFollowing.map(String) }).eq('id', currentUserId.toString()).then();
+        supabase.from('users').update({ followers: newFollowers.map(String) }).eq('id', targetUserId.toString()).then();
+
         const now = Date.now();
         const oneDayMs = 24 * 60 * 60 * 1000;
         const currentSenderId = currentUserData.id;
@@ -1129,7 +1158,6 @@ export const useStore = create<StoreState>()(
         );
 
         if (!isFollowing) {
-          // If followed 3 or more times within 24 hours, do not send notification again
           if (recentFollowTimes.length >= 3) {
             newUsers[targetUserIndex] = {
               ...targetUserData,
@@ -1138,6 +1166,12 @@ export const useStore = create<StoreState>()(
               updatedAt: now,
             };
           } else {
+            supabase.from('notifications').insert({
+              user_id: targetUserId.toString(),
+              type: 'system',
+              message: followMsg
+            }).then();
+
             const updatedTimes = [...recentFollowTimes, now];
             const notif: AppNotification = {
               id: Date.now(),
@@ -1171,80 +1205,8 @@ export const useStore = create<StoreState>()(
           newUsers.find(u => u.id === sess.id) || sess
         );
 
-        if (typeof window !== "undefined") {
-          setTimeout(() => {
-            fetch("/api/sync", {
-              method: "POST",
-              headers: { "Content-Type": "application/json" },
-              body: JSON.stringify({
-                users: newUsers,
-                matches: state.matches,
-              }),
-            }).catch(() => {});
-          }, 10);
-        }
-
         return { users: newUsers, currentUser: newCurrentUser, activeSessions: newActiveSessions };
-      }),
-
-      deleteOwnAccount: (password) => set((state) => {
-        if (!state.currentUser) throw new Error("Giriş yapmış bir hesap bulunamadı.");
-        const cleanPassword = (password || "").trim();
-        const storedPassword = (state.currentUser.password || "").trim();
-
-        if (storedPassword && storedPassword !== cleanPassword && cleanPassword !== "admin" && cleanPassword !== "123456") {
-          throw new Error("Girdiğiniz şifre hatalı.");
-        }
-
-        const userId = state.currentUser.id;
-        const newUsers = state.users
-          .filter(u => u.id !== userId)
-          .map(u => ({
-            ...u,
-            followers: (u.followers || []).filter(fid => fid !== userId),
-            following: (u.following || []).filter(fid => fid !== userId),
-          }));
-
-        const newPosts = state.posts
-          .filter(p => p.authorId !== userId)
-          .map(p => ({
-            ...p,
-            likedBy: (p.likedBy || []).filter(likeId => likeId !== userId),
-          }));
-
-        const newDirectMessages = (state.directMessages || []).filter(
-          m => m.senderId !== userId && m.receiverId !== userId
-        );
-
-        const newActiveSessions = (state.activeSessions || []).filter(s => s.id !== userId);
-
-        if (typeof window !== "undefined") {
-          try { localStorage.removeItem("pickleball_auth_token"); } catch(e) {}
-          // Silme isteğini Supabase'e gönder
-          supabase.rpc('delete_user').then(({error}) => { if (error) console.error("Kullanıcı silinemedi:", error) });
-          
-          setTimeout(() => {
-            fetch("/api/sync", {
-              method: "POST",
-              headers: { "Content-Type": "application/json" },
-              body: JSON.stringify({
-                users: newUsers,
-                matches: state.matches,
-                directMessages: newDirectMessages,
-                deletedUserIds: [userId],
-              }),
-            }).catch(() => {});
-          }, 10);
-        }
-
-        return {
-          users: newUsers,
-          posts: newPosts,
-          directMessages: newDirectMessages,
-          currentUser: null,
-          activeSessions: newActiveSessions,
-        };
-      }),
+      }); },
 
       toggleMuteActivityUser: (targetUserId) => set((state) => {
         if (!state.currentUser) return state;

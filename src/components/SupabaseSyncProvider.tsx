@@ -127,11 +127,11 @@ export default function SupabaseSyncProvider() {
 
               const mappedNotifications: any[] = (allNotifications || []).map(n => ({
                 id: n.id,
-                postId: n.post_id,
+                postId: n.related_match_id,
                 matchId: n.match_id,
                 type: n.type,
                 message: n.message,
-                isRead: n.is_read,
+                isRead: n.read,
                 createdAt: n.created_at,
                 _userId: n.user_id // internal reference
               }));
@@ -241,11 +241,11 @@ export default function SupabaseSyncProvider() {
                       if (u.id === n.user_id) {
                         const newNotif = {
                           id: n.id,
-                          postId: n.post_id,
+                          postId: n.related_match_id,
                           matchId: n.match_id,
                           type: n.type,
                           message: n.message,
-                          isRead: n.is_read,
+                          isRead: n.read,
                           createdAt: n.created_at
                         };
                         return { ...u, notifications: [newNotif, ...(u.notifications || [])] };
