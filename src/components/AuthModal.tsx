@@ -10,8 +10,35 @@ export function AuthModal({ isOpen, onClose, title = "Hesaplar", description }: 
   const [authEmail, setAuthEmail] = useState("");
   const [authPassword, setAuthPassword] = useState("");
   const [authError, setAuthError] = useState("");
+  const [resendCooldown, setResendCooldown] = useState(0);
+  const [resendSuccess, setResendSuccess] = useState("");
   
   const router = useRouter();
+
+  useEffect(() => {
+    let timer: NodeJS.Timeout;
+    if (resendCooldown > 0) {
+      timer = setTimeout(() => setResendCooldown(c => c - 1), 1000);
+    }
+    return () => clearTimeout(timer);
+  }, [resendCooldown]);
+
+  const handleResendEmail = async () => {
+    if (resendCooldown > 0 || !authEmail) return;
+    setAuthError("");
+    setResendSuccess("");
+    try {
+      const { error } = await supabase.auth.resend({
+        type: 'signup',
+        email: authEmail,
+      });
+      if (error) throw error;
+      setResendSuccess("Doğrulama maili tekrar gönderildi. Lütfen gelen kutunuzu kontrol edin.");
+      setResendCooldown(60);
+    } catch (err: any) {
+      setAuthError("Mail gönderilirken hata oluştu: " + err.message);
+    }
+  };
 
   useEffect(() => {
     if (isOpen) {
@@ -89,8 +116,25 @@ export function AuthModal({ isOpen, onClose, title = "Hesaplar", description }: 
                     </div>
 
                     {authError && (
-                      <div className="bg-red-50 dark:bg-red-900/30 text-red-500 dark:text-red-400 font-bold text-sm p-3 rounded-xl border border-red-100 dark:border-red-800 text-center mt-1">
-                        {authError}
+                      <div className="flex flex-col gap-2 mt-1">
+                        <div className="bg-red-50 dark:bg-red-900/30 text-red-500 dark:text-red-400 font-bold text-sm p-3 rounded-xl border border-red-100 dark:border-red-800 text-center">
+                          {authError}
+                        </div>
+                        {(authError.includes("doğrulanmadı") || authError.includes("doYruland")) && (
+                          <button
+                            type="button"
+                            onClick={handleResendEmail}
+                            disabled={resendCooldown > 0}
+                            className="w-full bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-600 text-gray-700 dark:text-gray-300 font-bold py-2.5 rounded-xl shadow-sm hover:bg-gray-50 dark:hover:bg-slate-700 transition-all text-sm disabled:opacity-50 disabled:cursor-not-allowed mt-1"
+                          >
+                            {resendCooldown > 0 ? `Tekrar Gönder (${resendCooldown}s)` : "Doğrulama Mailini Tekrar Gönder"}
+                          </button>
+                        )}
+                        {resendSuccess && (
+                          <div className="bg-green-50 text-green-600 font-bold text-sm p-3 rounded-xl border border-green-200 text-center w-full">
+                            {resendSuccess}
+                          </div>
+                        )}
                       </div>
                     )}
                     

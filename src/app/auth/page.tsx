@@ -52,8 +52,35 @@ function AuthContent() {
   const [selectedGender, setSelectedGender] = useState<'male' | 'female'>('male');
   const [selectedBirthdate, setSelectedBirthdate] = useState("");
   const [authError, setAuthError] = useState("");
+  const [resendCooldown, setResendCooldown] = useState(0);
+  const [resendSuccess, setResendSuccess] = useState("");
   
   const login = useStore(state => state.login);
+
+  useEffect(() => {
+    let timer: NodeJS.Timeout;
+    if (resendCooldown > 0) {
+      timer = setTimeout(() => setResendCooldown(c => c - 1), 1000);
+    }
+    return () => clearTimeout(timer);
+  }, [resendCooldown]);
+
+  const handleResendEmail = async () => {
+    if (resendCooldown > 0 || !email) return;
+    setAuthError("");
+    setResendSuccess("");
+    try {
+      const { error } = await supabase.auth.resend({
+        type: 'signup',
+        email: email,
+      });
+      if (error) throw error;
+      setResendSuccess("Doğrulama maili tekrar gönderildi. Lütfen gelen kutunuzu kontrol edin.");
+      setResendCooldown(60);
+    } catch (err: any) {
+      setAuthError("Mail gönderilirken hata oluştu: " + err.message);
+    }
+  };
 
   const isLengthValid = password.length >= 8;
   const isNumberValid = /\d/.test(password);
@@ -154,18 +181,34 @@ function AuthContent() {
             <p className="text-gray-600 mb-6 font-medium">
               Kayıt işlemini tamamlamak için <b>{email}</b> adresine bir doğrulama bağlantısı gönderdik. Lütfen e-posta kutunuzu (ve gerekiyorsa Spam/Gereksiz klasörünü) kontrol edin.
             </p>
-            <p className="text-sm text-gray-400 mb-8">
+            <p className="text-sm text-gray-400 mb-6">
               Bağlantıya tıkladıktan sonra giriş yapabilirsiniz.
             </p>
-            <button 
-              onClick={() => {
-                setIsSignUpSuccess(false);
-                setActiveTab("login");
-              }}
-              className="w-full bg-pb-green text-pb-dark font-bold py-3.5 rounded-xl shadow-sm hover:shadow-md transition-all duration-300"
-            >
-              Giriş Ekranına Dön
-            </button>
+
+            {resendSuccess && (
+              <div className="bg-green-50 text-green-600 font-bold text-sm p-3 rounded-xl border border-green-200 text-center w-full mb-4">
+                {resendSuccess}
+              </div>
+            )}
+            
+            <div className="flex flex-col gap-3 w-full">
+              <button 
+                onClick={handleResendEmail}
+                disabled={resendCooldown > 0}
+                className="w-full bg-white border-2 border-pb-green text-pb-dark font-bold py-3.5 rounded-xl shadow-sm hover:bg-gray-50 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                {resendCooldown > 0 ? `Tekrar Gönder (${resendCooldown}s)` : "Doğrulama Mailini Tekrar Gönder"}
+              </button>
+              <button 
+                onClick={() => {
+                  setIsSignUpSuccess(false);
+                  setActiveTab("login");
+                }}
+                className="w-full bg-pb-green text-pb-dark font-bold py-3.5 rounded-xl shadow-sm hover:shadow-md transition-all duration-300"
+              >
+                Giriş Ekranına Dön
+              </button>
+            </div>
           </div>
         ) : (
           <>
@@ -331,18 +374,33 @@ function AuthContent() {
             </>
           )}
 
-          {authError && (
-            <div className="bg-red-50 text-red-500 font-bold text-sm p-3 rounded-xl border border-red-100 text-center">
-              {authError}
-            </div>
-          )}
-
-          <button 
-            type="submit" 
-            className="mt-4 w-full bg-pb-green text-pb-dark  font-bold py-3.5 rounded-xl shadow-sm hover:shadow-md hover:scale-[1.02] transition-all duration-300"
-          >
-            {activeTab === "login" ? "Giriş Yap" : "Kayıt Ol ve Başla"}
-          </button>
+            {authError && (
+              <div className="flex flex-col gap-2 mt-2">
+                <div className="flex items-start gap-2 text-red-500 bg-red-50 p-3 rounded-xl border border-red-100">
+                  <AlertCircle className="w-5 h-5 shrink-0 mt-0.5" />
+                  <span className="text-sm font-semibold">{authError}</span>
+                </div>
+                {(authError.includes("doğrulanmadı") || authError.includes("doYruland")) && (
+                  <button
+                    type="button"
+                    onClick={handleResendEmail}
+                    disabled={resendCooldown > 0}
+                    className="w-full bg-white border border-gray-200 text-gray-700 font-bold py-2.5 rounded-xl shadow-sm hover:bg-gray-50 transition-all text-sm disabled:opacity-50 disabled:cursor-not-allowed mt-1"
+                  >
+                    {resendCooldown > 0 ? `Tekrar Gönder (${resendCooldown}s)` : "Doğrulama Mailini Tekrar Gönder"}
+                  </button>
+                )}
+                {resendSuccess && (
+                  <div className="bg-green-50 text-green-600 font-bold text-sm p-3 rounded-xl border border-green-200 text-center w-full">
+                    {resendSuccess}
+                  </div>
+                )}
+              </div>
+            )}
+            
+            <button type="submit" className="w-full bg-pb-green text-pb-dark font-bold py-4 rounded-xl shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all duration-300 mt-2">
+              {activeTab === "login" ? "Giriş Yap" : "Kayıt Ol"}
+            </button>
         </form>
 
         <div className="mt-6 text-center text-sm font-medium text-gray-500">
