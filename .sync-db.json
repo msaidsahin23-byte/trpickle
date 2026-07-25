@@ -1,0 +1,1860 @@
+{
+  "users": [
+    {
+      "id": 2,
+      "name": "Zeynep Demir",
+      "email": "zeynep@example.com",
+      "password": "123456",
+      "singlesRating": 3.8499999999999988,
+      "doublesRating": 4.35,
+      "tags": [
+        "Agresif",
+        "Sert Vurucu"
+      ],
+      "role": "user",
+      "gender": "female",
+      "city": "Ankara",
+      "birthdate": "1998-10-22",
+      "bio": "Kortta affım yoktur! Çankaya ve Eryaman kortlarında turnuva maçları yapıyorum.",
+      "avatarUrl": "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=400&auto=format&fit=crop&q=80",
+      "bannerUrl": "https://images.unsplash.com/photo-1595435934249-5df7ed86e1c0?w=1200&auto=format&fit=crop&q=80",
+      "accentColor": "#8b5cf6",
+      "paddle": "Selkirk Vanguard Power Air Invikta",
+      "favoriteCourt": "Ankara Çankaya Pickleball Park",
+      "following": [
+        4,
+        11,
+        8
+      ],
+      "followers": [
+        4,
+        11,
+        8
+      ],
+      "notifications": [
+        {
+          "id": 1783876414000,
+          "type": "system",
+          "message": "Said Şahin yeni bir gönderi paylaştı: \"Bü...\"",
+          "postId": 1783876413998,
+          "isRead": false,
+          "createdAt": "2026-07-12T17:13:33.998Z"
+        },
+        {
+          "id": 1783687850484,
+          "type": "system",
+          "message": "Said Şahin yeni bir gönderi paylaştı: \"elektirkli...\"",
+          "postId": 1783687850482,
+          "isRead": false,
+          "createdAt": "2026-07-10T12:50:50.482Z"
+        },
+        {
+          "id": 1783687499990,
+          "type": "system",
+          "message": "Said Şahin yeni bir gönderi paylaştı: \"alevli olması lazım bunun bu ne amk...\"",
+          "postId": 1783687499988,
+          "isRead": false,
+          "createdAt": "2026-07-10T12:44:59.988Z"
+        },
+        {
+          "id": 1783687480915,
+          "type": "system",
+          "message": "Said Şahin yeni bir gönderi paylaştı: \"yine mi kötü\n...\"",
+          "postId": 1783687480913,
+          "isRead": false,
+          "createdAt": "2026-07-10T12:44:40.913Z"
+        },
+        {
+          "id": 1783686690175,
+          "type": "system",
+          "message": "Said Şahin yeni bir gönderi paylaştı: \"kupalı...\"",
+          "postId": 1783686690173,
+          "isRead": false,
+          "createdAt": "2026-07-10T12:31:30.173Z"
+        },
+        {
+          "id": 1783686660483,
+          "type": "system",
+          "message": "Said Şahin yeni bir gönderi paylaştı: \"freshh...\"",
+          "postId": 1783686660481,
+          "isRead": false,
+          "createdAt": "2026-07-10T12:31:00.481Z"
+        },
+        {
+          "id": 1783686634228,
+          "type": "system",
+          "message": "Said Şahin yeni bir gönderi paylaştı: \"Günaydın...\"",
+          "postId": 1783686634226,
+          "isRead": false,
+          "createdAt": "2026-07-10T12:30:34.227Z"
+        },
+        {
+          "id": 1783684076670,
+          "type": "system",
+          "message": "Said Şahin yeni bir gönderi paylaştı: \"38 seviye oldum...\"",
+          "postId": 1783684076668,
+          "isRead": false,
+          "createdAt": "2026-07-10T11:47:56.668Z"
+        },
+        {
+          "id": 1783652817255,
+          "type": "system",
+          "message": "🏆 YENİ BAŞARIM: Erkenci Kuş (+50 XP)",
+          "isRead": false,
+          "createdAt": "2026-07-10T03:06:57.255Z"
+        },
+        {
+          "id": 1783644150569,
+          "type": "system",
+          "message": "🏆 YENİ BAŞARIM: Akademi Mezunu (+150 XP)",
+          "isRead": true,
+          "createdAt": "2026-07-10T00:42:30.569Z"
+        },
+        {
+          "id": 1783643527794,
+          "type": "system",
+          "message": "Murat Aksoy seni takip etmeye başladı.",
+          "isRead": true,
+          "createdAt": "2026-07-10T00:32:07.794Z"
+        },
+        {
+          "id": 1783633720617,
+          "type": "system",
+          "message": "🏆 YENİ BAŞARIM: Zirve İnadı (+150 XP)",
+          "isRead": true,
+          "createdAt": "2026-07-09T21:48:40.617Z"
+        },
+        {
+          "id": 1783633720617,
+          "type": "system",
+          "message": "🏆 YENİ BAŞARIM: Alev Alev (+200 XP)",
+          "isRead": true,
+          "createdAt": "2026-07-09T21:48:40.617Z"
+        },
+        {
+          "id": 1783633719854,
+          "type": "system",
+          "message": "🏆 YENİ BAŞARIM: Yenilmez (+100 XP)",
+          "isRead": true,
+          "createdAt": "2026-07-09T21:48:39.854Z"
+        },
+        {
+          "id": 1783633719108,
+          "type": "system",
+          "message": "🏆 YENİ BAŞARIM: İlk Galibiyet (+75 XP)",
+          "isRead": true,
+          "createdAt": "2026-07-09T21:48:39.108Z"
+        },
+        {
+          "id": 1783617105966,
+          "type": "system",
+          "message": "Said Şahin seni takip etmeye başladı.",
+          "isRead": true,
+          "createdAt": "2026-07-09T17:11:45.966Z"
+        },
+        {
+          "id": 1783616872885,
+          "type": "system",
+          "message": "🏆 YENİ BAŞARIM: Gece Kuşu (+50 XP)",
+          "isRead": true,
+          "createdAt": "2026-07-09T17:07:52.885Z"
+        },
+        {
+          "id": 1783616872885,
+          "type": "system",
+          "message": "🏆 YENİ BAŞARIM: Sosyal Kelebek (+50 XP)",
+          "isRead": true,
+          "createdAt": "2026-07-09T17:07:52.885Z"
+        },
+        {
+          "id": 1783616872884,
+          "type": "system",
+          "message": "🏆 YENİ BAŞARIM: Korta İlk Adım (+50 XP)",
+          "isRead": true,
+          "createdAt": "2026-07-09T17:07:52.884Z"
+        }
+      ],
+      "appTheme": "dark",
+      "unlockedAchievements": [
+        "first_match",
+        "social_butterfly",
+        "night_owl",
+        "first_win",
+        "win_streak",
+        "serial_killer",
+        "persistence",
+        "academy_grad",
+        "early_bird"
+      ],
+      "xp": 875,
+      "level": 9,
+      "completedVideoIds": [
+        "v1",
+        "v2",
+        "v3",
+        "v4",
+        "v5",
+        "v6",
+        "v7",
+        "v8"
+      ],
+      "updatedAt": 1783876413998,
+      "followSpamTimestamps": {
+        "8": [
+          1783643527794
+        ],
+        "1783512630206": [
+          1783617105966
+        ]
+      },
+      "claimedWeeklyQuests": [],
+      "username": "zeynep",
+      "firstName": "Zeynep",
+      "lastName": "Demir"
+    },
+    {
+      "id": 3,
+      "name": "Emre Can",
+      "email": "emre@example.com",
+      "password": "123456",
+      "singlesRating": 3.8,
+      "doublesRating": 3.9,
+      "tags": [
+        "Taktiksel"
+      ],
+      "role": "user",
+      "gender": "male",
+      "city": "İzmir",
+      "birthdate": "1992-03-08",
+      "bio": "Taktik ve doğru yerleşim güce üstün gelir. Bostanlı ve Karsıyaka kortlarındayım.",
+      "avatarUrl": "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&auto=format&fit=crop&q=80",
+      "bannerUrl": "https://images.unsplash.com/photo-1554068865-24cecd4e34b8?w=1200&auto=format&fit=crop&q=80",
+      "accentColor": "#10b981",
+      "paddle": "CRBN 2X Power Series",
+      "favoriteCourt": "İzmir Bostanlı Sahil Kortları",
+      "following": [
+        4,
+        12
+      ],
+      "followers": [
+        4,
+        12
+      ],
+      "notifications": [],
+      "claimedWeeklyQuests": [],
+      "username": "emre",
+      "firstName": "Emre",
+      "lastName": "Can"
+    },
+    {
+      "id": 4,
+      "name": "Burak Tekin",
+      "email": "burak@example.com",
+      "password": "123456",
+      "singlesRating": 4.55,
+      "doublesRating": 4.2,
+      "tags": [
+        "Solak",
+        "Sert Vurucu",
+        "File Önü Uzmanı"
+      ],
+      "role": "user",
+      "gender": "male",
+      "city": "İstanbul",
+      "birthdate": "1985-12-11",
+      "bio": "Pickleball Türkiye Topluluk Yöneticisi & Hakem. Her zaman daha iyiye!",
+      "avatarUrl": "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=400&auto=format&fit=crop&q=80",
+      "bannerUrl": "https://images.unsplash.com/photo-1530549387789-4c1017266635?w=1200&auto=format&fit=crop&q=80",
+      "accentColor": "#f59e0b",
+      "paddle": "Joola Perseus 16mm Ben Johns",
+      "favoriteCourt": "İstanbul Levent Tenis & Pickleball Kulübü",
+      "following": [
+        2,
+        3,
+        7,
+        9
+      ],
+      "followers": [
+        2,
+        3,
+        7,
+        9
+      ],
+      "notifications": [
+        {
+          "id": 1783652817561,
+          "type": "system",
+          "message": "Zeynep Demir bir maç tamamladı! (11 - 0)",
+          "isRead": false,
+          "createdAt": "2026-07-10T03:06:57.557Z"
+        },
+        {
+          "id": 1783652817258,
+          "type": "system",
+          "message": "Zeynep Demir bir maç tamamladı! (11 - 2)",
+          "isRead": false,
+          "createdAt": "2026-07-10T03:06:57.254Z"
+        },
+        {
+          "id": 1783643718016,
+          "type": "system",
+          "message": "Zeynep Demir yeni bir gönderi paylaştı: \"#EkipmanÖnerisi arıyorum @MuratAkso...\"",
+          "postId": 1783643718012,
+          "isRead": false,
+          "createdAt": "2026-07-10T00:35:18.012Z"
+        },
+        {
+          "id": 1783633720621,
+          "type": "system",
+          "message": "Zeynep Demir bir maç tamamladı! (3 - 11)",
+          "isRead": false,
+          "createdAt": "2026-07-09T21:48:40.617Z"
+        },
+        {
+          "id": 1783633720179,
+          "type": "system",
+          "message": "Zeynep Demir bir maç tamamladı! (5 - 11)",
+          "isRead": false,
+          "createdAt": "2026-07-09T21:48:40.175Z"
+        },
+        {
+          "id": 1783633719857,
+          "type": "system",
+          "message": "Zeynep Demir bir maç tamamladı! (6 - 11)",
+          "isRead": false,
+          "createdAt": "2026-07-09T21:48:39.854Z"
+        },
+        {
+          "id": 1783633719503,
+          "type": "system",
+          "message": "Zeynep Demir bir maç tamamladı! (8 - 11)",
+          "isRead": false,
+          "createdAt": "2026-07-09T21:48:39.499Z"
+        },
+        {
+          "id": 1783633719111,
+          "type": "system",
+          "message": "Zeynep Demir bir maç tamamladı! (10 - 12)",
+          "isRead": false,
+          "createdAt": "2026-07-09T21:48:39.107Z"
+        },
+        {
+          "id": 1783617149033,
+          "type": "system",
+          "message": "Zeynep Demir yeni bir gönderi paylaştı: \"Ardayı hüdada 11-0 yendim...\"",
+          "postId": 1783617149029,
+          "isRead": false,
+          "createdAt": "2026-07-09T17:12:29.029Z"
+        },
+        {
+          "id": 1783616872888,
+          "type": "system",
+          "message": "Zeynep Demir bir maç tamamladı! (11 - 4)",
+          "isRead": false,
+          "createdAt": "2026-07-09T17:07:52.884Z"
+        }
+      ],
+      "updatedAt": 1783652817557,
+      "claimedWeeklyQuests": [],
+      "username": "burak",
+      "firstName": "Burak",
+      "lastName": "Tekin"
+    },
+    {
+      "id": 5,
+      "name": "Can Soylu",
+      "email": "can@example.com",
+      "password": "123456",
+      "singlesRating": 2.9,
+      "doublesRating": 3.05,
+      "tags": [
+        "Yeni Başlayan"
+      ],
+      "role": "user",
+      "gender": "male",
+      "city": "Bursa",
+      "birthdate": "2001-07-30",
+      "bio": "Oyunu yeni öğreniyorum, Nilüfer ve Mudanya bölgesinde antrenman partneri aranıyor.",
+      "avatarUrl": "https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?w=400&auto=format&fit=crop&q=80",
+      "bannerUrl": "https://images.unsplash.com/photo-1574629810360-7efbbe195018?w=1200&auto=format&fit=crop&q=80",
+      "accentColor": "#6366f1",
+      "paddle": "Head Radical Elite",
+      "favoriteCourt": "Bursa Nilüfer Spor Kompleksi",
+      "following": [],
+      "followers": [],
+      "notifications": [],
+      "claimedWeeklyQuests": [],
+      "username": "can",
+      "firstName": "Can",
+      "lastName": "Soylu",
+      "followSpamTimestamps": {
+        "1784908832404": [
+          1784909137439
+        ]
+      },
+      "updatedAt": 1784909138884
+    },
+    {
+      "id": 6,
+      "name": "Ayşe Kaya",
+      "email": "ayse@example.com",
+      "password": "123456",
+      "singlesRating": 3.15,
+      "doublesRating": 3.25,
+      "tags": [
+        "Hızlı"
+      ],
+      "role": "user",
+      "gender": "female",
+      "city": "Antalya",
+      "birthdate": "1999-04-14",
+      "bio": "Konyaaltı sahil kortlarında akşam üstü maçları. Çevik ve hızlı oynarım.",
+      "avatarUrl": "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=400&auto=format&fit=crop&q=80",
+      "bannerUrl": "https://images.unsplash.com/photo-1622279457486-62dcc4a431d6?w=1200&auto=format&fit=crop&q=80",
+      "accentColor": "#06b6d4",
+      "paddle": "Engage Pursuit EX 6.0",
+      "favoriteCourt": "Antalya Konyaaltı Beach Park Kortları",
+      "following": [
+        2
+      ],
+      "followers": [
+        2
+      ],
+      "notifications": [
+        {
+          "id": 1783652817563,
+          "type": "system",
+          "message": "Zeynep Demir bir maç tamamladı! (11 - 0)",
+          "isRead": false,
+          "createdAt": "2026-07-10T03:06:57.557Z"
+        },
+        {
+          "id": 1783652817260,
+          "type": "system",
+          "message": "Zeynep Demir bir maç tamamladı! (11 - 2)",
+          "isRead": false,
+          "createdAt": "2026-07-10T03:06:57.254Z"
+        },
+        {
+          "id": 1783643718018,
+          "type": "system",
+          "message": "Zeynep Demir yeni bir gönderi paylaştı: \"#EkipmanÖnerisi arıyorum @MuratAkso...\"",
+          "postId": 1783643718012,
+          "isRead": false,
+          "createdAt": "2026-07-10T00:35:18.012Z"
+        },
+        {
+          "id": 1783633720623,
+          "type": "system",
+          "message": "Zeynep Demir bir maç tamamladı! (3 - 11)",
+          "isRead": false,
+          "createdAt": "2026-07-09T21:48:40.617Z"
+        },
+        {
+          "id": 1783633720181,
+          "type": "system",
+          "message": "Zeynep Demir bir maç tamamladı! (5 - 11)",
+          "isRead": false,
+          "createdAt": "2026-07-09T21:48:40.175Z"
+        },
+        {
+          "id": 1783633719859,
+          "type": "system",
+          "message": "Zeynep Demir bir maç tamamladı! (6 - 11)",
+          "isRead": false,
+          "createdAt": "2026-07-09T21:48:39.854Z"
+        },
+        {
+          "id": 1783633719505,
+          "type": "system",
+          "message": "Zeynep Demir bir maç tamamladı! (8 - 11)",
+          "isRead": false,
+          "createdAt": "2026-07-09T21:48:39.499Z"
+        },
+        {
+          "id": 1783633719113,
+          "type": "system",
+          "message": "Zeynep Demir bir maç tamamladı! (10 - 12)",
+          "isRead": false,
+          "createdAt": "2026-07-09T21:48:39.107Z"
+        },
+        {
+          "id": 1783617149035,
+          "type": "system",
+          "message": "Zeynep Demir yeni bir gönderi paylaştı: \"Ardayı hüdada 11-0 yendim...\"",
+          "postId": 1783617149029,
+          "isRead": false,
+          "createdAt": "2026-07-09T17:12:29.029Z"
+        },
+        {
+          "id": 1783616872890,
+          "type": "system",
+          "message": "Zeynep Demir bir maç tamamladı! (11 - 4)",
+          "isRead": false,
+          "createdAt": "2026-07-09T17:07:52.884Z"
+        }
+      ],
+      "updatedAt": 1783652817557,
+      "claimedWeeklyQuests": [],
+      "username": "ayse",
+      "firstName": "Ayşe",
+      "lastName": "Kaya"
+    },
+    {
+      "id": 7,
+      "name": "Elif Yıldız",
+      "email": "elif@example.com",
+      "password": "123456",
+      "singlesRating": 3.65,
+      "doublesRating": 3.7,
+      "tags": [
+        "Taktiksel",
+        "Dinker"
+      ],
+      "role": "user",
+      "gender": "female",
+      "city": "İstanbul",
+      "birthdate": "1996-08-19",
+      "bio": "Mutfak çizgisinde (Kitchen) drop shot ve dink oyunu en büyük gücüm.",
+      "avatarUrl": "https://images.unsplash.com/photo-1517841905240-472988babdf9?w=400&auto=format&fit=crop&q=80",
+      "bannerUrl": "https://images.unsplash.com/photo-1595435934249-5df7ed86e1c0?w=1200&auto=format&fit=crop&q=80",
+      "accentColor": "#8b5cf6",
+      "paddle": "Selkirk Amped S2",
+      "favoriteCourt": "Beşiktaş Akatlar Kortu",
+      "following": [
+        4,
+        9,
+        10
+      ],
+      "followers": [
+        4,
+        9,
+        10
+      ],
+      "notifications": [],
+      "claimedWeeklyQuests": [],
+      "username": "elif",
+      "firstName": "Elif",
+      "lastName": "Yıldız"
+    },
+    {
+      "id": 8,
+      "name": "Murat Aksoy",
+      "email": "murat@example.com",
+      "password": "123456",
+      "singlesRating": 3.4000000000000012,
+      "doublesRating": 3.5,
+      "tags": [
+        "Çevik",
+        "Servisçi"
+      ],
+      "role": "user",
+      "gender": "male",
+      "city": "İstanbul",
+      "birthdate": "1993-11-04",
+      "bio": "Güçlü servis ve hızlı reaksiyon. Hafta sonu çiftler turnuvalarına hazırım.",
+      "avatarUrl": "https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?w=400&auto=format&fit=crop&q=80",
+      "bannerUrl": "https://images.unsplash.com/photo-1554068865-24cecd4e34b8?w=1200&auto=format&fit=crop&q=80",
+      "accentColor": "#14b8a6",
+      "paddle": "Franklin Pro Champion 16mm",
+      "favoriteCourt": "Kadıköy Kalamış Kortları",
+      "following": [
+        9,
+        2
+      ],
+      "followers": [
+        9,
+        2
+      ],
+      "notifications": [
+        {
+          "id": 1783642978886,
+          "type": "system",
+          "message": "Zeynep Demir seni takip etmeye başladı.",
+          "isRead": true,
+          "createdAt": "2026-07-10T00:22:58.886Z"
+        },
+        {
+          "id": 1783633664008,
+          "type": "system",
+          "message": "🏆 YENİ BAŞARIM: Sosyal Kelebek (+50 XP)",
+          "isRead": true,
+          "createdAt": "2026-07-09T21:47:44.008Z"
+        }
+      ],
+      "unlockedAchievements": [
+        "social_butterfly"
+      ],
+      "xp": 50,
+      "level": 1,
+      "followSpamTimestamps": {
+        "2": [
+          1783642978886
+        ]
+      },
+      "updatedAt": 1783643532243,
+      "appTheme": "dark",
+      "mutedActivityUserIds": [
+        2
+      ],
+      "claimedWeeklyQuests": [],
+      "username": "murat",
+      "firstName": "Murat",
+      "lastName": "Aksoy"
+    },
+    {
+      "id": 9,
+      "name": "Kaan Arslan",
+      "email": "kaan@example.com",
+      "password": "123456",
+      "singlesRating": 4.25,
+      "doublesRating": 4.4,
+      "tags": [
+        "Agresif",
+        "Sert Vurucu"
+      ],
+      "role": "user",
+      "gender": "male",
+      "city": "İstanbul",
+      "birthdate": "1990-06-25",
+      "bio": "Eski tenisçi, 2 yıldır tutkulu pickleball oyuncusu. Hızlı oyunları severim.",
+      "avatarUrl": "https://images.unsplash.com/photo-1492562080023-ab3db95bfbce?w=400&auto=format&fit=crop&q=80",
+      "bannerUrl": "https://images.unsplash.com/photo-1530549387789-4c1017266635?w=1200&auto=format&fit=crop&q=80",
+      "accentColor": "#f97316",
+      "paddle": "Joola Perseus 16mm",
+      "favoriteCourt": "Kadıköy Kalamış Kortları",
+      "following": [
+        4,
+        7,
+        8,
+        10
+      ],
+      "followers": [
+        4,
+        7,
+        8,
+        10
+      ],
+      "notifications": [
+        {
+          "id": 1783633720626,
+          "type": "system",
+          "message": "Murat Aksoy bir maç tamamladı! (3 - 11)",
+          "isRead": false,
+          "createdAt": "2026-07-09T21:48:40.617Z"
+        },
+        {
+          "id": 1783633720184,
+          "type": "system",
+          "message": "Murat Aksoy bir maç tamamladı! (5 - 11)",
+          "isRead": false,
+          "createdAt": "2026-07-09T21:48:40.175Z"
+        },
+        {
+          "id": 1783633719862,
+          "type": "system",
+          "message": "Murat Aksoy bir maç tamamladı! (6 - 11)",
+          "isRead": false,
+          "createdAt": "2026-07-09T21:48:39.854Z"
+        },
+        {
+          "id": 1783633719508,
+          "type": "system",
+          "message": "Murat Aksoy bir maç tamamladı! (8 - 11)",
+          "isRead": false,
+          "createdAt": "2026-07-09T21:48:39.499Z"
+        },
+        {
+          "id": 1783633719116,
+          "type": "system",
+          "message": "Murat Aksoy bir maç tamamladı! (10 - 12)",
+          "isRead": false,
+          "createdAt": "2026-07-09T21:48:39.107Z"
+        }
+      ],
+      "updatedAt": 1783633720617,
+      "claimedWeeklyQuests": [],
+      "username": "kaan",
+      "firstName": "Kaan",
+      "lastName": "Arslan"
+    },
+    {
+      "id": 10,
+      "name": "Deniz Çelik",
+      "email": "deniz@example.com",
+      "password": "123456",
+      "singlesRating": 3.95,
+      "doublesRating": 4.05,
+      "tags": [
+        "Dinker",
+        "Dayanıklı"
+      ],
+      "role": "user",
+      "gender": "female",
+      "city": "İstanbul",
+      "birthdate": "1994-11-12",
+      "bio": "Sabırlı ralli oyuncusu. File önünde taktik mücadeleler favorim.",
+      "avatarUrl": "https://images.unsplash.com/photo-1524504388940-b1c1722653e1?w=400&auto=format&fit=crop&q=80",
+      "bannerUrl": "https://images.unsplash.com/photo-1574629810360-7efbbe195018?w=1200&auto=format&fit=crop&q=80",
+      "accentColor": "#ec4899",
+      "paddle": "Selkirk Vanguard Power Air",
+      "favoriteCourt": "Beşiktaş Akatlar Kortu",
+      "following": [
+        7,
+        9
+      ],
+      "followers": [
+        7,
+        9
+      ],
+      "notifications": [],
+      "claimedWeeklyQuests": [],
+      "username": "deniz",
+      "firstName": "Deniz",
+      "lastName": "Çelik"
+    },
+    {
+      "id": 11,
+      "name": "Selin Şahin",
+      "email": "selin@example.com",
+      "password": "123456",
+      "singlesRating": 3.55,
+      "doublesRating": 3.65,
+      "tags": [
+        "Çevik"
+      ],
+      "role": "user",
+      "gender": "female",
+      "city": "Ankara",
+      "birthdate": "1997-02-18",
+      "bio": "Ankara içi antrenman maçları ve çiftler ligleri için partner arıyorum.",
+      "avatarUrl": "https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e?w=400&auto=format&fit=crop&q=80",
+      "bannerUrl": "https://images.unsplash.com/photo-1622279457486-62dcc4a431d6?w=1200&auto=format&fit=crop&q=80",
+      "accentColor": "#10b981",
+      "paddle": "CRBN 1X Power Series",
+      "favoriteCourt": "Ankara Çankaya Pickleball Park",
+      "following": [
+        2
+      ],
+      "followers": [
+        2
+      ],
+      "notifications": [
+        {
+          "id": 1783652817568,
+          "type": "system",
+          "message": "Zeynep Demir bir maç tamamladı! (11 - 0)",
+          "isRead": false,
+          "createdAt": "2026-07-10T03:06:57.557Z"
+        },
+        {
+          "id": 1783652817265,
+          "type": "system",
+          "message": "Zeynep Demir bir maç tamamladı! (11 - 2)",
+          "isRead": false,
+          "createdAt": "2026-07-10T03:06:57.254Z"
+        },
+        {
+          "id": 1783650502836,
+          "type": "system",
+          "message": "🎁 GÖREV ÖDÜLÜ ALINDI: 👑 SEZON 1 EFSANESİ GRANDMASTER ROZETİ (+1000 XP)",
+          "isRead": false,
+          "createdAt": "2026-07-10T02:28:22.836Z"
+        },
+        {
+          "id": 1783650501164,
+          "type": "system",
+          "message": "🎁 GÖREV ÖDÜLÜ ALINDI: TRPickle DUPR Öncüsü (+400 XP)",
+          "isRead": false,
+          "createdAt": "2026-07-10T02:28:21.164Z"
+        },
+        {
+          "id": 1783650500395,
+          "type": "system",
+          "message": "🎁 GÖREV ÖDÜLÜ ALINDI: Sosyal Kort Tribünü (+200 XP)",
+          "isRead": false,
+          "createdAt": "2026-07-10T02:28:20.395Z"
+        },
+        {
+          "id": 1783650498580,
+          "type": "system",
+          "message": "🎁 GÖREV ÖDÜLÜ ALINDI: Çiftler Uyum Sahası (+250 XP)",
+          "isRead": false,
+          "createdAt": "2026-07-10T02:28:18.580Z"
+        },
+        {
+          "id": 1783650497811,
+          "type": "system",
+          "message": "🎁 GÖREV ÖDÜLÜ ALINDI: Pickleball Akademisyeni (+300 XP)",
+          "isRead": false,
+          "createdAt": "2026-07-10T02:28:17.811Z"
+        },
+        {
+          "id": 1783650495787,
+          "type": "system",
+          "message": "🎁 GÖREV ÖDÜLÜ ALINDI: Kort Kâşifi & Radar Üstü (+200 XP)",
+          "isRead": false,
+          "createdAt": "2026-07-10T02:28:15.787Z"
+        },
+        {
+          "id": 1783650494793,
+          "type": "system",
+          "message": "🎁 GÖREV ÖDÜLÜ ALINDI: İlk Kan & Kort Tozu (+250 XP)",
+          "isRead": false,
+          "createdAt": "2026-07-10T02:28:14.793Z"
+        },
+        {
+          "id": 1783650399422,
+          "type": "system",
+          "message": "🎁 GÖREV ÖDÜLÜ ALINDI: Haftanın Trend Oyuncuları (+90 XP)",
+          "isRead": false,
+          "createdAt": "2026-07-10T02:26:39.422Z"
+        },
+        {
+          "id": 1783650398496,
+          "type": "system",
+          "message": "🎁 GÖREV ÖDÜLÜ ALINDI: Hafta Sonu Maratonu (+160 XP)",
+          "isRead": false,
+          "createdAt": "2026-07-10T02:26:38.496Z"
+        },
+        {
+          "id": 1783650391772,
+          "type": "system",
+          "message": "🎁 GÖREV ÖDÜLÜ ALINDI: Oyuncu Ağı Bağlantısı (+80 XP)",
+          "isRead": false,
+          "createdAt": "2026-07-10T02:26:31.772Z"
+        },
+        {
+          "id": 1783650369807,
+          "type": "system",
+          "message": "🎁 GÖREV ÖDÜLÜ ALINDI: Rövanş Ateşi (+150 XP)",
+          "isRead": false,
+          "createdAt": "2026-07-10T02:26:09.807Z"
+        },
+        {
+          "id": 1783648190124,
+          "type": "system",
+          "message": "🎁 HAFTALIK GÖREV TAMAMLANDI: HAFTALIK MEGA SEZON SANDIĞI (+300 XP)",
+          "isRead": false,
+          "createdAt": "2026-07-10T01:49:50.124Z"
+        },
+        {
+          "id": 1783648163282,
+          "type": "system",
+          "message": "🎁 HAFTALIK GÖREV TAMAMLANDI: Kort Kâşifi (+125 XP)",
+          "isRead": false,
+          "createdAt": "2026-07-10T01:49:23.282Z"
+        },
+        {
+          "id": 1783648160757,
+          "type": "system",
+          "message": "🎁 HAFTALIK GÖREV TAMAMLANDI: Topluluk Ateşi (+75 XP)",
+          "isRead": false,
+          "createdAt": "2026-07-10T01:49:20.757Z"
+        },
+        {
+          "id": 1783648158550,
+          "type": "system",
+          "message": "🎁 HAFTALIK GÖREV TAMAMLANDI: Akademi Bilgesi (+100 XP)",
+          "isRead": false,
+          "createdAt": "2026-07-10T01:49:18.550Z"
+        },
+        {
+          "id": 1783648156710,
+          "type": "system",
+          "message": "🎁 HAFTALIK GÖREV TAMAMLANDI: Sahaların Efendisi (+150 XP)",
+          "isRead": false,
+          "createdAt": "2026-07-10T01:49:16.710Z"
+        },
+        {
+          "id": 1783643718023,
+          "type": "system",
+          "message": "Zeynep Demir yeni bir gönderi paylaştı: \"#EkipmanÖnerisi arıyorum @MuratAkso...\"",
+          "postId": 1783643718012,
+          "isRead": true,
+          "createdAt": "2026-07-10T00:35:18.012Z"
+        },
+        {
+          "id": 1783633720628,
+          "type": "system",
+          "message": "Zeynep Demir bir maç tamamladı! (3 - 11)",
+          "isRead": true,
+          "createdAt": "2026-07-09T21:48:40.617Z"
+        },
+        {
+          "id": 1783633720186,
+          "type": "system",
+          "message": "Zeynep Demir bir maç tamamladı! (5 - 11)",
+          "isRead": true,
+          "createdAt": "2026-07-09T21:48:40.175Z"
+        },
+        {
+          "id": 1783633719864,
+          "type": "system",
+          "message": "Zeynep Demir bir maç tamamladı! (6 - 11)",
+          "isRead": true,
+          "createdAt": "2026-07-09T21:48:39.854Z"
+        },
+        {
+          "id": 1783633719510,
+          "type": "system",
+          "message": "Zeynep Demir bir maç tamamladı! (8 - 11)",
+          "isRead": true,
+          "createdAt": "2026-07-09T21:48:39.499Z"
+        },
+        {
+          "id": 1783633719118,
+          "type": "system",
+          "message": "Zeynep Demir bir maç tamamladı! (10 - 12)",
+          "isRead": true,
+          "createdAt": "2026-07-09T21:48:39.107Z"
+        },
+        {
+          "id": 1783617149040,
+          "type": "system",
+          "message": "Zeynep Demir yeni bir gönderi paylaştı: \"Ardayı hüdada 11-0 yendim...\"",
+          "postId": 1783617149029,
+          "isRead": true,
+          "createdAt": "2026-07-09T17:12:29.029Z"
+        },
+        {
+          "id": 1783616872895,
+          "type": "system",
+          "message": "Zeynep Demir bir maç tamamladı! (11 - 4)",
+          "isRead": true,
+          "createdAt": "2026-07-09T17:07:52.884Z"
+        },
+        {
+          "id": 1783513327435,
+          "type": "system",
+          "message": "Said Şahin seni takip etmeye başladı.",
+          "isRead": true,
+          "createdAt": "2026-07-08T12:22:07.435Z"
+        }
+      ],
+      "updatedAt": 1783652817557,
+      "claimedWeeklyQuests": [
+        "weekly-q1-match",
+        "weekly-q2-academy",
+        "weekly-q3-social",
+        "weekly-q4-court",
+        "weekly-mega-chest",
+        "wq-match-7",
+        "wq-soc-7",
+        "wq-match-5",
+        "wq-soc-4",
+        "s1-q1-first-blood",
+        "s1-q2-court-explorer",
+        "s1-q3-academy-master",
+        "s1-q4-partner-sync",
+        "s1-q5-social-spark",
+        "s1-q6-dupr-pioneer",
+        "season1-mega-chest"
+      ],
+      "xp": 3830,
+      "level": 10,
+      "username": "selin",
+      "firstName": "Selin",
+      "lastName": "Şahin"
+    },
+    {
+      "id": 12,
+      "name": "Barış Koç",
+      "email": "baris@example.com",
+      "password": "123456",
+      "singlesRating": 4.4,
+      "doublesRating": 4.3,
+      "tags": [
+        "Sert Vurucu",
+        "Taktiksel"
+      ],
+      "role": "user",
+      "gender": "male",
+      "city": "İzmir",
+      "birthdate": "1988-09-03",
+      "bio": "İzmir Pickleball Kulübü oyuncusu. 4.0+ seviye oyuncularla maç yapmaktan keyif alıyorum.",
+      "avatarUrl": "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=400&auto=format&fit=crop&q=80",
+      "bannerUrl": "https://images.unsplash.com/photo-1595435934249-5df7ed86e1c0?w=1200&auto=format&fit=crop&q=80",
+      "accentColor": "#3b82f6",
+      "paddle": "Gearbox Pro Power Elongated",
+      "favoriteCourt": "İzmir Bostanlı Sahil Kortları",
+      "following": [
+        3
+      ],
+      "followers": [
+        3
+      ],
+      "notifications": [],
+      "claimedWeeklyQuests": [],
+      "username": "baris",
+      "firstName": "Barış",
+      "lastName": "Koç"
+    },
+    {
+      "id": 1783512504532,
+      "name": "Nunvera ŞAHİN",
+      "email": "sahinnunvera@gmail.com",
+      "password": "nunvera280",
+      "singlesRating": 3,
+      "doublesRating": 3,
+      "tags": [
+        "Yeni Oyuncu",
+        "Oyuncu"
+      ],
+      "role": "user",
+      "city": "Kastamonu",
+      "gender": "female",
+      "birthdate": "2013-07-10",
+      "followers": [],
+      "following": [],
+      "bio": "Pickleball oynamayı ve yeni partnerlerle tanışmayı seviyorum!",
+      "notifications": [
+        {
+          "id": 1783876414013,
+          "type": "system",
+          "message": "Said Şahin yeni bir gönderi paylaştı: \"Bü...\"",
+          "postId": 1783876413998,
+          "isRead": false,
+          "createdAt": "2026-07-12T17:13:33.998Z"
+        },
+        {
+          "id": 1783687850497,
+          "type": "system",
+          "message": "Said Şahin yeni bir gönderi paylaştı: \"elektirkli...\"",
+          "postId": 1783687850482,
+          "isRead": false,
+          "createdAt": "2026-07-10T12:50:50.482Z"
+        },
+        {
+          "id": 1783687500003,
+          "type": "system",
+          "message": "Said Şahin yeni bir gönderi paylaştı: \"alevli olması lazım bunun bu ne amk...\"",
+          "postId": 1783687499988,
+          "isRead": false,
+          "createdAt": "2026-07-10T12:44:59.988Z"
+        },
+        {
+          "id": 1783687480928,
+          "type": "system",
+          "message": "Said Şahin yeni bir gönderi paylaştı: \"yine mi kötü\n...\"",
+          "postId": 1783687480913,
+          "isRead": false,
+          "createdAt": "2026-07-10T12:44:40.913Z"
+        },
+        {
+          "id": 1783686690188,
+          "type": "system",
+          "message": "Said Şahin yeni bir gönderi paylaştı: \"kupalı...\"",
+          "postId": 1783686690173,
+          "isRead": false,
+          "createdAt": "2026-07-10T12:31:30.173Z"
+        },
+        {
+          "id": 1783686660496,
+          "type": "system",
+          "message": "Said Şahin yeni bir gönderi paylaştı: \"freshh...\"",
+          "postId": 1783686660481,
+          "isRead": false,
+          "createdAt": "2026-07-10T12:31:00.481Z"
+        },
+        {
+          "id": 1783686634241,
+          "type": "system",
+          "message": "Said Şahin yeni bir gönderi paylaştı: \"Günaydın...\"",
+          "postId": 1783686634226,
+          "isRead": false,
+          "createdAt": "2026-07-10T12:30:34.227Z"
+        },
+        {
+          "id": 1783684076683,
+          "type": "system",
+          "message": "Said Şahin yeni bir gönderi paylaştı: \"38 seviye oldum...\"",
+          "postId": 1783684076668,
+          "isRead": false,
+          "createdAt": "2026-07-10T11:47:56.668Z"
+        },
+        {
+          "id": 1783652817572,
+          "type": "system",
+          "message": "Said Şahin bir maç tamamladı! (11 - 0)",
+          "isRead": false,
+          "createdAt": "2026-07-10T03:06:57.557Z"
+        },
+        {
+          "id": 1783652817269,
+          "type": "system",
+          "message": "Said Şahin bir maç tamamladı! (11 - 2)",
+          "isRead": false,
+          "createdAt": "2026-07-10T03:06:57.254Z"
+        },
+        {
+          "id": 1783616872899,
+          "type": "system",
+          "message": "Said Şahin bir maç tamamladı! (11 - 4)",
+          "isRead": false,
+          "createdAt": "2026-07-09T17:07:52.884Z"
+        },
+        {
+          "id": 1783514818066,
+          "type": "system",
+          "message": "Said Sahin seni takip etmeye başladı.",
+          "isRead": false,
+          "createdAt": "2026-07-08T12:46:58.066Z"
+        }
+      ],
+      "updatedAt": 1783876413998,
+      "claimedWeeklyQuests": []
+    },
+    {
+      "id": 1783521843276,
+      "name": "frsef fsefe",
+      "email": "admin@trpickle.com",
+      "password": "said2580",
+      "singlesRating": 3,
+      "doublesRating": 3,
+      "tags": [
+        "Yeni Oyuncu",
+        "Oyuncu"
+      ],
+      "role": "user",
+      "city": "İstanbul",
+      "gender": "male",
+      "birthdate": "1996-05-15",
+      "followers": [],
+      "following": [],
+      "bio": "Pickleball oynamayı ve yeni partnerlerle tanışmayı seviyorum!",
+      "notifications": [],
+      "claimedWeeklyQuests": []
+    },
+    {
+      "id": 99,
+      "name": "TRPickle Ana Yöneticisi (Admin)",
+      "email": "admin@trpickle.com",
+      "password": "admin",
+      "singlesRating": 5,
+      "doublesRating": 5,
+      "tags": [
+        "Yönetici",
+        "Sistem Denetimi"
+      ],
+      "role": "admin",
+      "gender": "male",
+      "city": "İstanbul",
+      "birthdate": "1990-01-01",
+      "bio": "TRPickle.com Resmî Sistem ve Moderasyon Yöneticisi. Platformun tüm ince ayrıntılarını ve kort başvurularını denetleme yetkisine sahiptir.",
+      "avatarUrl": "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=400&auto=format&fit=crop&q=80",
+      "bannerUrl": "https://images.unsplash.com/photo-1622279457486-62dcc4a431d6?w=1200&auto=format&fit=crop&q=80",
+      "accentColor": "#10b981",
+      "paddle": "TRPickle Official Carbon 16mm",
+      "favoriteCourt": "Caddebostan Sahil Kortları",
+      "following": [
+        2
+      ],
+      "followers": [
+        2
+      ],
+      "notifications": [
+        {
+          "id": 1783652817557,
+          "type": "system",
+          "message": "Zeynep Demir bir maç tamamladı! (11 - 0)",
+          "isRead": true,
+          "createdAt": "2026-07-10T03:06:57.557Z"
+        },
+        {
+          "id": 1783652817254,
+          "type": "system",
+          "message": "Zeynep Demir bir maç tamamladı! (11 - 2)",
+          "isRead": true,
+          "createdAt": "2026-07-10T03:06:57.254Z"
+        },
+        {
+          "id": 1783643718012,
+          "type": "system",
+          "message": "Zeynep Demir yeni bir gönderi paylaştı: \"#EkipmanÖnerisi arıyorum @MuratAkso...\"",
+          "postId": 1783643718012,
+          "isRead": true,
+          "createdAt": "2026-07-10T00:35:18.012Z"
+        },
+        {
+          "id": 1783633720617,
+          "type": "system",
+          "message": "Zeynep Demir bir maç tamamladı! (3 - 11)",
+          "isRead": true,
+          "createdAt": "2026-07-09T21:48:40.617Z"
+        },
+        {
+          "id": 1783633720175,
+          "type": "system",
+          "message": "Zeynep Demir bir maç tamamladı! (5 - 11)",
+          "isRead": true,
+          "createdAt": "2026-07-09T21:48:40.175Z"
+        },
+        {
+          "id": 1783633719853,
+          "type": "system",
+          "message": "Zeynep Demir bir maç tamamladı! (6 - 11)",
+          "isRead": true,
+          "createdAt": "2026-07-09T21:48:39.854Z"
+        },
+        {
+          "id": 1783633719499,
+          "type": "system",
+          "message": "Zeynep Demir bir maç tamamladı! (8 - 11)",
+          "isRead": true,
+          "createdAt": "2026-07-09T21:48:39.499Z"
+        },
+        {
+          "id": 1783633719107,
+          "type": "system",
+          "message": "Zeynep Demir bir maç tamamladı! (10 - 12)",
+          "isRead": true,
+          "createdAt": "2026-07-09T21:48:39.107Z"
+        },
+        {
+          "id": 1783617149029,
+          "type": "system",
+          "message": "Zeynep Demir yeni bir gönderi paylaştı: \"Ardayı hüdada 11-0 yendim...\"",
+          "postId": 1783617149029,
+          "isRead": true,
+          "createdAt": "2026-07-09T17:12:29.029Z"
+        },
+        {
+          "id": 1783616872884,
+          "type": "system",
+          "message": "Zeynep Demir bir maç tamamladı! (11 - 4)",
+          "isRead": true,
+          "createdAt": "2026-07-09T17:07:52.884Z"
+        }
+      ],
+      "appTheme": "dark",
+      "updatedAt": 1783652817557,
+      "claimedWeeklyQuests": [],
+      "username": "admin",
+      "firstName": "TRPickle Ana Yöneticisi",
+      "lastName": "(Admin)"
+    },
+    {
+      "id": 1783531627143,
+      "name": "sıfır hesap",
+      "email": "hesap@gmail.com",
+      "password": "önemsizşifre123",
+      "singlesRating": 3.5,
+      "doublesRating": 3.5,
+      "tags": [
+        "Yeni Oyuncu",
+        "Oyuncu"
+      ],
+      "role": "user",
+      "city": "Bursa",
+      "gender": "male",
+      "birthdate": "1996-05-15",
+      "followers": [],
+      "following": [],
+      "bio": "Pickleball oynamayı ve yeni partnerlerle tanışmayı seviyorum!",
+      "notifications": [],
+      "appTheme": "system",
+      "claimedWeeklyQuests": []
+    },
+    {
+      "id": 1784896310285,
+      "name": "said şahin",
+      "email": "msaidsahin@gmail.com",
+      "password": "said2580",
+      "singlesRating": 3.5,
+      "doublesRating": 3.5,
+      "tags": [
+        "Yeni Oyuncu",
+        "Oyuncu"
+      ],
+      "role": "user",
+      "city": "İstanbul",
+      "gender": "male",
+      "birthdate": "2010-07-05",
+      "followers": [
+        1784904351618
+      ],
+      "following": [],
+      "bio": "Pickleball oynamayı ve yeni partnerlerle tanışmayı seviyorum!",
+      "notifications": [
+        {
+          "id": 1784909822670,
+          "type": "system",
+          "message": "said sahin seni takip etmeye başladı.",
+          "isRead": false,
+          "createdAt": "2026-07-24T16:17:02.670Z"
+        },
+        {
+          "id": 1784908410395,
+          "type": "system",
+          "message": "said sahinn seni takip etmeye başladı.",
+          "isRead": false,
+          "createdAt": "2026-07-24T15:53:30.395Z"
+        },
+        {
+          "id": 1784908396673,
+          "type": "system",
+          "message": "said şahin seni takip etmeye başladı.",
+          "isRead": false,
+          "createdAt": "2026-07-24T15:53:16.673Z"
+        },
+        {
+          "id": 1784903960284,
+          "type": "system",
+          "message": "Said Şahin seni takip etmeye başladı.",
+          "isRead": false,
+          "createdAt": "2026-07-24T14:39:20.284Z"
+        }
+      ],
+      "claimedWeeklyQuests": [],
+      "followSpamTimestamps": {
+        "1784900471698": [
+          1784903960284
+        ],
+        "1784907338892": [
+          1784908396673
+        ],
+        "1784904351618": [
+          1784908406810,
+          1784908410395
+        ],
+        "1784908832404": [
+          1784909822670
+        ]
+      },
+      "updatedAt": 1784909822670
+    },
+    {
+      "id": 1784904351618,
+      "username": "saidsahinn",
+      "firstName": "said",
+      "lastName": "sahinn",
+      "name": "said sahinn",
+      "email": "msaidsahin23@gmail.com",
+      "password": "said2580",
+      "singlesRating": 2.7,
+      "doublesRating": 2.5,
+      "tags": [
+        "Yeni Oyuncu",
+        "Oyuncu"
+      ],
+      "role": "user",
+      "city": "İstanbul",
+      "gender": "male",
+      "birthdate": "2010-07-05",
+      "followers": [],
+      "following": [
+        1784896310285
+      ],
+      "bio": "Pickleball oynamayı ve yeni partnerlerle tanışmayı seviyorum!",
+      "notifications": [
+        {
+          "id": 1784909822336,
+          "type": "system",
+          "message": "said sahin seni takip etmeye başladı.",
+          "isRead": false,
+          "createdAt": "2026-07-24T16:17:02.336Z"
+        },
+        {
+          "id": 1784909663917,
+          "type": "system",
+          "message": "🏆 YENİ BAŞARIM: İlk Galibiyet (+75 XP)",
+          "isRead": false,
+          "createdAt": "2026-07-24T16:14:23.917Z"
+        },
+        {
+          "id": 1784909663917,
+          "type": "system",
+          "message": "🏆 YENİ BAŞARIM: Korta İlk Adım (+50 XP)",
+          "isRead": false,
+          "createdAt": "2026-07-24T16:14:23.917Z"
+        },
+        {
+          "id": 1784908397060,
+          "type": "system",
+          "message": "said şahin seni takip etmeye başladı.",
+          "isRead": true,
+          "createdAt": "2026-07-24T15:53:17.060Z"
+        }
+      ],
+      "appTheme": "dark",
+      "followSpamTimestamps": {
+        "1784907338892": [
+          1784908397060
+        ],
+        "1784908832404": [
+          1784909822336
+        ]
+      },
+      "updatedAt": 1784909827600,
+      "unlockedAchievements": [
+        "first_match",
+        "first_win"
+      ],
+      "xp": 125,
+      "level": 2,
+      "claimedWeeklyQuests": []
+    },
+    {
+      "id": 1784913404206,
+      "username": "yasa",
+      "firstName": "yayaya",
+      "lastName": "sasasa",
+      "name": "yayaya sasasa",
+      "email": "msaidsahin2232323@gmail.com",
+      "password": "said2580",
+      "singlesRating": 2.5,
+      "doublesRating": 2.5,
+      "tags": [
+        "Yeni Oyuncu",
+        "Oyuncu"
+      ],
+      "role": "user",
+      "city": "Bursa",
+      "gender": "male",
+      "birthdate": "2010-07-05",
+      "followers": [],
+      "following": [],
+      "bio": "Pickleball oynamayı ve yeni partnerlerle tanışmayı seviyorum!",
+      "notifications": [
+        {
+          "id": 1784913699139,
+          "type": "system",
+          "message": "🎁 GÖREV ÖDÜLÜ ALINDI: TRPickle DUPR Öncüsü (+400 XP)",
+          "isRead": true,
+          "createdAt": "2026-07-24T17:21:39.139Z"
+        },
+        {
+          "id": 1784913698079,
+          "type": "system",
+          "message": "🎁 GÖREV ÖDÜLÜ ALINDI: Sosyal Kort Tribünü (+200 XP)",
+          "isRead": true,
+          "createdAt": "2026-07-24T17:21:38.079Z"
+        }
+      ],
+      "claimedWeeklyQuests": [
+        "s1-q5-social-spark",
+        "s1-q6-dupr-pioneer"
+      ],
+      "unlockedAchievements": [],
+      "xp": 600,
+      "level": 7
+    },
+    {
+      "id": 1,
+      "username": "ahmet",
+      "firstName": "Ahmet",
+      "lastName": "Yılmaz",
+      "name": "Ahmet Yılmaz",
+      "email": "ahmet@example.com",
+      "password": "123456",
+      "singlesRating": 3.25,
+      "doublesRating": 3.1,
+      "tags": [
+        "Defansif",
+        "Dayanıklı"
+      ],
+      "role": "user",
+      "gender": "male",
+      "city": "İstanbul",
+      "birthdate": "1995-05-15",
+      "bio": "Defans oyuncusu. Uzun rallileri severim, hafta sonları Kadıköy Kalamış kortlarında oynuyorum.",
+      "avatarUrl": "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=400&auto=format&fit=crop&q=80",
+      "bannerUrl": "https://images.unsplash.com/photo-1622279457486-62dcc4a431d6?w=1200&auto=format&fit=crop&q=80",
+      "accentColor": "#3b82f6",
+      "paddle": "Joola Ben Johns Hyperion CFS 16",
+      "favoriteCourt": "Kadıköy Kalamış Kortları",
+      "following": [
+        2,
+        4,
+        7,
+        9
+      ],
+      "followers": [
+        2,
+        4,
+        7,
+        9
+      ],
+      "claimedWeeklyQuests": [],
+      "notifications": []
+    }
+  ],
+  "matches": [
+    {
+      "id": 1783616842215,
+      "date": "2026-07-09T17:07:22.215Z",
+      "matchFormat": "singles",
+      "team1": [
+        1783512630206
+      ],
+      "team2": [
+        2
+      ],
+      "team1Score": 11,
+      "team2Score": 4,
+      "eloChange": {
+        "team1Change": 0.1,
+        "team2Change": -0.1,
+        "team1Changes": [
+          0.1
+        ],
+        "team2Changes": [
+          -0.1
+        ]
+      },
+      "status": "approved",
+      "submittedBy": "Said Şahin",
+      "approvedBy": [
+        "Said Şahin",
+        "Zeynep Demir"
+      ],
+      "location": "Hüdavendigar Kent Parkı",
+      "eventName": "ŞŞAL PİCKLEBALL 2026",
+      "team1Elo": [
+        3
+      ],
+      "team2Elo": [
+        4.1
+      ]
+    },
+    {
+      "id": 1783633664008,
+      "date": "2026-07-09T21:47:44.007Z",
+      "matchFormat": "singles",
+      "team1": [
+        8
+      ],
+      "team2": [
+        2
+      ],
+      "team1Score": 3,
+      "team2Score": 11,
+      "eloChange": {
+        "team1Change": -0.01,
+        "team2Change": 0.01,
+        "team1Changes": [
+          -0.01
+        ],
+        "team2Changes": [
+          0.01
+        ]
+      },
+      "status": "approved",
+      "submittedBy": "Murat Aksoy",
+      "approvedBy": [
+        "Murat Aksoy",
+        "Zeynep Demir"
+      ],
+      "team1Elo": [
+        3.410000000000001
+      ],
+      "team2Elo": [
+        4.039999999999999
+      ]
+    },
+    {
+      "id": 1783633679422,
+      "date": "2026-07-09T21:47:59.422Z",
+      "matchFormat": "singles",
+      "team1": [
+        8
+      ],
+      "team2": [
+        2
+      ],
+      "team1Score": 5,
+      "team2Score": 11,
+      "eloChange": {
+        "team1Change": -0.01,
+        "team2Change": 0.01,
+        "team1Changes": [
+          -0.01
+        ],
+        "team2Changes": [
+          0.01
+        ]
+      },
+      "status": "approved",
+      "submittedBy": "Murat Aksoy",
+      "approvedBy": [
+        "Murat Aksoy",
+        "Zeynep Demir"
+      ],
+      "team1Elo": [
+        3.420000000000001
+      ],
+      "team2Elo": [
+        4.029999999999999
+      ]
+    },
+    {
+      "id": 1783633691165,
+      "date": "2026-07-09T21:48:11.165Z",
+      "matchFormat": "singles",
+      "team1": [
+        8
+      ],
+      "team2": [
+        2
+      ],
+      "team1Score": 6,
+      "team2Score": 11,
+      "eloChange": {
+        "team1Change": -0.01,
+        "team2Change": 0.01,
+        "team1Changes": [
+          -0.01
+        ],
+        "team2Changes": [
+          0.01
+        ]
+      },
+      "status": "approved",
+      "submittedBy": "Murat Aksoy",
+      "approvedBy": [
+        "Murat Aksoy",
+        "Zeynep Demir"
+      ],
+      "team1Elo": [
+        3.4300000000000006
+      ],
+      "team2Elo": [
+        4.02
+      ]
+    },
+    {
+      "id": 1783633700207,
+      "date": "2026-07-09T21:48:20.207Z",
+      "matchFormat": "singles",
+      "team1": [
+        8
+      ],
+      "team2": [
+        2
+      ],
+      "team1Score": 8,
+      "team2Score": 11,
+      "eloChange": {
+        "team1Change": -0.01,
+        "team2Change": 0.01,
+        "team1Changes": [
+          -0.01
+        ],
+        "team2Changes": [
+          0.01
+        ]
+      },
+      "status": "approved",
+      "submittedBy": "Murat Aksoy",
+      "approvedBy": [
+        "Murat Aksoy",
+        "Zeynep Demir"
+      ],
+      "team1Elo": [
+        3.4400000000000004
+      ],
+      "team2Elo": [
+        4.01
+      ]
+    },
+    {
+      "id": 1783633712853,
+      "date": "2026-07-09T21:48:32.853Z",
+      "matchFormat": "singles",
+      "team1": [
+        8
+      ],
+      "team2": [
+        2
+      ],
+      "team1Score": 10,
+      "team2Score": 12,
+      "eloChange": {
+        "team1Change": -0.01,
+        "team2Change": 0.01,
+        "team1Changes": [
+          -0.01
+        ],
+        "team2Changes": [
+          0.01
+        ]
+      },
+      "status": "approved",
+      "submittedBy": "Murat Aksoy",
+      "approvedBy": [
+        "Murat Aksoy",
+        "Zeynep Demir"
+      ],
+      "team1Elo": [
+        3.45
+      ],
+      "team2Elo": [
+        3.9999999999999996
+      ]
+    },
+    {
+      "id": 1783652783959,
+      "date": "2026-07-10T03:06:23.959Z",
+      "matchFormat": "singles",
+      "team1": [
+        1783512630206
+      ],
+      "team2": [
+        2
+      ],
+      "team1Score": 11,
+      "team2Score": 0,
+      "eloChange": {
+        "team1Change": 0.1,
+        "team2Change": -0.1,
+        "team1Changes": [
+          0.1
+        ],
+        "team2Changes": [
+          -0.1
+        ]
+      },
+      "status": "approved",
+      "submittedBy": "Said Şahin",
+      "approvedBy": [
+        "Said Şahin",
+        "Zeynep Demir"
+      ],
+      "location": "Hüdavendigar Spor Tesisleri (Bursa)",
+      "team1Elo": [
+        3.2
+      ],
+      "team2Elo": [
+        3.949999999999999
+      ]
+    },
+    {
+      "id": 1783652807096,
+      "date": "2026-07-10T03:06:47.096Z",
+      "matchFormat": "singles",
+      "team1": [
+        1783512630206
+      ],
+      "team2": [
+        2
+      ],
+      "team1Score": 11,
+      "team2Score": 2,
+      "eloChange": {
+        "team1Change": 0.1,
+        "team2Change": -0.1,
+        "team1Changes": [
+          0.1
+        ],
+        "team2Changes": [
+          -0.1
+        ]
+      },
+      "status": "approved",
+      "submittedBy": "Said Şahin",
+      "approvedBy": [
+        "Said Şahin",
+        "Zeynep Demir"
+      ],
+      "location": "Hüdavendigar Spor Tesisleri (Bursa)",
+      "team1Elo": [
+        3.1
+      ],
+      "team2Elo": [
+        4.049999999999999
+      ]
+    },
+    {
+      "id": 1784908257365,
+      "date": "2026-07-24T15:50:57.365Z",
+      "matchFormat": "singles",
+      "team1": [
+        1784904351618
+      ],
+      "team2": [
+        1784907338892
+      ],
+      "team1Score": 11,
+      "team2Score": 3,
+      "eloChange": {
+        "team1Change": 0.1,
+        "team2Change": -0.1,
+        "team1Changes": [
+          0.1
+        ],
+        "team2Changes": [
+          -0.1
+        ]
+      },
+      "status": "approved",
+      "submittedBy": "said sahinn",
+      "approvedBy": [
+        "said sahinn",
+        "said şahin"
+      ],
+      "location": "bilmemne parkı pickleball kortu",
+      "team1Elo": [
+        2.5
+      ],
+      "team2Elo": [
+        2.5
+      ]
+    },
+    {
+      "id": 1784909663916,
+      "date": "2026-07-24T16:14:23.916Z",
+      "matchFormat": "singles",
+      "team1": [
+        1784904351618
+      ],
+      "team2": [
+        1784908832404
+      ],
+      "team1Score": 11,
+      "team2Score": 4,
+      "eloChange": {
+        "team1Change": 0.1,
+        "team2Change": -0.1,
+        "team1Changes": [
+          0.1
+        ],
+        "team2Changes": [
+          -0.1
+        ]
+      },
+      "status": "approved",
+      "submittedBy": "said sahinn",
+      "approvedBy": [
+        "said sahinn",
+        "said sahin"
+      ],
+      "location": "Hüdavendigar Spor Tesisleri (Bursa)",
+      "team1Elo": [
+        2.6
+      ],
+      "team2Elo": [
+        2.5
+      ]
+    }
+  ],
+  "directMessages": [
+    {
+      "id": "dm-1783643551523-sth70",
+      "senderId": 8,
+      "receiverId": 2,
+      "content": "merhabaaaaa hanimefendi kardiyo yapabilir miyiz",
+      "createdAt": "2026-07-10T00:32:31.523Z",
+      "isRead": true
+    },
+    {
+      "id": "dm-1783643571154-r89rz",
+      "senderId": 2,
+      "receiverId": 8,
+      "content": "git beeee SAPIKK",
+      "createdAt": "2026-07-10T00:32:51.154Z",
+      "isRead": false
+    }
+  ],
+  "lastUpdated": 1784929994182
+}

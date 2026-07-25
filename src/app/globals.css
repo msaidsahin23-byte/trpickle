@@ -1,0 +1,118 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+  background-color: #f1f5f9;
+  background-image: radial-gradient(at 0% 0%, hsla(82, 98%, 64%, 0.15) 0px, transparent 50%),
+                    radial-gradient(at 100% 100%, hsla(199, 89%, 48%, 0.1) 0px, transparent 50%);
+  background-attachment: fixed;
+  color: #0f172a;
+  min-height: 100vh;
+}
+
+/* =========================================================
+   ELITE DYNAMIC POST PERFORMANCE AURA KEYFRAMES & EFFECTS
+   ========================================================= */
+
+@keyframes flameDance {
+  0%, 100% {
+    transform: translateY(0) scaleY(1) rotate(-1deg);
+    opacity: 0.85;
+    filter: drop-shadow(0 0 12px rgba(249, 115, 22, 0.8));
+  }
+  33% {
+    transform: translateY(-6px) scaleY(1.15) rotate(2deg);
+    opacity: 1;
+    filter: drop-shadow(0 0 20px rgba(239, 68, 68, 0.95));
+  }
+  66% {
+    transform: translateY(-3px) scaleY(1.08) rotate(-2deg);
+    opacity: 0.9;
+    filter: drop-shadow(0 0 16px rgba(245, 158, 11, 0.9));
+  }
+}
+
+@keyframes emberRise {
+  0% {
+    transform: translateY(100%) scale(0.6) rotate(0deg);
+    opacity: 0;
+  }
+  20% {
+    opacity: 1;
+  }
+  80% {
+    opacity: 0.8;
+  }
+  100% {
+    transform: translateY(-160px) scale(1.3) rotate(360deg);
+    opacity: 0;
+  }
+}
+
+@keyframes frostFreeze {
+  0% {
+    opacity: 0.4;
+    transform: scale(0.96);
+    filter: drop-shadow(0 0 10px rgba(6, 182, 212, 0.4));
+  }
+  50% {
+    opacity: 0.95;
+    transform: scale(1.02);
+    filter: drop-shadow(0 0 25px rgba(186, 230, 253, 0.9));
+  }
+  100% {
+    opacity: 0.75;
+    transform: scale(1);
+    filter: drop-shadow(0 0 18px rgba(6, 182, 212, 0.65));
+  }
+}
+
+@keyframes lightningArc {
+  0%, 90%, 100% {
+    opacity: 0.25;
+    transform: scaleX(0.98);
+  }
+  92% {
+    opacity: 1;
+    transform: scaleX(1.02) translateY(-1px);
+    filter: drop-shadow(0 0 24px rgba(6, 182, 212, 1));
+  }
+  94% {
+    opacity: 0.3;
+  }
+  96% {
+    opacity: 0.95;
+    filter: drop-shadow(0 0 30px rgba(59, 130, 246, 1));
+  }
+}
+
+@keyframes goldShineSweep {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+.animate-flame-dance {
+  animation: flameDance 2.2s infinite ease-in-out;
+}
+
+.animate-ember-rise {
+  animation: emberRise 3s infinite linear;
+}
+
+.animate-frost-freeze {
+  animation: frostFreeze 4s infinite ease-in-out;
+}
+
+.animate-lightning-arc {
+  animation: lightningArc 3.5s infinite ease-in-out;
+}
+
+.animate-gold-sweep {
+  background-size: 200% 100%;
+  animation: goldShineSweep 4s infinite linear;
+}

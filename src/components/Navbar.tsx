@@ -1,0 +1,341 @@
+"use client";
+
+import Link from "next/link";
+import Image from "next/image";
+import { usePathname } from "next/navigation";
+import { useState, useEffect, useRef } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { useStore } from "@/store/useStore";
+import { 
+  Activity, Trophy, MapPin, GraduationCap, 
+  PlusCircle, User, LogOut, Menu, X, Bell, MessageSquare, Settings, ChevronDown, Users, Repeat, Award
+} from "lucide-react";
+import logoPic from "@/assets/logo.png";
+import logoTextPic from "@/assets/logo-text.png";
+
+const Avatar = ({ src, name, size = 32 }: { src?: string, name: string, size?: number }) => {
+  const [error, setError] = useState(false);
+  
+  if (!src || error) {
+    return (
+      <div 
+        style={{ width: size, height: size }}
+        className="rounded-full bg-pb-green text-pb-dark flex items-center justify-center font-bold shadow-inner shrink-0"
+      >
+        {name ? name.charAt(0).toUpperCase() : '?'}
+      </div>
+    );
+  }
+  
+  return (
+    <img 
+      src={src} 
+      alt={name}
+      onError={() => setError(true)}
+      style={{ width: size, height: size }}
+      className="rounded-full object-cover border-2 border-slate-700 shrink-0"
+    />
+  );
+};
+
+export default function Navbar() {
+  const currentUser = useStore(state => state.currentUser);
+  const logout = useStore(state => state.logout);
+  const directMessages = useStore(state => state.directMessages);
+  const activeSessions = useStore(state => state.activeSessions);
+  const switchAccount = useStore(state => state.switchAccount);
+  const users = useStore(state => state.users);
+  const pathname = usePathname();
+  
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [dropdownOpen, setDropdownOpen] = useState(false);
+  const [showAccountSwitcher, setShowAccountSwitcher] = useState(false);
+  
+  const dropdownRef = useRef<HTMLDivElement>(null);
+
+  // Menü dışına tıklanırsa kapat
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+        setDropdownOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
+  const unreadMsgs = currentUser ? (directMessages || []).filter(m => m.receiverId === currentUser.id && !m.isRead).length : 0;
+  const unreadNotifs = currentUser ? (currentUser.notifications || []).filter(n => !n.isRead).length : 0;
+
+  const navLinks = [
+    { href: "/feed", label: "Akış", icon: Activity },
+    { href: "/leaderboard", label: "Sıralama", icon: Trophy },
+    { href: "/courts", label: "Kortlar", icon: MapPin },
+    { href: "/academy", label: "Akademi", icon: GraduationCap },
+    { href: "/partners", label: "Partner Bul", icon: Users },
+    { href: "/achievements", label: "Başarımlar", icon: Award },
+  ];
+
+  const closeMenu = () => {
+    setMobileMenuOpen(false);
+    setDropdownOpen(false);
+  };
+
+  return (
+    <>
+      <nav className="sticky top-0 z-[100] w-full bg-[#17212f] text-white border-b border-slate-800 shadow-sm transition-colors duration-300">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="flex items-center justify-between h-16">
+          
+          {/* Logo Alanı */}
+          <Link href="/" className="flex items-center gap-3 shrink-0" onClick={closeMenu}>
+            <Image alt="Logo" className="object-contain" height={32} width={32} src={logoPic} />
+            <Image alt="TRPickle.com" className="object-contain hidden sm:block" height={20} width={130} src={logoTextPic} />
+          </Link>
+
+          {/* Orta Menü (Masaüstü) */}
+          <div className="hidden md:flex items-center space-x-4 lg:space-x-6 ml-6">
+            {navLinks.map((link) => {
+              const isActive = pathname.startsWith(link.href);
+              const Icon = link.icon;
+              return (
+                <Link 
+                  key={link.href} 
+                  href={link.href}
+                  className={`py-1 text-[13px] font-semibold transition-all duration-300 border-b-2
+                    ${isActive ? "text-pb-green border-pb-green" : "text-slate-400 border-transparent hover:text-white"}
+                  `}
+                >
+                  {link.label}
+                </Link>
+              );
+            })}
+          </div>
+
+          {/* Sağ Taraf */}
+          <div className="flex items-center gap-3 shrink-0">
+            {currentUser ? (
+              <>
+                <Link 
+                  href="/add-match" 
+                  className="hidden sm:flex items-center gap-2 px-4 py-2 bg-pb-green text-[#17212f] rounded-xl font-bold text-sm hover:brightness-110 transition-all"
+                >
+                  <PlusCircle size={18} />
+                  <span>Maç Gir</span>
+                </Link>
+
+                <div className="flex items-center gap-2">
+                  <Link href="/messages" className="relative p-2.5 rounded-xl bg-slate-800/50 text-slate-300 hover:text-white hover:bg-slate-800 transition-colors">
+                    <MessageSquare size={20} />
+                    {unreadMsgs > 0 && (
+                      <span className="absolute top-1.5 right-1.5 flex h-2.5 w-2.5">
+                        <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-red-500 border border-[#17212f]"></span>
+                      </span>
+                    )}
+                  </Link>
+                  <Link href="/notifications" className="relative p-2.5 rounded-xl bg-slate-800/50 text-slate-300 hover:text-white hover:bg-slate-800 transition-colors">
+                    <Bell size={20} />
+                    {unreadNotifs > 0 && (
+                      <span className="absolute top-1.5 right-1.5 flex h-2.5 w-2.5">
+                        <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-red-500 border border-[#17212f]"></span>
+                      </span>
+                    )}
+                  </Link>
+                </div>
+
+                {/* Profil Dropdown */}
+                <div className="hidden md:block relative ml-2" ref={dropdownRef}>
+                  <button 
+                    onClick={() => setDropdownOpen(!dropdownOpen)}
+                    className="flex items-center p-0.5 rounded-full hover:bg-slate-800 transition-colors focus:outline-none"
+                  >
+                    <Avatar src={currentUser.avatarUrl} name={currentUser.name} size={36} />
+                  </button>
+
+                  <AnimatePresence>
+                    {dropdownOpen && (
+                      <motion.div
+                        initial={{ opacity: 0, y: 10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: 10 }}
+                        transition={{ duration: 0.15 }}
+                        className="absolute right-0 mt-3 w-56 bg-[#1a2332] border border-slate-700/50 rounded-2xl shadow-xl overflow-hidden py-2 z-50"
+                      >
+                        <Link href={`/profile/${currentUser.username}`} onClick={closeMenu} className="flex items-center gap-4 px-5 py-3 font-semibold text-sm text-slate-200 hover:bg-slate-800/80 transition-colors">
+                          <User size={18} className="text-slate-400" /> Profilim
+                        </Link>
+                        <Link href="/achievements" onClick={closeMenu} className="flex items-center gap-4 px-5 py-3 font-semibold text-sm text-slate-200 hover:bg-slate-800/80 transition-colors">
+                          <Trophy size={18} className="text-yellow-500" /> Başarımlar
+                        </Link>
+                        <Link href="/settings" onClick={closeMenu} className="flex items-center gap-4 px-5 py-3 font-semibold text-sm text-slate-200 hover:bg-slate-800/80 transition-colors">
+                          <Settings size={18} className="text-slate-400" /> Ayarlar
+                        </Link>
+                        
+                        <div className="h-px bg-slate-700/50 my-1 mx-3"></div>
+                        
+                        <button onClick={() => { setShowAccountSwitcher(true); closeMenu(); }} className="w-full flex items-center gap-4 px-5 py-3 font-semibold text-sm text-slate-200 hover:bg-slate-800/80 transition-colors text-left">
+                          <Repeat size={18} className="text-slate-400" /> Hesap Değiştir
+                        </button>
+
+                        <div className="h-px bg-slate-700/50 my-1 mx-3"></div>
+                        
+                        <button onClick={() => { logout(); closeMenu(); }} className="w-full flex items-center gap-4 px-5 py-3 font-semibold text-sm text-red-400 hover:bg-slate-800/80 transition-colors text-left">
+                          <LogOut size={18} /> Çıkış Yap
+                        </button>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+                </div>
+              </>
+            ) : (
+              <Link href="/auth" className="hidden md:flex px-5 py-2 bg-pb-green text-[#17212f] rounded-full font-bold text-sm hover:brightness-110 transition-colors">
+                Giriş Yap
+              </Link>
+            )}
+
+            <button 
+              className="md:hidden p-2 rounded-lg text-slate-300 hover:text-white hover:bg-slate-800 focus:outline-none"
+              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+            >
+              {mobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <AnimatePresence>
+        {mobileMenuOpen && (
+          <motion.div 
+            initial={{ height: 0, opacity: 0 }}
+            animate={{ height: "auto", opacity: 1 }}
+            exit={{ height: 0, opacity: 0 }}
+            className="md:hidden border-t border-slate-700 bg-[#17212f] overflow-hidden"
+          >
+            <div className="px-4 py-3 flex flex-col gap-1">
+              {navLinks.map((link) => {
+                const isActive = pathname.startsWith(link.href);
+                const Icon = link.icon;
+                return (
+                  <Link 
+                    key={link.href} 
+                    href={link.href}
+                    onClick={closeMenu}
+                    className={`flex items-center gap-3 px-3 py-3 rounded-lg text-sm font-semibold ${
+                      isActive ? "bg-pb-green/10 text-pb-green" : "text-slate-300 hover:text-white hover:bg-slate-800"
+                    }`}
+                  >
+                    <Icon size={20} />
+                    <span>{link.label}</span>
+                  </Link>
+                );
+              })}
+              
+              {currentUser ? (
+                <>
+                  <Link href="/add-match" onClick={closeMenu} className="flex items-center gap-3 px-3 py-3 mt-2 rounded-lg text-sm font-semibold bg-pb-green/10 text-pb-green">
+                    <PlusCircle size={20} />
+                    <span>Yeni Maç Ekle</span>
+                  </Link>
+                  <div className="h-px bg-slate-700 my-2 mx-1"></div>
+                  <Link href={`/profile/${currentUser.username}`} onClick={closeMenu} className="flex items-center gap-3 px-3 py-3 rounded-lg text-sm font-semibold text-slate-300 hover:text-white hover:bg-slate-800">
+                    <User size={20} className="text-slate-400" />
+                    <span>Profilime Git</span>
+                  </Link>
+                  <Link href="/settings" onClick={closeMenu} className="flex items-center gap-3 px-3 py-3 rounded-lg text-sm font-semibold text-slate-300 hover:text-white hover:bg-slate-800">
+                    <Settings size={20} className="text-slate-400" />
+                    <span>Hesap Ayarları</span>
+                  </Link>
+                  
+                  <div className="h-px bg-slate-700 my-2 mx-1"></div>
+                  
+                  <button onClick={() => { setShowAccountSwitcher(true); closeMenu(); }} className="flex items-center gap-3 px-3 py-3 rounded-lg text-sm font-semibold text-slate-300 hover:text-white hover:bg-slate-800 text-left w-full">
+                    <Repeat size={20} className="text-slate-400" />
+                    <span>Hesap Değiştir</span>
+                  </button>
+
+                  <div className="h-px bg-slate-700 my-2 mx-1"></div>
+
+                  <button onClick={() => { logout(); closeMenu(); }} className="flex items-center gap-3 px-3 py-3 rounded-lg text-sm font-semibold text-red-400 hover:bg-red-500/10 text-left w-full">
+                    <LogOut size={20} />
+                    <span>Çıkış Yap</span>
+                  </button>
+                </>
+              ) : (
+                <Link href="/auth" onClick={closeMenu} className="flex items-center justify-center gap-2 px-3 py-3 mt-2 rounded-lg text-sm font-bold bg-pb-green text-[#17212f]">
+                  Giriş Yap
+                </Link>
+              )}
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </nav>
+
+      <AnimatePresence>
+        {showAccountSwitcher && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-[200] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm"
+          >
+            <motion.div
+              initial={{ scale: 0.95, opacity: 0, y: 20 }}
+              animate={{ scale: 1, opacity: 1, y: 0 }}
+              exit={{ scale: 0.95, opacity: 0, y: 20 }}
+              className="bg-white dark:bg-slate-900 rounded-3xl shadow-2xl w-full max-w-md overflow-hidden flex flex-col"
+            >
+              <div className="px-6 py-5 border-b border-gray-100 dark:border-slate-800 flex justify-between items-center">
+                <h2 className="text-xl font-bold text-gray-800 dark:text-white">Hesap Değiştir</h2>
+                <button onClick={() => setShowAccountSwitcher(false)} className="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-slate-800 text-gray-500 transition-colors">
+                  <X size={20} />
+                </button>
+              </div>
+              
+              <div className="p-4 max-h-[60vh] overflow-y-auto">
+                {activeSessions && activeSessions.length > 0 ? (
+                  <div className="flex flex-col gap-2">
+                    {activeSessions.map(session => {
+                      const realUser = users.find(u => u.id === session.id) || session;
+                      return (
+                        <button
+                          key={realUser.id}
+                          onClick={() => { switchAccount(realUser.id); setShowAccountSwitcher(false); }}
+                          className={`flex items-center justify-between p-3 rounded-2xl border transition-all ${
+                            realUser.id === currentUser?.id 
+                              ? 'border-pb-green bg-pb-green/10' 
+                              : 'border-gray-100 dark:border-slate-800 hover:border-pb-blue/50 hover:bg-gray-50 dark:hover:bg-slate-800/50'
+                          }`}
+                        >
+                          <div className="flex items-center gap-3">
+                            <Avatar src={realUser.avatarUrl} name={realUser.name} size={40} />
+                            <div className="flex flex-col items-start">
+                              <span className="font-bold text-gray-800 dark:text-white">{realUser.name}</span>
+                              <span className="text-xs text-gray-500 dark:text-gray-400">@{realUser.username}</span>
+                            </div>
+                          </div>
+                          {realUser.id === currentUser?.id && (
+                            <div className="w-3 h-3 rounded-full bg-pb-green shadow-[0_0_8px_rgba(34,197,94,0.6)]"></div>
+                          )}
+                        </button>
+                      );
+                    })}
+                  </div>
+                ) : (
+                  <div className="text-center text-sm text-gray-500 py-4">Başka aktif hesap bulunamadı.</div>
+                )}
+              </div>
+              
+              <div className="p-4 border-t border-gray-100 dark:border-slate-800 flex flex-col gap-3 bg-gray-50 dark:bg-slate-800/30">
+                <Link href="/auth?addAccount=true" onClick={() => setShowAccountSwitcher(false)} className="w-full flex items-center justify-center gap-2 py-3 rounded-xl border-2 border-pb-green text-pb-green font-bold hover:bg-pb-green hover:text-white dark:hover:text-pb-dark transition-all">
+                  <PlusCircle size={20} />
+                  Yeni Hesap Ekle / Giriş Yap
+                </Link>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </>
+  );
+}
