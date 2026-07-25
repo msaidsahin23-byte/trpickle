@@ -9,18 +9,14 @@ export default function SupabaseSyncProvider() {
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       async (event, session) => {
         if (session?.user) {
-          // Fetch user profile from public.users
-          const { data: userData, error } = await supabase
+          // Fetch ALL users from public.users to overwrite dummy data
+          const { data: allUsers, error: allUsersError } = await supabase
             .from("users")
-            .select("*")
-            .eq("id", session.user.id)
-            .single();
+            .select("*");
 
-          if (userData) {
+          if (allUsers) {
             useStore.setState((state) => {
-              // Only add if not exists, or update
-              const existingUser = state.users.find(u => u.id === userData.id);
-              const mappedUser = {
+              const mappedUsers = allUsers.map(userData => ({
                 id: userData.id,
                 email: userData.email,
                 name: userData.name,
@@ -30,7 +26,6 @@ export default function SupabaseSyncProvider() {
                 singlesRating: userData.singles_rating || 2.5,
                 doublesRating: userData.doubles_rating || 2.5,
                 tags: userData.tags || [],
-                // Ensure role is hidden from ordinary users! But for now we just don't expose an admin role explicitly unless it's a specific user
                 role: userData.role || "user", 
                 city: userData.city || "İstanbul",
                 gender: userData.gender || "male",
@@ -40,16 +35,14 @@ export default function SupabaseSyncProvider() {
                 bio: userData.bio || "",
                 avatarUrl: userData.avatar_url,
                 bannerUrl: userData.banner_url,
-              };
+              }));
 
-              const newUsers = existingUser 
-                ? state.users.map(u => u.id === userData.id ? mappedUser : u)
-                : [...state.users, mappedUser];
+              const currentUser = mappedUsers.find(u => u.id === session.user.id) || null;
 
               return {
-                currentUser: mappedUser,
-                users: newUsers,
-                activeSessions: [mappedUser] // simplified for now
+                currentUser: currentUser,
+                users: mappedUsers,
+                activeSessions: currentUser ? [currentUser] : []
               };
             });
           }
