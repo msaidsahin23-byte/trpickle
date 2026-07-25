@@ -100,7 +100,11 @@ function AuthContent() {
         
         setIsSignUpSuccess(true);
       } catch (err: any) {
-        setAuthError(err.message);
+        if (err.message.includes("Email not confirmed") || err.message.includes("Email rate limit exceeded")) {
+          setAuthError("E-posta adresiniz henüz doğrulanmadı. Lütfen gelen kutunuzu kontrol edin.");
+        } else {
+          setAuthError(err.message);
+        }
       }
     } else {
       // LOGIN
@@ -116,7 +120,13 @@ function AuthContent() {
 
         router.push("/feed");
       } catch (err: any) {
-        setAuthError(err.message);
+        if (err.message.includes("Email not confirmed")) {
+          setAuthError("E-posta adresiniz henüz doğrulanmadı. Lütfen e-postanızı (veya Spam klasörünü) kontrol edip onaylayın.");
+        } else if (err.message.includes("Invalid login credentials")) {
+          setAuthError("E-posta veya şifre hatalı.");
+        } else {
+          setAuthError(err.message);
+        }
       }
     }
   };

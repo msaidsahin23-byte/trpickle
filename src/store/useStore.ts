@@ -1753,7 +1753,7 @@ export const useStore = create<StoreState>()(
             claimedWeeklyQuests: Array.isArray(u.claimedWeeklyQuests) ? u.claimedWeeklyQuests : [],
             gender: u.gender || 'male',
             city: u.city || 'İstanbul',
-            bio: u.bio || 'Pickleball oynamayı ve yeni partnerlerle tanışmayı seviyorum!'
+            bio: u.bio,
           };
         };
 
