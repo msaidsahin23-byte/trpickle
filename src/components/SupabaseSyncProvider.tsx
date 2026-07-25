@@ -126,15 +126,34 @@ export default function SupabaseSyncProvider() {
 
               const finalUsers = mappedUsers.map(mu => {
                 const existing = state.users.find(eu => eu.id === mu.id);
-                return existing ? { ...existing, ...mu } : mu;
+                // Keep local-only properties, BUT also keep existing values if mu has default empty values
+                return existing ? { 
+                  ...existing, 
+                  ...mu,
+                  level: existing.level || mu.level,
+                  xp: existing.xp || mu.xp,
+                  paddle: existing.paddle || mu.paddle,
+                  favoriteCourt: existing.favoriteCourt || mu.favoriteCourt,
+                  accentColor: existing.accentColor || mu.accentColor,
+                  appTheme: existing.appTheme || mu.appTheme,
+                  unlockedAchievements: existing.unlockedAchievements || []
+                } : mu;
               });
               
               const finalCurrentUser = finalUsers.find(u => u.id === session.user.id) || currentUser;
 
+              // MERGE POSTS & MESSAGES WITH LOCAL STATE TO AVOID LOSING LOCALLY CREATED ONES
+              const finalPosts = [...mappedPosts];
+              state.posts.forEach(lp => {
+                if (!finalPosts.find(fp => fp.id.toString() === lp.id.toString())) {
+                  finalPosts.push(lp);
+                }
+              });
+
               return {
                 currentUser: finalCurrentUser,
                 users: finalUsers,
-                posts: mappedPosts,
+                posts: finalPosts,
                 directMessages: mappedMessages,
                 activeSessions: finalCurrentUser ? [finalCurrentUser] : []
               };
