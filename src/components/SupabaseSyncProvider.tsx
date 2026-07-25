@@ -42,20 +42,22 @@ export default function SupabaseSyncProvider() {
               if (!currentUser) {
                 // Auto-heal missing public.users record
                 const newEmail = session.user.email || "";
+                const meta = session.user.user_metadata || {};
+                
                 currentUser = {
                   id: session.user.id,
                   email: newEmail,
-                  name: session.user.user_metadata?.name || newEmail.split("@")[0] || "Kullanıcı",
-                  username: newEmail.split("@")[0] || "user",
-                  firstName: "Yeni",
-                  lastName: "Kullanıcı",
+                  name: meta.name || newEmail.split("@")[0] || "Kullanıcı",
+                  username: meta.username || newEmail.split("@")[0] || "user",
+                  firstName: meta.firstName || "Yeni",
+                  lastName: meta.lastName || "Kullanıcı",
                   singlesRating: 2.5,
                   doublesRating: 2.5,
                   tags: [],
                   role: "user",
-                  city: "İstanbul",
-                  gender: "male",
-                  birthdate: "2000-01-01",
+                  city: meta.city || "İstanbul",
+                  gender: meta.gender || "male",
+                  birthdate: meta.birthdate || "2000-01-01",
                   followers: [],
                   following: [],
                   bio: "",

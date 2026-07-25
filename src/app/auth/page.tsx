@@ -107,6 +107,17 @@ function AuthContent() {
         const { data, error } = await supabase.auth.signUp({
           email,
           password,
+          options: {
+            data: {
+              name: `${firstName.trim()} ${lastName.trim()}`,
+              username: cleanUsername,
+              firstName: firstName.trim(),
+              lastName: lastName.trim(),
+              city: selectedCity,
+              gender: selectedGender,
+              birthdate: selectedBirthdate
+            }
+          }
         });
 
         if (error) {
