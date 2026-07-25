@@ -92,8 +92,13 @@ function AuthContent() {
             id: data.user.id,
             email,
             name: `${firstName.trim()} ${lastName.trim()}`,
+            username: cleanUsername,
+            city: selectedCity,
+            gender: selectedGender,
+            birthdate: selectedBirthdate,
             singles_rating: 2.5,
-            doubles_rating: 2.5
+            doubles_rating: 2.5,
+            role: "user"
           });
           if (dbError) {
              console.error("DB Insert Error", dbError);
