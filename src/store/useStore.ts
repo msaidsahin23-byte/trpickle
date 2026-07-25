@@ -746,7 +746,14 @@ export const useStore = create<StoreState>()(
           comments: post.comments || [],
           image_url: post.imageUrl || null,
           linked_match_id: post.linkedMatchId ? post.linkedMatchId.toString() : null
-        }).then(({error}) => { if (error) console.error('Post insert error:', error) });
+        }).then(({error}) => { 
+          if (error) {
+            console.error('Post insert error:', error);
+            alert('Gönderi kaydedilirken hata oluştu: ' + error.message);
+          } else {
+            console.log('Post inserted successfully!');
+          }
+        });
       },
 
       shareMatchToFeed: (matchId, content) => set((state) => {
@@ -1213,6 +1220,9 @@ export const useStore = create<StoreState>()(
 
         if (typeof window !== "undefined") {
           try { localStorage.removeItem("pickleball_auth_token"); } catch(e) {}
+          // Silme isteğini Supabase'e gönder
+          supabase.rpc('delete_user').catch(err => console.error("Kullanıcı silinemedi:", err));
+          
           setTimeout(() => {
             fetch("/api/sync", {
               method: "POST",
