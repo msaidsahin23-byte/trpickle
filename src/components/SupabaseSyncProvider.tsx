@@ -73,28 +73,36 @@ export default function SupabaseSyncProvider() {
                   bio: "",
                   avatarUrl: "",
                   bannerUrl: "",
-                };
+                  level: 1,
+                  xp: 0,
+                  paddle: "",
+                  favoriteCourt: "",
+                  accentColor: "#cfff50",
+                  appTheme: "light",
+                  notificationsEnabled: true,
+                  showPostsOnProfile: true
+                } as any;
                 
                 // Insert async in background to avoid blocking
                 supabase.from("users").insert({
-                  id: currentUser.id,
-                  email: currentUser.email,
-                  name: currentUser.name,
-                  username: currentUser.username,
-                  city: currentUser.city,
-                  gender: currentUser.gender,
-                  birthdate: currentUser.birthdate,
-                  singles_rating: currentUser.singlesRating,
-                  doubles_rating: currentUser.doublesRating,
-                  role: currentUser.role
+                  id: currentUser!.id,
+                  email: currentUser!.email,
+                  name: currentUser!.name,
+                  username: currentUser!.username,
+                  city: currentUser!.city,
+                  gender: currentUser!.gender,
+                  birthdate: currentUser!.birthdate,
+                  singles_rating: currentUser!.singlesRating,
+                  doubles_rating: currentUser!.doublesRating,
+                  role: currentUser!.role
                 }).then(({error}) => {
                   if (error) console.error("Auto-heal insert error:", error);
                 });
                 
-                mappedUsers.push(currentUser);
+                mappedUsers.push(currentUser as any);
               }
 
-              const mappedPosts = (allPosts || []).map(p => ({
+              const mappedPosts: any[] = (allPosts || []).map(p => ({
                 id: p.id,
                 authorId: p.author_id,
                 author: p.author_name,
@@ -107,7 +115,7 @@ export default function SupabaseSyncProvider() {
                 linkedMatchId: p.linked_match_id
               }));
 
-              const mappedMessages = (allMessages || []).map(m => ({
+              const mappedMessages: any[] = (allMessages || []).map(m => ({
                 id: m.id,
                 senderId: m.sender_id,
                 receiverId: m.receiver_id,
