@@ -9,10 +9,12 @@ export default function SupabaseSyncProvider() {
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       async (event, session) => {
         if (session?.user) {
-          // Fetch ALL users from public.users to overwrite dummy data
-          const { data: allUsers, error: allUsersError } = await supabase
-            .from("users")
-            .select("*");
+          // Fetch ALL users, posts, and messages from Supabase
+          const [ { data: allUsers }, { data: allPosts }, { data: allMessages } ] = await Promise.all([
+            supabase.from("users").select("*"),
+            supabase.from("posts").select("*").order("time", { ascending: false }),
+            supabase.from("messages").select("*").order("created_at", { ascending: true })
+          ]);
 
           if (allUsers) {
             useStore.setState((state) => {
@@ -84,9 +86,33 @@ export default function SupabaseSyncProvider() {
                 mappedUsers.push(currentUser);
               }
 
+              const mappedPosts = (allPosts || []).map(p => ({
+                id: p.id,
+                authorId: p.author_id,
+                author: p.author_name,
+                rating: p.rating,
+                content: p.content,
+                time: p.time,
+                likedBy: p.liked_by || [],
+                comments: p.comments || [],
+                imageUrl: p.image_url,
+                linkedMatchId: p.linked_match_id
+              }));
+
+              const mappedMessages = (allMessages || []).map(m => ({
+                id: m.id,
+                senderId: m.sender_id,
+                receiverId: m.receiver_id,
+                content: m.content,
+                createdAt: m.created_at,
+                isRead: m.is_read
+              }));
+
               return {
                 currentUser: currentUser,
                 users: mappedUsers,
+                posts: mappedPosts,
+                directMessages: mappedMessages,
                 activeSessions: currentUser ? [currentUser] : []
               };
             });

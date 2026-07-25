@@ -783,7 +783,10 @@ export const useStore = create<StoreState>()(
         };
       }),
       
-      deletePost: (id) => set((state) => ({ posts: state.posts.filter(p => p.id !== id) })),
+      deletePost: (id) => {
+        set((state) => ({ posts: state.posts.filter(p => p.id !== id) }));
+        supabase.from('posts').delete().eq('id', id.toString()).then(({error}) => { if(error) console.error(error) });
+      },
 
       updateUser: (id, data) => set((state) => ({
         users: state.users.map(u => u.id === id ? { ...u, ...data } : u),
