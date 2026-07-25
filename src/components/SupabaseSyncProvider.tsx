@@ -37,6 +37,14 @@ export default function SupabaseSyncProvider() {
                 bio: userData.bio || "",
                 avatarUrl: userData.avatar_url,
                 bannerUrl: userData.banner_url,
+                level: userData.level || 1,
+                xp: userData.xp || 0,
+                paddle: userData.paddle || "",
+                favoriteCourt: userData.favorite_court || "",
+                accentColor: userData.accent_color || "#cfff50",
+                appTheme: userData.app_theme || "light",
+                notificationsEnabled: userData.notifications_enabled ?? true,
+                showPostsOnProfile: userData.show_posts_on_profile ?? true
               }));
 
               let currentUser = mappedUsers.find(u => u.id === session.user.id) || null;
@@ -108,12 +116,19 @@ export default function SupabaseSyncProvider() {
                 isRead: m.is_read
               }));
 
+              const finalUsers = mappedUsers.map(mu => {
+                const existing = state.users.find(eu => eu.id === mu.id);
+                return existing ? { ...existing, ...mu } : mu;
+              });
+              
+              const finalCurrentUser = finalUsers.find(u => u.id === session.user.id) || currentUser;
+
               return {
-                currentUser: currentUser,
-                users: mappedUsers,
+                currentUser: finalCurrentUser,
+                users: finalUsers,
                 posts: mappedPosts,
                 directMessages: mappedMessages,
-                activeSessions: currentUser ? [currentUser] : []
+                activeSessions: finalCurrentUser ? [finalCurrentUser] : []
               };
             });
           }
