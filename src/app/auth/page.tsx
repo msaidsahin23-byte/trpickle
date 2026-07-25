@@ -26,6 +26,7 @@ function AuthContent() {
   const isAddAccount = searchParams.get("addAccount") === "true";
 
   const [activeTab, setActiveTab] = useState<"login" | "signup">(isAddAccount ? "signup" : "signup");
+  const [isSignUpSuccess, setIsSignUpSuccess] = useState(false);
   const router = useRouter();
   const currentUser = useStore(state => state.currentUser);
   const users = useStore(state => state.users);
@@ -51,7 +52,6 @@ function AuthContent() {
   const [selectedGender, setSelectedGender] = useState<'male' | 'female'>('male');
   const [selectedBirthdate, setSelectedBirthdate] = useState("");
   const [authError, setAuthError] = useState("");
-  const [isSignUpSuccess, setIsSignUpSuccess] = useState(false);
   
   const login = useStore(state => state.login);
 
@@ -347,6 +347,8 @@ function AuthContent() {
             <p>Zaten bir hesabın var mı? <button type="button" onClick={() => { setActiveTab("login"); setPassword(""); }} className="text-pb-blue hover:underline">Giriş Yap</button></p>
           )}
         </div>
+          </>
+        )}
       </motion.div>
     </div>
   );
