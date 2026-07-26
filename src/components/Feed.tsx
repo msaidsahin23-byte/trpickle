@@ -730,7 +730,7 @@ export default function Feed({ filterUserId }: { filterUserId?: number | string 
                 </button>
               </div>
               <div className="overflow-y-auto no-scrollbar">
-                <PostCard post={modalPost} onRequireAuth={() => setShowAuthModal(true)} isModal={true} />
+                <PostCard post={modalPost} onRequireAuth={() => setShowAuthModal(true)} isModal={true} onOpenComments={() => setActiveCommentPostId(modalPost.id)} />
               </div>
             </motion.div>
           </div>
@@ -1218,11 +1218,12 @@ export default function Feed({ filterUserId }: { filterUserId?: number | string 
             >
               {filteredPosts.map((post) => (
                 <PostCard 
-                  key={post.id} 
-                  post={post} 
-                  onRequireAuth={() => setShowAuthModal(true)} 
-                  onClickPost={() => openModal(post.id)} 
-                />
+                    key={post.id} 
+                    post={post} 
+                    onRequireAuth={() => setShowAuthModal(true)} 
+                    onClickPost={() => openModal(post.id)} 
+                    onOpenComments={() => setActiveCommentPostId(post.id)}
+                  />
               ))}
             </motion.div>
           )}
