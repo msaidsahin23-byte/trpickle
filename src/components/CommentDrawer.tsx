@@ -193,7 +193,7 @@ export default function CommentDrawer({ isOpen, onClose, postId }: CommentDrawer
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             onClick={onClose}
-            className="fixed inset-0 bg-black/60 z-50 backdrop-blur-sm"
+            className="fixed inset-0 bg-black/60 z-[200] backdrop-blur-sm"
           />
 
           {/* Drawer */}
@@ -202,7 +202,7 @@ export default function CommentDrawer({ isOpen, onClose, postId }: CommentDrawer
             animate={{ y: 0 }}
             exit={{ y: '100%' }}
             transition={{ type: 'spring', damping: 25, stiffness: 200 }}
-            className="fixed inset-x-0 bottom-0 z-[60] h-[80vh] md:h-[80vh] md:bottom-auto md:top-[10vh] md:w-[600px] md:left-0 md:right-0 mx-auto bg-slate-900 border-t md:border border-slate-700/50 shadow-2xl flex flex-col rounded-t-3xl md:rounded-2xl"
+            className="fixed inset-x-0 bottom-0 z-[210] h-[80vh] md:h-[80vh] md:bottom-auto md:top-[10vh] md:w-[600px] md:left-0 md:right-0 mx-auto bg-slate-900 border-t md:border border-slate-700/50 shadow-2xl flex flex-col rounded-t-3xl md:rounded-2xl"
           >
             {/* Header */}
             <div className="flex items-center justify-between p-4 border-b border-slate-800 shrink-0">
