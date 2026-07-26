@@ -1035,6 +1035,7 @@ export const useStore = create<StoreState>()(
         }),
 
       markNotificationsAsRead: (userId) => set((state) => {
+        supabase.from('notifications').update({ read: true }).eq('user_id', String(userId)).then();
         const newUsers = state.users.map(u => {
           if (u.id === userId && u.notifications) {
             return {
@@ -1343,6 +1344,7 @@ export const useStore = create<StoreState>()(
         const newDirectMessages = [...(state.directMessages || []), tempMsg];
 
         supabase.from('messages').insert({
+           id: tempMsg.id,
            sender_id: state.currentUser.id.toString(),
            receiver_id: receiverId.toString(),
            content: content.trim(),

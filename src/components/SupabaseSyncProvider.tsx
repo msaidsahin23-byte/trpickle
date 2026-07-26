@@ -237,7 +237,7 @@ export default function SupabaseSyncProvider() {
                     if (payload.eventType === 'UPDATE') {
                       return {
                         posts: state.posts.map(x => {
-                          if (x.id.toString() === p.id) {
+                          if (x.id.toString() === String(p.id)) {
                             let contentStr = p.content || "";
                             let pollObj = x.poll;
                             if (contentStr.includes("<!--POLL:")) {
@@ -274,7 +274,7 @@ export default function SupabaseSyncProvider() {
                   const n = payload.new as any;
                   useStore.setState((state) => {
                     const newUsers = state.users.map(u => {
-                      if (u.id === n.user_id) {
+                      if (String(u.id) === String(n.user_id)) {
                         const newNotif = {
                           id: n.id,
                           postId: n.related_match_id,
@@ -303,7 +303,7 @@ export default function SupabaseSyncProvider() {
                 (payload) => {
                   const m = payload.new as any;
                   useStore.setState((state) => {
-                    if (state.directMessages?.some(existing => existing.id === m.id)) return state;
+                    if (state.directMessages?.some(existing => String(existing.id) === String(m.id))) return state;
                     
                     const filteredMsgs = (state.directMessages || []).filter(msg => {
                         if (msg.id.toString().startsWith('temp-') && msg.senderId === m.sender_id && msg.content === m.content) {
@@ -335,7 +335,7 @@ export default function SupabaseSyncProvider() {
                   const c = payload.new as any;
                   useStore.setState((state) => {
                      const newPosts = state.posts.map(p => {
-                        if (p.id.toString() === c.post_id) {
+                        if (p.id.toString() === String(c.post_id)) {
                             return { ...p, comments: [...(p.comments || []), {} as any] };
                         }
                         return p;
@@ -355,7 +355,7 @@ export default function SupabaseSyncProvider() {
                   const c = payload.old as any;
                   useStore.setState((state) => {
                      const newPosts = state.posts.map(p => {
-                        if (p.id.toString() === c.post_id) {
+                        if (p.id.toString() === String(c.post_id)) {
                             return { ...p, comments: (p.comments || []).slice(0, -1) };
                         }
                         return p;
@@ -391,7 +391,7 @@ export default function SupabaseSyncProvider() {
                 (payload) => {
                   const m = payload.old as any;
                   useStore.setState((state) => ({
-                    directMessages: (state.directMessages || []).filter(msg => msg.id !== m.id)
+                    directMessages: (state.directMessages || []).filter(msg => String(msg.id) !== String(m.id))
                   }));
                 }
               )
@@ -406,7 +406,7 @@ export default function SupabaseSyncProvider() {
                   const u = payload.new as any;
                   useStore.setState((state) => {
                     const newUsers = state.users.map(existing => {
-                      if (existing.id === u.id) {
+                      if (String(existing.id) === String(u.id)) {
                          return {
                            ...existing,
                            followers: u.followers || existing.followers,
