@@ -271,11 +271,11 @@ function AuthContent() {
               <div className="flex gap-4">
                 <div className="flex-1">
                   <label className="block font-semibold mb-1 text-sm text-gray-700 ">Ad</label>
-                  <input required value={firstName} onChange={e => setFirstName(e.target.value)} type="text" className="w-full border border-gray-200  rounded-xl p-3 bg-gray-50  outline-none focus:ring-1 focus:ring-pb-blue/30 focus:border-pb-blue/50 transition-all font-medium text-pb-dark  " />
+                  <input required value={firstName} onChange={e => setFirstName(e.target.value)} type="text" maxLength={17} className="w-full border border-gray-200  rounded-xl p-3 bg-gray-50  outline-none focus:ring-1 focus:ring-pb-blue/30 focus:border-pb-blue/50 transition-all font-medium text-pb-dark  " />
                 </div>
                 <div className="flex-1">
                   <label className="block font-semibold mb-1 text-sm text-gray-700 ">Soyad</label>
-                  <input required value={lastName} onChange={e => setLastName(e.target.value)} type="text" className="w-full border border-gray-200  rounded-xl p-3 bg-gray-50  outline-none focus:ring-1 focus:ring-pb-blue/30 focus:border-pb-blue/50 transition-all font-medium text-pb-dark  " />
+                  <input required value={lastName} onChange={e => setLastName(e.target.value)} type="text" maxLength={17} className="w-full border border-gray-200  rounded-xl p-3 bg-gray-50  outline-none focus:ring-1 focus:ring-pb-blue/30 focus:border-pb-blue/50 transition-all font-medium text-pb-dark  " />
                 </div>
               </div>
               <div className="mb-1">
@@ -288,7 +288,7 @@ function AuthContent() {
                     onChange={e => setUsername(e.target.value.toLowerCase().replace(/[^a-z0-9_]/g, ''))} 
                     type="text" 
                     className={`w-full border rounded-xl p-3 pl-9 outline-none focus:ring-1 transition-all font-medium text-pb-dark ${username.length > 2 && users.some(u => u.username === username) ? 'border-red-400 bg-red-50 focus:ring-red-300 focus:border-red-500' : username.length > 2 ? 'border-pb-green bg-pb-green/5 focus:ring-pb-green/30 focus:border-pb-green' : 'border-gray-200 bg-gray-50 focus:ring-pb-blue/30 focus:border-pb-blue/50'}`} 
-                    placeholder="kullaniciadi" 
+                    placeholder="kullaniciadi" maxLength={17} 
                   />
                   {username.length > 2 && (
                     <div className="absolute right-4 top-3.5">

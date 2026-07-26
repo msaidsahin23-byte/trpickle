@@ -5,6 +5,7 @@ import { useState, useEffect } from "react";
 import { useStore, Post, Comment } from "@/store/useStore";
 import { useRouter, useSearchParams, usePathname } from "next/navigation";
 import Link from "next/link";
+import CommentDrawer from "@/components/CommentDrawer";
 import { useRef } from "react";
 import { AuthModal } from "@/components/AuthModal";
 import { ClientTime } from "@/components/ClientTime";
@@ -49,11 +50,10 @@ function EmbeddedMatchCard({ matchId }: { matchId: number | string }) {
   );
 }
 
-function PostCard({ post, onRequireAuth, onClickPost, isModal }: { post: Post; onRequireAuth: () => void; onClickPost?: () => void; isModal?: boolean }) {
+function PostCard({ post, onRequireAuth, onClickPost, isModal, onOpenComments }: { post: Post; onRequireAuth: () => void; onClickPost?: () => void; isModal?: boolean; onOpenComments?: () => void }) {
   const currentUser = useStore(state => state.currentUser);
   const toggleLikeStore = useStore(state => state.toggleLike);
-  const addCommentStore = useStore(state => state.addComment);
-  const votePollStore = useStore(state => state.votePoll);
+const votePollStore = useStore(state => state.votePoll);
   const deletePost = useStore(state => state.deletePost);
   const togglePinPost = useStore(state => state.togglePinPost);
   const users = useStore(state => state.users);
@@ -64,10 +64,7 @@ function PostCard({ post, onRequireAuth, onClickPost, isModal }: { post: Post; o
   const authorMayors = authorUser ? getUserMayorCourts(authorUser.id, courts, matches, users) : [];
 
   const isLiked = currentUser ? (post.likedBy || []).includes(currentUser.id) : false;
-  const [showComments, setShowComments] = useState(false);
-  const [newComment, setNewComment] = useState("");
-
-  const handleLike = (e?: React.MouseEvent) => {
+const handleLike = (e?: React.MouseEvent) => {
     if (e) e.stopPropagation();
     if (!currentUser) {
       onRequireAuth();
@@ -92,9 +89,9 @@ function PostCard({ post, onRequireAuth, onClickPost, isModal }: { post: Post; o
       onRequireAuth();
       return;
     }
-    if (!newComment.trim()) return;
-    addCommentStore(post.id, { id: Date.now(), author: currentUser.name, text: newComment });
-    setNewComment("");
+
+
+
   };
 
   return (
@@ -356,63 +353,20 @@ function PostCard({ post, onRequireAuth, onClickPost, isModal }: { post: Post; o
           <Heart className="w-5 h-5 stroke-[2px]" fill={isLiked ? "currentColor" : "none"} /> {post.likedBy?.length || 0}
         </button>
         <button 
-          onClick={(e) => { e.stopPropagation(); setShowComments(!showComments); }}
+          onClick={(e) => { e.stopPropagation(); if (onOpenComments) onOpenComments(); }}
           className="flex items-center gap-2 font-semibold text-gray-500 dark:text-gray-400 hover:text-pb-blue transition-colors"
         >
-          <MessageCircle className="w-5 h-5 stroke-[2px]" /> Yorum ({post.comments?.length || 0})
+          <MessageCircle className="w-5 h-5 stroke-[2px]" /> Yorum
         </button>
       </div>
 
-      <AnimatePresence>
-        {showComments && (
-          <motion.div 
-            initial={{ height: 0, opacity: 0 }}
-            animate={{ height: "auto", opacity: 1 }}
-            exit={{ height: 0, opacity: 0 }}
-            className="border-t border-gray-100 dark:border-slate-700 bg-gray-50 dark:bg-slate-900"
-          >
-            <div className="p-4 flex flex-col gap-4">
-              {post.comments?.map((comment) => {
-                const commentUser = users.find(u => u.name === comment.author);
-                return (
-                <div key={comment.id} className="flex gap-3 text-sm">
-                  {commentUser?.avatarUrl ? (
-                    <div className="w-8 h-8 rounded-full overflow-hidden shrink-0 border border-gray-200 dark:border-slate-700">
-                      <img src={commentUser.avatarUrl} alt={comment.author} className="w-full h-full object-cover" />
-                    </div>
-                  ) : (
-                    <div className="w-8 h-8 bg-gray-200 dark:bg-slate-700 rounded-full flex-shrink-0 flex items-center justify-center font-bold text-gray-600 dark:text-gray-300">
-                      {comment.author.charAt(0)}
-                    </div>
-                  )}
-                  <div className="bg-white dark:bg-slate-800 p-3 rounded-2xl rounded-tl-none border border-gray-200 dark:border-slate-700 shadow-sm">
-                    <span className="font-bold text-pb-dark dark:text-white mr-2">{comment.author}</span>
-                    <span className="text-gray-700 dark:text-gray-300 font-medium">{comment.text}</span>
-                  </div>
-                </div>
-                );
-              })}
-              <form onSubmit={submitComment} className="flex gap-2 mt-2">
-                <input 
-                  type="text" 
-                  value={newComment}
-                  onChange={(e) => setNewComment(e.target.value)}
-                  placeholder="Yorum yaz..." 
-                  className="flex-1 border border-gray-200 dark:border-slate-700 rounded-full px-4 py-2 bg-white dark:bg-slate-800 outline-none focus:ring-1 focus:ring-pb-blue/30 focus:border-pb-blue/50 transition-all text-sm font-medium text-pb-dark dark:text-white"
-                />
-                <button type="submit" className="bg-pb-green text-pb-dark  px-4 py-2 rounded-full font-bold shadow-sm hover:scale-105 transition-all">
-                  <Send className="w-4 h-4" />
-                </button>
-              </form>
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+      
     </motion.div>
   );
 }
 
 export default function Feed({ filterUserId }: { filterUserId?: number | string }) {
+  const [activeCommentPostId, setActiveCommentPostId] = useState<string | number | null>(null);
   const router = useRouter();
   const allPosts = useStore(state => state.posts);
   const posts = filterUserId ? allPosts.filter(p => p.authorId === filterUserId) : allPosts;
@@ -1277,6 +1231,7 @@ export default function Feed({ filterUserId }: { filterUserId?: number | string 
 
       {/* Auth Intercept Modal */}
       <AuthModal isOpen={showAuthModal} onClose={() => setShowAuthModal(false)} />
+      <CommentDrawer isOpen={!!activeCommentPostId} onClose={() => setActiveCommentPostId(null)} postId={activeCommentPostId || ""} />
     </div>
   );
 }

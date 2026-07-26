@@ -11,6 +11,7 @@ import { useRouter } from "next/navigation";
 import { useStore, MatchRecord, User } from "@/store/useStore";
 import { ACHIEVEMENTS } from "@/data/achievements";
 import { StoryExportTemplate } from "@/components/StoryExportTemplate";
+import CommentDrawer from "@/components/CommentDrawer";
 import { FollowersModal } from "@/components/FollowersModal";
 import FriendBadge, { isMutualFriend } from "@/components/FriendBadge";
 import PlayerQrModal from "@/components/PlayerQrModal";
@@ -370,7 +371,7 @@ const TAG_LEVEL_REQUIREMENTS: Record<string, number> = {
   "TRPickle Efsanesi": 50,
 };
 
-function MatchCardItem({ match, idx, userState, renderTeamWithElo, currentUser, addMatchComment, users }: any) {
+function MatchCardItem({ match, idx, userState, renderTeamWithElo, currentUser, addMatchComment, users, onOpenComments }: any) {
   const cardRef = useRef<HTMLDivElement>(null);
   const exportRef = useRef<HTMLDivElement>(null);
   const [showShareModal, setShowShareModal] = useState(false);
@@ -594,6 +595,7 @@ function MatchCardItem({ match, idx, userState, renderTeamWithElo, currentUser, 
 
 export default function ProfilePage({ params }: { params: { username: string } }) {
   const router = useRouter();
+  const [activeCommentPostId, setActiveCommentPostId] = useState<string | number | null>(null);
   const users = useStore(state => state.users);
   const matches = useStore(state => state.matches);
   const currentUser = useStore(state => state.currentUser);
@@ -1181,10 +1183,11 @@ export default function ProfilePage({ params }: { params: { username: string } }
                         <span className="text-xs text-gray-400 block mt-0.5">
                           {isOwnProfile ? '+ Rozet seçmek için tıkla' : 'Oyuncu henüz rozet eklemedi'}
                         </span>
-                      </div>
-                    </div>
-                  );
-                })}
+                        <CommentDrawer isOpen={!!activeCommentPostId} onClose={() => setActiveCommentPostId(null)} postId={activeCommentPostId || ""} />
+      </div>
+    </div>
+  );
+})}
               </div>
             </div>
             
@@ -1586,8 +1589,9 @@ export default function ProfilePage({ params }: { params: { username: string } }
                     renderTeamWithElo={renderTeamWithElo}
                     currentUser={currentUser}
                     addMatchComment={addMatchComment}
-                    users={users}
-                  />
+                      users={users}
+                      onOpenComments={setActiveCommentPostId}
+                    />
                 ))
               ) : (
                 <div className="text-center py-12 bg-white dark:bg-slate-900 rounded-3xl border border-gray-200/80 dark:border-slate-800 text-gray-400 font-medium">

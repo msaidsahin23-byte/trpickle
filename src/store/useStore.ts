@@ -78,7 +78,15 @@ export type MatchRecord = {
   comments?: Comment[];
 };
 
-export type Comment = { id: number | string; author: string; text: string };
+export type Comment = {
+  id: string;
+  post_id: string;
+  author_id: string;
+  content: string;
+  parent_id: string | null;
+  created_at: string;
+  users?: { name: string; username: string; avatar_url: string };
+};
 export type PollOption = { text: string; votes: number; votedBy?: (number | string)[] };
 export type Poll = { options: PollOption[] };
 export type Post = {
@@ -205,7 +213,6 @@ export type StoreState = {
   updatePreferences: (prefs: { appTheme?: 'light' | 'dark' | 'system', notificationsEnabled?: boolean }) => void;
   toggleLike: (postId: number | string, userId: number | string) => void;
   votePoll: (postId: number | string, optionIndex: number, userId: number | string) => void;
-  addComment: (postId: number | string, comment: Comment) => void;
   markNotificationsAsRead: (userId: number | string) => void;
   updateProfileImages: (userId: number | string, avatarUrl?: string, bannerUrl?: string) => void;
   updateProfileDetails: (userId: number | string, details: { accentColor?: string, paddle?: string, favoriteCourt?: string, bio?: string, birthdate?: string, city?: string, gender?: 'male' | 'female' }) => void;
@@ -257,6 +264,7 @@ export const useStore = create<StoreState>()(
       courtSubmissions: initialCourtSubmissions,
       currentUser: null,
       activeSessions: [],
+    deleteOwnAccount: () => {},
       directMessages: initialDirectMessages,
       theme: 'light',
 
@@ -942,7 +950,7 @@ export const useStore = create<StoreState>()(
 
         if (authorToNotify !== null) {
           supabase.from('notifications').insert({
-            user_id: authorToNotify.toString(),
+            user_id: String(authorToNotify),
             type: 'like',
             message: "Bir gönderiniz yeni beğeniler aldı.",
             related_match_id: postId.toString()
@@ -1000,60 +1008,6 @@ export const useStore = create<StoreState>()(
           return { ...p, poll: { ...p.poll, options: newOptions } };
         })
       })),
-
-      addComment: (postId, comment) => { set((state) => {
-        let authorToNotify: number | string | null = null;
-        let finalComments: any[] = [];
-
-        const newPosts = state.posts.map(p => {
-          if (p.id === postId) {
-            if (p.authorId !== state.currentUser?.id) {
-               authorToNotify = p.authorId;
-            }
-            finalComments = [...p.comments, comment];
-            return { ...p, comments: finalComments };
-          }
-          return p;
-        });
-
-        supabase.from('posts').update({ comments: finalComments }).eq('id', postId.toString()).then();
-
-        if (authorToNotify !== null && state.currentUser) {
-          const notifMessage = `${state.currentUser!.name} gönderinize yorum yaptı.`;
-          supabase.from('notifications').insert({
-            user_id: authorToNotify.toString(),
-            type: 'comment',
-            message: notifMessage,
-            related_match_id: postId.toString()
-          }).then();
-
-          const newUsers = state.users.map(u => {
-            if (u.id === authorToNotify) {
-              const newNotif: AppNotification = {
-                id: Date.now(),
-                postId,
-                type: 'comment',
-                message: notifMessage,
-                isRead: false,
-                createdAt: new Date().toISOString()
-              };
-              return { ...u, notifications: [newNotif, ...(u.notifications || [])] };
-            }
-            return u;
-          });
-          const newCurrentUser = state.currentUser?.id === authorToNotify 
-            ? newUsers.find(u => u.id === authorToNotify) || state.currentUser 
-            : state.currentUser;
-
-          const newActiveSessions = (state.activeSessions || []).map(u => 
-            u.id === authorToNotify ? (newUsers.find(nu => nu.id === authorToNotify) || u) : u
-          );
-
-          return { posts: newPosts, users: newUsers, currentUser: newCurrentUser, activeSessions: newActiveSessions };
-        }
-
-        return { posts: newPosts };
-      }); },
 
       markNotificationsAsRead: (userId) => set((state) => {
         const newUsers = state.users.map(u => {
@@ -1248,7 +1202,7 @@ export const useStore = create<StoreState>()(
                const notif: AppNotification = {
                  id: Date.now() + Math.random(),
                  type: 'comment',
-                 message: `${state.currentUser.name} maçınıza yorum yaptı: "${comment.text.length > 20 ? comment.text.substring(0,20)+'...' : comment.text}"`,
+                 message: `${state.currentUser.name} maçınıza yorum yaptı: "${comment.content.length > 20 ? comment.content.substring(0,20)+'...' : comment.content}"`,
                  isRead: false,
                  createdAt: new Date().toISOString()
                };
