@@ -943,15 +943,15 @@ export const useStore = create<StoreState>()(
         const newPosts = state.posts.map(p => {
           if (p.id !== postId) return p;
           const currentLikedBy = p.likedBy || [];
-          const hasLiked = currentLikedBy.includes(userId);
+          const hasLiked = currentLikedBy.map(String).includes(String(userId));
           
           if (!hasLiked && p.authorId !== userId) {
             authorToNotify = p.authorId;
           }
 
           finalLikedBy = hasLiked 
-            ? currentLikedBy.filter(id => id !== userId)
-            : [...currentLikedBy, userId];
+              ? currentLikedBy.filter(id => String(id) !== String(userId))
+              : [...currentLikedBy, userId];
 
           return {
             ...p,
@@ -1332,6 +1332,16 @@ export const useStore = create<StoreState>()(
       sendDirectMessage: (receiverId, content) => set((state) => {
         if (!state.currentUser || !content.trim()) return state;
         
+        const tempMsg = {
+          id: `temp-${Date.now()}`,
+          senderId: state.currentUser.id,
+          receiverId,
+          content: content.trim(),
+          createdAt: new Date().toISOString(),
+          isRead: false
+        };
+        const newDirectMessages = [...(state.directMessages || []), tempMsg];
+
         supabase.from('messages').insert({
            sender_id: state.currentUser.id.toString(),
            receiver_id: receiverId.toString(),
@@ -1339,7 +1349,7 @@ export const useStore = create<StoreState>()(
            is_read: false
         }).then();
 
-        return state;
+        return { directMessages: newDirectMessages };
       }),
 
       deleteDirectMessage: (id) => set((state) => {

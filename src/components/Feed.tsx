@@ -63,7 +63,7 @@ const votePollStore = useStore(state => state.votePoll);
   const matches = useStore(state => state.matches || []);
   const authorMayors = authorUser ? getUserMayorCourts(authorUser.id, courts, matches, users) : [];
 
-  const isLiked = currentUser ? (post.likedBy || []).includes(currentUser.id) : false;
+  const isLiked = currentUser ? (post.likedBy || []).map(String).includes(String(currentUser.id)) : false;
 const handleLike = (e?: React.MouseEvent) => {
     if (e) e.stopPropagation();
     if (!currentUser) {

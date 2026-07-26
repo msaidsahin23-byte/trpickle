@@ -304,6 +304,14 @@ export default function SupabaseSyncProvider() {
                   const m = payload.new as any;
                   useStore.setState((state) => {
                     if (state.directMessages?.some(existing => existing.id === m.id)) return state;
+                    
+                    const filteredMsgs = (state.directMessages || []).filter(msg => {
+                        if (msg.id.toString().startsWith('temp-') && msg.senderId === m.sender_id && msg.content === m.content) {
+                            return false;
+                        }
+                        return true;
+                    });
+
                     const newMsg = {
                       id: m.id,
                       senderId: m.sender_id,
@@ -312,7 +320,47 @@ export default function SupabaseSyncProvider() {
                       createdAt: m.created_at,
                       isRead: m.is_read
                     };
-                    return { directMessages: [...(state.directMessages || []), newMsg] };
+                    return { directMessages: [...filteredMsgs, newMsg] };
+                  });
+                }
+              )
+              .on(
+                'postgres_changes',
+                {
+                  event: 'INSERT',
+                  schema: 'public',
+                  table: 'comments',
+                },
+                (payload) => {
+                  const c = payload.new as any;
+                  useStore.setState((state) => {
+                     const newPosts = state.posts.map(p => {
+                        if (p.id.toString() === c.post_id) {
+                            return { ...p, comments: [...(p.comments || []), {} as any] };
+                        }
+                        return p;
+                     });
+                     return { posts: newPosts };
+                  });
+                }
+              )
+              .on(
+                'postgres_changes',
+                {
+                  event: 'DELETE',
+                  schema: 'public',
+                  table: 'comments',
+                },
+                (payload) => {
+                  const c = payload.old as any;
+                  useStore.setState((state) => {
+                     const newPosts = state.posts.map(p => {
+                        if (p.id.toString() === c.post_id) {
+                            return { ...p, comments: (p.comments || []).slice(0, -1) };
+                        }
+                        return p;
+                     });
+                     return { posts: newPosts };
                   });
                 }
               )
