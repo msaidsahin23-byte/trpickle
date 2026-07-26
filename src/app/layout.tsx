@@ -32,7 +32,7 @@ export default function RootLayout({
           </main>
           <Toaster position="bottom-right" />
           <div className="fixed bottom-2 right-2 text-[10px] font-bold text-gray-400 opacity-50 pointer-events-none z-[9999]">
-            Beta v1.0.3
+            Beta v1.0.4
           </div>
           <Analytics />
         </ThemeProvider>
