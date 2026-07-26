@@ -423,7 +423,41 @@ export default function SupabaseSyncProvider() {
                   });
                 }
               )
+              .subscribe()
+
+            const notifChannel = supabase.channel('global-notifications')
+              .on('broadcast', { event: 'new_notification' }, (payload) => {
+                  const n = payload.payload as any;
+                  if (!n || !n.user_id) return;
+                  
+                  useStore.setState((state) => {
+                    const newUsers = state.users.map(u => {
+                      if (String(u.id) === String(n.user_id)) {
+                        const newNotif = {
+                          id: n.id,
+                          postId: n.related_match_id,
+                          matchId: n.match_id,
+                          type: n.type,
+                          message: n.message,
+                          isRead: n.read,
+                          createdAt: n.created_at
+                        };
+                        
+                        if (u.notifications?.some(existing => String(existing.id) === String(n.id))) {
+                          return u;
+                        }
+                        
+                        return { ...u, notifications: [newNotif, ...(u.notifications || [])] };
+                      }
+                      return u;
+                    });
+                    
+                    const newCurrentUser = state.currentUser ? (newUsers.find(x => x.id === state.currentUser!.id) || state.currentUser) : state.currentUser;
+                    return { users: newUsers, currentUser: newCurrentUser };
+                  });
+              })
               .subscribe();
+;
           }
         } else {
           // Logged out

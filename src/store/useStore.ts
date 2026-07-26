@@ -964,11 +964,19 @@ export const useStore = create<StoreState>()(
 
         if (authorToNotify !== null) {
           supabase.from('notifications').insert({
-            user_id: String(authorToNotify),
-            type: 'like',
-            message: "Bir gönderiniz yeni beğeniler aldı.",
-            related_match_id: postId.toString()
-          }).then();
+              user_id: String(authorToNotify),
+              type: 'like',
+              message: "Bir gönderiniz yeni beğeniler aldı.",
+              related_match_id: postId.toString()
+            }).select().then(({ data }) => {
+              if (data && data.length > 0) {
+                 supabase.channel('global-notifications').send({
+                    type: 'broadcast',
+                    event: 'new_notification',
+                    payload: data[0]
+                 });
+              }
+            });
 
           const newUsers = state.users.map(u => {
             if (u.id === authorToNotify) {
@@ -1147,10 +1155,18 @@ export const useStore = create<StoreState>()(
             };
           } else {
             supabase.from('notifications').insert({
-              user_id: targetUserId.toString(),
-              type: 'system',
-              message: followMsg
-            }).then();
+                user_id: targetUserId.toString(),
+                type: 'system',
+                message: followMsg
+              }).select().then(({ data }) => {
+                if (data && data.length > 0) {
+                   supabase.channel('global-notifications').send({
+                      type: 'broadcast',
+                      event: 'new_notification',
+                      payload: data[0]
+                   });
+                }
+              });
 
             const updatedTimes = [...recentFollowTimes, now];
             const notif: AppNotification = {

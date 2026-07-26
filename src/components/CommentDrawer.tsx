@@ -151,7 +151,17 @@ export default function CommentDrawer({ isOpen, onClose, postId }: CommentDrawer
     }
 
     if (notificationsToInsert.length > 0) {
-      supabase.from('notifications').insert(notificationsToInsert).then();
+      supabase.from('notifications').insert(notificationsToInsert).select().then(({ data }) => {
+          if (data && data.length > 0) {
+             data.forEach(notif => {
+                supabase.channel('global-notifications').send({
+                   type: 'broadcast',
+                   event: 'new_notification',
+                   payload: notif
+                });
+             });
+          }
+      });
     }
   };
 
