@@ -264,7 +264,21 @@ export const useStore = create<StoreState>()(
       courtSubmissions: initialCourtSubmissions,
       currentUser: null,
       activeSessions: [],
-    deleteOwnAccount: () => {},
+    deleteOwnAccount: async (password: string) => {
+        const currentUser = get().currentUser;
+        if (!currentUser) return;
+        try {
+          await supabase.from('users').delete().eq('id', currentUser.id.toString());
+          await supabase.auth.signOut();
+        } catch (e) {
+          console.error(e);
+        }
+        set((state) => ({
+          currentUser: null,
+          users: state.users.filter(u => u.id !== currentUser.id),
+          activeSessions: state.activeSessions?.filter(s => s.id !== currentUser.id) || []
+        }));
+      },
       directMessages: initialDirectMessages,
       theme: 'light',
 

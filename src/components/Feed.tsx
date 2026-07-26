@@ -356,7 +356,7 @@ const handleLike = (e?: React.MouseEvent) => {
           onClick={(e) => { e.stopPropagation(); if (onOpenComments) onOpenComments(); }}
           className="flex items-center gap-2 font-semibold text-gray-500 dark:text-gray-400 hover:text-pb-blue transition-colors"
         >
-          <MessageCircle className="w-5 h-5 stroke-[2px]" /> Yorum
+          <MessageCircle className="w-5 h-5 stroke-[2px]" /> Yorumlar ({post?.comments?.length || 0})
         </button>
       </div>
 
