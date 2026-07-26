@@ -10,11 +10,12 @@ export default function SupabaseSyncProvider() {
       async (event, session) => {
         if (session?.user) {
           // Fetch ALL users, posts, and messages from Supabase
-          const [ { data: allUsers }, { data: allPosts }, { data: allMessages }, { data: allNotifications } ] = await Promise.all([
+          const [ { data: allUsers }, { data: allPosts }, { data: allMessages }, { data: allNotifications }, { data: allComments } ] = await Promise.all([
             supabase.from("users").select("*"),
-            supabase.from("posts").select("*, comments(count)").order("time", { ascending: false }),
+            supabase.from("posts").select("*").order("time", { ascending: false }),
             supabase.from("messages").select("*").order("created_at", { ascending: true }),
-            supabase.from("notifications").select("*").order("created_at", { ascending: false })
+            supabase.from("notifications").select("*").order("created_at", { ascending: false }),
+            supabase.from("comments").select("post_id")
           ]);
 
           if (allUsers) {
@@ -103,18 +104,21 @@ export default function SupabaseSyncProvider() {
                 mappedUsers.push(currentUser as any);
               }
 
-              const mappedPosts: any[] = (allPosts || []).map(p => ({
-                id: p.id,
-                authorId: p.author_id,
-                author: p.author_name,
-                rating: p.rating,
-                content: p.content,
-                time: p.time,
-                likedBy: p.liked_by || [],
-                comments: Array.from({ length: (p.comments?.[0]?.count || p.comments?.length || 0) }) as any[],
-                imageUrl: p.image_url,
-                linkedMatchId: p.linked_match_id
-              }));
+              const mappedPosts: any[] = (allPosts || []).map(p => {
+                const pComments = (allComments || []).filter((c: any) => c.post_id === p.id || c.post_id === String(p.id));
+                return {
+                  id: p.id,
+                  authorId: p.author_id,
+                  author: p.author_name,
+                  rating: p.rating,
+                  content: p.content,
+                  time: p.time,
+                  likedBy: p.liked_by || [],
+                  comments: Array.from({ length: pComments.length }) as any[],
+                  imageUrl: p.image_url,
+                  linkedMatchId: p.linked_match_id
+                };
+              });
 
               const mappedMessages: any[] = (allMessages || []).map(m => ({
                 id: m.id,

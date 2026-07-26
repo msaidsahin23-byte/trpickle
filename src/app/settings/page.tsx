@@ -117,13 +117,24 @@ export default function SettingsPage() {
       setPasswordStatus("Şifre en az 8 karakter olmalıdır.");
       return;
     }
+    if (!currentPasswordForPassword) {
+      setPasswordStatus("Lütfen mevcut şifrenizi girin.");
+      return;
+    }
     setIsPasswordLoading(true);
     setPasswordStatus("");
     try {
+      const { error: signInError } = await supabase.auth.signInWithPassword({
+        email: currentUser.email,
+        password: currentPasswordForPassword
+      });
+      if (signInError) throw new Error("Mevcut şifreniz yanlış.");
+
       const { data, error } = await supabase.auth.updateUser({ password: newPassword });
       if (error) throw error;
       setPasswordStatus("Şifreniz başarıyla güncellendi.");
       setNewPassword("");
+      setCurrentPasswordForPassword("");
     } catch (err: any) {
       setPasswordStatus(`Hata: ${err.message}`);
     } finally {
@@ -250,21 +261,35 @@ export default function SettingsPage() {
                   <p className="text-sm text-gray-500 dark:text-gray-400">En az 8 karakter uzunluğunda yeni bir şifre belirleyin.</p>
                 </div>
               </div>
-              <div className="flex flex-col sm:flex-row gap-3">
-                <input
-                  type="password"
-                  placeholder="Yeni şifre (en az 8 karakter)"
-                  value={newPassword}
-                  onChange={(e) => setNewPassword(e.target.value)}
-                  className="flex-1 px-4 py-2.5 rounded-xl border border-gray-200 dark:border-slate-600 bg-gray-50 dark:bg-slate-700 text-sm text-pb-dark dark:text-white outline-none focus:border-pb-green"
-                />
-                <button
-                  onClick={handleChangePassword}
-                  disabled={isPasswordLoading || newPassword.length < 8}
-                  className="px-6 py-2.5 bg-pb-green hover:bg-pb-green/90 disabled:opacity-50 text-pb-dark font-bold text-sm rounded-xl transition-colors shrink-0 shadow-sm"
-                >
-                  {isPasswordLoading ? "Güncelleniyor..." : "Şifreyi Güncelle"}
-                </button>
+              <div className="flex flex-col gap-3">
+                <div className="flex flex-col gap-1">
+                  <input
+                    type="password"
+                    placeholder="Mevcut Şifreniz"
+                    value={currentPasswordForPassword}
+                    onChange={(e) => setCurrentPasswordForPassword(e.target.value)}
+                    className="w-full px-4 py-2.5 rounded-xl border border-gray-200 dark:border-slate-600 bg-gray-50 dark:bg-slate-700 text-sm text-pb-dark dark:text-white outline-none focus:border-pb-green"
+                  />
+                  <button onClick={handleResetPasswordEmail} className="text-xs text-pb-green hover:underline text-left px-1 mt-1 font-medium self-start">
+                    Şifremi unuttum, sıfırlama bağlantısı gönder
+                  </button>
+                </div>
+                <div className="flex flex-col sm:flex-row gap-3">
+                  <input
+                    type="password"
+                    placeholder="Yeni şifre (en az 8 karakter)"
+                    value={newPassword}
+                    onChange={(e) => setNewPassword(e.target.value)}
+                    className="flex-1 px-4 py-2.5 rounded-xl border border-gray-200 dark:border-slate-600 bg-gray-50 dark:bg-slate-700 text-sm text-pb-dark dark:text-white outline-none focus:border-pb-green"
+                  />
+                  <button
+                    onClick={handleChangePassword}
+                    disabled={isPasswordLoading || newPassword.length < 8 || !currentPasswordForPassword}
+                    className="px-6 py-2.5 bg-pb-green hover:bg-pb-green/90 disabled:opacity-50 text-pb-dark font-bold text-sm rounded-xl transition-colors shrink-0 shadow-sm"
+                  >
+                    {isPasswordLoading ? "Güncelleniyor..." : "Şifreyi Güncelle"}
+                  </button>
+                </div>
               </div>
               {passwordStatus && (
                 <p className={`mt-3 text-sm font-bold ${passwordStatus.startsWith('Hata') ? 'text-red-500' : 'text-pb-green'}`}>
