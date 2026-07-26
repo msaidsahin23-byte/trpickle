@@ -762,7 +762,7 @@ export const useStore = create<StoreState>()(
           author_id: post.authorId.toString(),
           author_name: post.author,
           rating: post.rating,
-          content: post.content,
+          content: post.poll ? post.content + "\n\n<!--POLL:" + JSON.stringify(post.poll) + "-->" : post.content,
           time: post.time,
           liked_by: (post.likedBy || []).map(String),
           comments: post.comments || [],
@@ -998,30 +998,41 @@ export const useStore = create<StoreState>()(
         return { posts: newPosts };
       }); },
 
-      votePoll: (postId, optionIndex, userId) => set((state) => ({
-        posts: state.posts.map(p => {
-          if (p.id !== postId || !p.poll) return p;
-          
-          const newOptions = p.poll.options.map((opt, i) => {
-            const currentVotedBy = opt.votedBy || [];
-            const hasVotedThis = currentVotedBy.includes(userId);
+      votePoll: (postId, optionIndex, userId) => set((state) => {
+          let updatedPostData: any = null;
+          const newPosts = state.posts.map(p => {
+            if (p.id !== postId || !p.poll) return p;
             
-            if (i === optionIndex) {
-               if (hasVotedThis) {
-                  return { ...opt, votes: opt.votes - 1, votedBy: currentVotedBy.filter(id => id !== userId) };
-               } else {
-                  return { ...opt, votes: opt.votes + 1, votedBy: [...currentVotedBy, userId] };
-               }
-            } else {
-               if (hasVotedThis) {
-                  return { ...opt, votes: opt.votes - 1, votedBy: currentVotedBy.filter(id => id !== userId) };
-               }
-            }
-            return opt;
+            const newOptions = p.poll.options.map((opt, i) => {
+              const currentVotedBy = opt.votedBy || [];
+              const hasVotedThis = currentVotedBy.includes(userId);
+              
+              if (i === optionIndex) {
+                 if (hasVotedThis) {
+                    return { ...opt, votes: opt.votes - 1, votedBy: currentVotedBy.filter(id => id !== userId) };
+                 } else {
+                    return { ...opt, votes: opt.votes + 1, votedBy: [...currentVotedBy, userId] };
+                 }
+              } else {
+                 if (hasVotedThis) {
+                    return { ...opt, votes: opt.votes - 1, votedBy: currentVotedBy.filter(id => id !== userId) };
+                 }
+              }
+              return opt;
+            });
+            const updatedP = { ...p, poll: { ...p.poll, options: newOptions } };
+            updatedPostData = updatedP;
+            return updatedP;
           });
-          return { ...p, poll: { ...p.poll, options: newOptions } };
-        })
-      })),
+
+          if (updatedPostData && updatedPostData.poll) {
+             const baseContent = updatedPostData.content.split("\n\n<!--POLL:")[0];
+             const newContent = baseContent + "\n\n<!--POLL:" + JSON.stringify(updatedPostData.poll) + "-->";
+             supabase.from('posts').update({ content: newContent }).eq('id', postId.toString()).then();
+          }
+
+          return { posts: newPosts };
+        }),
 
       markNotificationsAsRead: (userId) => set((state) => {
         const newUsers = state.users.map(u => {

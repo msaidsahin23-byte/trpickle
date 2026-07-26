@@ -106,12 +106,22 @@ export default function SupabaseSyncProvider() {
 
               const mappedPosts: any[] = (allPosts || []).map(p => {
                 const pComments = (allComments || []).filter((c: any) => c.post_id === p.id || c.post_id === String(p.id));
+                let contentStr = p.content || "";
+                let pollObj = undefined;
+                if (contentStr.includes("\n\n<!--POLL:")) {
+                   const parts = contentStr.split("\n\n<!--POLL:");
+                   contentStr = parts[0];
+                   try {
+                     pollObj = JSON.parse(parts[1].replace("-->", ""));
+                   } catch(e) {}
+                }
                 return {
                   id: p.id,
                   authorId: p.author_id,
                   author: p.author_name,
                   rating: p.rating,
-                  content: p.content,
+                  content: contentStr,
+                  poll: pollObj,
                   time: p.time,
                   likedBy: p.liked_by || [],
                   comments: Array.from({ length: pComments.length }) as any[],
@@ -200,12 +210,22 @@ export default function SupabaseSyncProvider() {
                     }
                     if (payload.eventType === 'INSERT') {
                       if (state.posts.some(existing => existing.id.toString() === p.id)) return state;
+                      let contentStr = p.content || "";
+                      let pollObj = undefined;
+                      if (contentStr.includes("\n\n<!--POLL:")) {
+                         const parts = contentStr.split("\n\n<!--POLL:");
+                         contentStr = parts[0];
+                         try {
+                           pollObj = JSON.parse(parts[1].replace("-->", ""));
+                         } catch(e) {}
+                      }
                       const mappedNewPost = {
                         id: p.id,
                         authorId: p.author_id,
                         author: p.author_name,
                         rating: p.rating,
-                        content: p.content,
+                        content: contentStr,
+                        poll: pollObj,
                         time: p.time,
                         likedBy: p.liked_by || [],
                         comments: Array.from({ length: (p.comments?.[0]?.count || p.comments?.length || 0) }) as any[],
@@ -218,8 +238,19 @@ export default function SupabaseSyncProvider() {
                       return {
                         posts: state.posts.map(x => {
                           if (x.id.toString() === p.id) {
+                            let contentStr = p.content || "";
+                            let pollObj = x.poll;
+                            if (contentStr.includes("\n\n<!--POLL:")) {
+                               const parts = contentStr.split("\n\n<!--POLL:");
+                               contentStr = parts[0];
+                               try {
+                                 pollObj = JSON.parse(parts[1].replace("-->", ""));
+                               } catch(e) {}
+                            }
                             return {
                               ...x,
+                              content: contentStr,
+                              poll: pollObj,
                               likedBy: p.liked_by || [],
                               comments: x.comments
                             };
