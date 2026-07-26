@@ -1331,42 +1331,34 @@ export const useStore = create<StoreState>()(
 
       sendDirectMessage: (receiverId, content) => set((state) => {
         if (!state.currentUser || !content.trim()) return state;
-        const newMsg: DirectMessage = {
-          id: `dm-${Date.now()}-${Math.random().toString(36).substring(2, 7)}`,
-          senderId: state.currentUser.id,
-          receiverId,
-          content: content.trim(),
-          createdAt: new Date().toISOString(),
-          isRead: false
-        };
-        const newDirectMessages = [...(state.directMessages || []), newMsg];
+        
+        supabase.from('messages').insert({
+           sender_id: state.currentUser.id.toString(),
+           receiver_id: receiverId.toString(),
+           content: content.trim(),
+           is_read: false
+        }).then();
 
-        if (typeof window !== "undefined") {
-          setTimeout(() => {
-            fetch("/api/sync", {
-              method: "POST",
-              headers: { "Content-Type": "application/json" },
-              body: JSON.stringify({
-                users: state.users,
-                matches: state.matches,
-                directMessages: newDirectMessages,
-              }),
-            }).catch(() => {});
-          }, 10);
-        }
-
-        return {
-          directMessages: newDirectMessages
-        };
+        return state;
       }),
 
-      deleteDirectMessage: (id) => set((state) => ({
-        directMessages: (state.directMessages || []).filter(msg => msg.id !== id)
-      })),
+      deleteDirectMessage: (id) => set((state) => {
+        supabase.from('messages').delete().eq('id', id).then();
+        return {
+          directMessages: (state.directMessages || []).filter(msg => msg.id !== id)
+        };
+      }),
 
       markMessagesAsRead: (senderId) => set((state) => {
         if (!state.currentUser) return state;
         const currentUserId = state.currentUser.id;
+        
+        supabase.from('messages')
+          .update({ is_read: true })
+          .eq('sender_id', senderId.toString())
+          .eq('receiver_id', currentUserId.toString())
+          .then();
+          
         const updated = (state.directMessages || []).map(msg => {
           if (msg.senderId === senderId && msg.receiverId === currentUserId && !msg.isRead) {
             return { ...msg, isRead: true };

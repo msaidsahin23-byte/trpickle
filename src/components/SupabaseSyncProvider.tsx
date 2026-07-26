@@ -108,9 +108,9 @@ export default function SupabaseSyncProvider() {
                 const pComments = (allComments || []).filter((c: any) => c.post_id === p.id || c.post_id === String(p.id));
                 let contentStr = p.content || "";
                 let pollObj = undefined;
-                if (contentStr.includes("\n\n<!--POLL:")) {
-                   const parts = contentStr.split("\n\n<!--POLL:");
-                   contentStr = parts[0];
+                if (contentStr.includes("<!--POLL:")) {
+                   const parts = contentStr.split("<!--POLL:");
+                   contentStr = parts[0].trim();
                    try {
                      pollObj = JSON.parse(parts[1].replace("-->", ""));
                    } catch(e) {}
@@ -212,9 +212,9 @@ export default function SupabaseSyncProvider() {
                       if (state.posts.some(existing => existing.id.toString() === p.id)) return state;
                       let contentStr = p.content || "";
                       let pollObj = undefined;
-                      if (contentStr.includes("\n\n<!--POLL:")) {
-                         const parts = contentStr.split("\n\n<!--POLL:");
-                         contentStr = parts[0];
+                      if (contentStr.includes("<!--POLL:")) {
+                         const parts = contentStr.split("<!--POLL:");
+                         contentStr = parts[0].trim();
                          try {
                            pollObj = JSON.parse(parts[1].replace("-->", ""));
                          } catch(e) {}
@@ -240,9 +240,9 @@ export default function SupabaseSyncProvider() {
                           if (x.id.toString() === p.id) {
                             let contentStr = p.content || "";
                             let pollObj = x.poll;
-                            if (contentStr.includes("\n\n<!--POLL:")) {
-                               const parts = contentStr.split("\n\n<!--POLL:");
-                               contentStr = parts[0];
+                            if (contentStr.includes("<!--POLL:")) {
+                               const parts = contentStr.split("<!--POLL:");
+                               contentStr = parts[0].trim();
                                try {
                                  pollObj = JSON.parse(parts[1].replace("-->", ""));
                                } catch(e) {}
@@ -291,6 +291,60 @@ export default function SupabaseSyncProvider() {
                     const newCurrentUser = state.currentUser ? (newUsers.find(x => x.id === state.currentUser!.id) || state.currentUser) : state.currentUser;
                     return { users: newUsers, currentUser: newCurrentUser };
                   });
+                }
+              )
+              .on(
+                'postgres_changes',
+                {
+                  event: 'INSERT',
+                  schema: 'public',
+                  table: 'messages',
+                },
+                (payload) => {
+                  const m = payload.new as any;
+                  useStore.setState((state) => {
+                    if (state.directMessages?.some(existing => existing.id === m.id)) return state;
+                    const newMsg = {
+                      id: m.id,
+                      senderId: m.sender_id,
+                      receiverId: m.receiver_id,
+                      content: m.content,
+                      createdAt: m.created_at,
+                      isRead: m.is_read
+                    };
+                    return { directMessages: [...(state.directMessages || []), newMsg] };
+                  });
+                }
+              )
+              .on(
+                'postgres_changes',
+                {
+                  event: 'UPDATE',
+                  schema: 'public',
+                  table: 'messages',
+                },
+                (payload) => {
+                  const m = payload.new as any;
+                  useStore.setState((state) => {
+                    const updated = (state.directMessages || []).map(msg => 
+                      msg.id === m.id ? { ...msg, isRead: m.is_read } : msg
+                    );
+                    return { directMessages: updated };
+                  });
+                }
+              )
+              .on(
+                'postgres_changes',
+                {
+                  event: 'DELETE',
+                  schema: 'public',
+                  table: 'messages',
+                },
+                (payload) => {
+                  const m = payload.old as any;
+                  useStore.setState((state) => ({
+                    directMessages: (state.directMessages || []).filter(msg => msg.id !== m.id)
+                  }));
                 }
               )
               .on(
