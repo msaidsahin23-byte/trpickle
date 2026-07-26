@@ -6,6 +6,7 @@ import { ThemeProvider } from "@/components/ThemeProvider";
 import { Toaster } from "react-hot-toast";
 import NotificationBanner from "@/components/NotificationBanner";
 import SupabaseSyncProvider from "@/components/SupabaseSyncProvider";
+import { Analytics } from '@vercel/analytics/next';
 
 const spaceGrotesk = Space_Grotesk({ subsets: ["latin"] });
 
@@ -30,9 +31,13 @@ export default function RootLayout({
             {children}
           </main>
           <Toaster position="bottom-right" />
+<<<<<<< HEAD
           <div className="fixed bottom-2 right-2 text-[10px] font-bold text-gray-400 opacity-50 pointer-events-none z-[9999]">
             Beta v1.0.1
           </div>
+=======
+          <Analytics />
+>>>>>>> fb7a3038605053bffa31d8bb745b8dae4df7a02b
         </ThemeProvider>
       </body>
     </html>
