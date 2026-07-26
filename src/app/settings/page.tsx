@@ -102,6 +102,16 @@ export default function SettingsPage() {
     }
   };
 
+  const handleResetPasswordEmail = async () => {
+    try {
+      const { error } = await supabase.auth.resetPasswordForEmail(currentUser.email);
+      if (error) throw error;
+      alert("Şifre sıfırlama bağlantısı e-posta adresinize gönderildi!");
+    } catch (e: any) {
+      alert("Hata: " + e.message);
+    }
+  };
+
   const handleChangePassword = async () => {
     if (!newPassword || newPassword.length < 8) {
       setPasswordStatus("Şifre en az 8 karakter olmalıdır.");

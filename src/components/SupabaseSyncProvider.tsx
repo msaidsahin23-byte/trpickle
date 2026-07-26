@@ -217,7 +217,7 @@ export default function SupabaseSyncProvider() {
                             return {
                               ...x,
                               likedBy: p.liked_by || [],
-                              comments: p.comments || []
+                              comments: x.comments
                             };
                           }
                           return x;
