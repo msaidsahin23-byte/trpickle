@@ -357,7 +357,7 @@ function AuthContent() {
             <>
               <div>
                 <label className="block font-semibold mb-1 text-sm text-gray-700">Doğum Tarihi</label>
-                <input required type="date" value={selectedBirthdate} onChange={e => setSelectedBirthdate(e.target.value)} className="w-full border border-gray-200  rounded-xl p-3 bg-gray-50  outline-none focus:ring-1 focus:ring-pb-blue/30 focus:border-pb-blue/50 transition-all font-medium text-gray-700 cursor-pointer" />
+                <input required type="date" min="1926-01-01" max="2026-12-31" value={selectedBirthdate} onChange={e => setSelectedBirthdate(e.target.value)} className="w-full border border-gray-200  rounded-xl p-3 bg-gray-50  outline-none focus:ring-1 focus:ring-pb-blue/30 focus:border-pb-blue/50 transition-all font-medium text-gray-700 cursor-pointer" />
               </div>
               
               <div>

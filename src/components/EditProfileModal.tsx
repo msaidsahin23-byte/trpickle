@@ -235,12 +235,9 @@ export function EditProfileModal({ isOpen, onClose }: { isOpen: boolean; onClose
 
               <div className="flex flex-col gap-3">
                 <span className="text-sm font-bold text-gray-500 dark:text-gray-400 uppercase tracking-widest">Doğum Tarihi</span>
-                <input 
-                  type="date" 
+                <input type="date" min="1926-01-01" max="2026-12-31" 
                   value={birthdate}
                   onChange={(e) => setBirthdate(e.target.value)}
-                  min="1920-01-01"
-                  max={todayDate}
                   required
                   className="w-full border border-gray-200 dark:border-slate-600 bg-white dark:bg-slate-800 rounded-xl px-4 py-3 outline-none focus:border-pb-blue focus:ring-1 focus:ring-pb-blue transition-colors font-medium text-pb-dark dark:text-white"
                 />

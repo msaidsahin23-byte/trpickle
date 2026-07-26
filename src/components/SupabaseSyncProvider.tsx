@@ -12,7 +12,7 @@ export default function SupabaseSyncProvider() {
           // Fetch ALL users, posts, and messages from Supabase
           const [ { data: allUsers }, { data: allPosts }, { data: allMessages }, { data: allNotifications } ] = await Promise.all([
             supabase.from("users").select("*"),
-            supabase.from("posts").select("*").order("time", { ascending: false }),
+            supabase.from("posts").select("*, comments(count)").order("time", { ascending: false }),
             supabase.from("messages").select("*").order("created_at", { ascending: true }),
             supabase.from("notifications").select("*").order("created_at", { ascending: false })
           ]);
@@ -111,7 +111,7 @@ export default function SupabaseSyncProvider() {
                 content: p.content,
                 time: p.time,
                 likedBy: p.liked_by || [],
-                comments: p.comments || [],
+                comments: Array.from({ length: (p.comments?.[0]?.count || p.comments?.length || 0) }) as any[],
                 imageUrl: p.image_url,
                 linkedMatchId: p.linked_match_id
               }));
@@ -178,7 +178,8 @@ export default function SupabaseSyncProvider() {
             });
             
             // Set up Realtime Subscriptions
-            const channel = supabase.channel('schema-db-changes')
+            supabase.removeAllChannels();
+            const channel = supabase.channel('schema-db-changes-' + Date.now())
               .on(
                 'postgres_changes',
                 {
@@ -203,7 +204,7 @@ export default function SupabaseSyncProvider() {
                         content: p.content,
                         time: p.time,
                         likedBy: p.liked_by || [],
-                        comments: p.comments || [],
+                        comments: Array.from({ length: (p.comments?.[0]?.count || p.comments?.length || 0) }) as any[],
                         imageUrl: p.image_url,
                         linkedMatchId: p.linked_match_id
                       };

@@ -22,6 +22,8 @@ export default function SettingsPage() {
   
   // Security States
   const [newEmail, setNewEmail] = useState("");
+    const [currentPasswordForEmail, setCurrentPasswordForEmail] = useState("");
+    const [currentPasswordForPassword, setCurrentPasswordForPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [emailStatus, setEmailStatus] = useState("");
   const [passwordStatus, setPasswordStatus] = useState("");
@@ -195,21 +197,30 @@ export default function SettingsPage() {
                   <p className="text-sm text-gray-500 dark:text-gray-400">Yeni e-posta adresinize ve mevcut adresinize doğrulama bağlantısı gönderilecektir.</p>
                 </div>
               </div>
-              <div className="flex flex-col sm:flex-row gap-3">
+              <div className="flex flex-col gap-3">
                 <input
                   type="email"
                   placeholder="Yeni e-posta adresi"
                   value={newEmail}
                   onChange={(e) => setNewEmail(e.target.value)}
-                  className="flex-1 px-4 py-2.5 rounded-xl border border-gray-200 dark:border-slate-600 bg-gray-50 dark:bg-slate-700 text-sm text-pb-dark dark:text-white outline-none focus:border-pb-blue"
+                  className="w-full px-4 py-2.5 rounded-xl border border-gray-200 dark:border-slate-600 bg-gray-50 dark:bg-slate-700 text-sm text-pb-dark dark:text-white outline-none focus:border-pb-blue"
                 />
-                <button
-                  onClick={handleChangeEmail}
-                  disabled={isEmailLoading || !newEmail}
-                  className="px-6 py-2.5 bg-pb-blue hover:bg-pb-blue/90 disabled:opacity-50 text-white font-bold text-sm rounded-xl transition-colors shrink-0"
-                >
-                  {isEmailLoading ? "Gönderiliyor..." : "E-posta Değiştir"}
-                </button>
+                <div className="flex flex-col sm:flex-row gap-3">
+                  <input
+                    type="password"
+                    placeholder="Mevcut Şifreniz"
+                    value={currentPasswordForEmail}
+                    onChange={(e) => setCurrentPasswordForEmail(e.target.value)}
+                    className="flex-1 px-4 py-2.5 rounded-xl border border-gray-200 dark:border-slate-600 bg-gray-50 dark:bg-slate-700 text-sm text-pb-dark dark:text-white outline-none focus:border-pb-blue"
+                  />
+                  <button
+                    onClick={handleChangeEmail}
+                    disabled={isEmailLoading || !newEmail || !currentPasswordForEmail}
+                    className="px-6 py-2.5 bg-pb-blue hover:bg-pb-blue/90 disabled:opacity-50 text-white font-bold text-sm rounded-xl transition-colors shrink-0"
+                  >
+                    {isEmailLoading ? "Gönderiliyor..." : "E-posta Değiştir"}
+                  </button>
+                </div>
               </div>
               {emailStatus && (
                 <p className={`mt-3 text-sm font-bold ${emailStatus.startsWith('Hata') ? 'text-red-500' : 'text-pb-green'}`}>
