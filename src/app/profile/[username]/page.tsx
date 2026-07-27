@@ -736,17 +736,17 @@ export default function ProfilePage({ params }: { params: { username: string } }
       
       if (isT1) {
         const idx = m.team1.indexOf(userId);
-        if ((m.eloChange || {}).team1Changes && (m.eloChange || {}).team1Changes[idx] !== undefined) {
-          elo -= (m.eloChange || {}).team1Changes[idx];
+        if (m.eloChange?.team1Changes?.[idx] !== undefined) {
+          elo -= m.eloChange!.team1Changes![idx];
         } else {
-          elo -= (m.eloChange || {}).team1Change;
+          elo -= (m.eloChange?.team1Change || 0);
         }
       } else if (isT2) {
         const idx = m.team2.indexOf(userId);
-        if ((m.eloChange || {}).team2Changes && (m.eloChange || {}).team2Changes[idx] !== undefined) {
-          elo -= (m.eloChange || {}).team2Changes[idx];
+        if (m.eloChange?.team2Changes?.[idx] !== undefined) {
+          elo -= m.eloChange!.team2Changes![idx];
         } else {
-          elo -= (m.eloChange || {}).team2Change;
+          elo -= (m.eloChange?.team2Change || 0);
         }
       }
     }
@@ -776,9 +776,9 @@ export default function ProfilePage({ params }: { params: { username: string } }
             const tIdx = isTeam1 ? m.team1.indexOf(tId) : m.team2.indexOf(tId);
             let gain = 0;
             if (isTeam1) {
-              gain = ((m.eloChange || {}).team1Changes && (m.eloChange || {}).team1Changes[tIdx] !== undefined) ? (m.eloChange || {}).team1Changes[tIdx] : (m.eloChange || {}).team1Change;
+              gain = m.eloChange?.team1Changes?.[tIdx] ?? m.eloChange?.team1Change ?? 0;
             } else {
-              gain = ((m.eloChange || {}).team2Changes && (m.eloChange || {}).team2Changes[tIdx] !== undefined) ? (m.eloChange || {}).team2Changes[tIdx] : (m.eloChange || {}).team2Change;
+              gain = m.eloChange?.team2Changes?.[tIdx] ?? m.eloChange?.team2Change ?? 0;
             }
             isPositiveGain = gain >= 0;
             // For gray formatting if 0
