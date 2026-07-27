@@ -1,6 +1,6 @@
 "use client";
 import { useEffect } from "react";
-import { supabase } from "@/lib/supabase";
+import { supabase, getGlobalChannel } from "@/lib/supabase";
 import { useStore } from "@/store/useStore";
 
 export default function SupabaseSyncProvider() {
@@ -546,7 +546,7 @@ export default function SupabaseSyncProvider() {
               });
             });
 
-            notifChannel.subscribe();
+            // getGlobalChannel already subscribes
 ;
           }
         } else {
@@ -558,6 +558,9 @@ export default function SupabaseSyncProvider() {
 
     return () => {
       subscription.unsubscribe();
+      // Unsubscribe the global channel as well when the app unmounts
+      const channel = getGlobalChannel();
+      supabase.removeChannel(channel);
     };
   }, []);
 

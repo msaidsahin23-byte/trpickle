@@ -3,7 +3,7 @@ import { persist } from 'zustand/middleware';
 import { calculateNewRatings } from '@/lib/rating-engine';
 import { ACHIEVEMENTS } from '@/data/achievements';
 import toast from 'react-hot-toast';
-import { supabase } from '@/lib/supabase';
+import { supabase, sendReliableBroadcast } from '@/lib/supabase';
 
 export type UserRole = 'admin' | 'user';
 
@@ -502,7 +502,7 @@ export const useStore = create<StoreState>()(
 
           // SYNC TO SUPABASE & BROADCAST
           supabase.from('matches').update({ approved_by: currentApprovedBy }).eq('id', match.id).then();
-          supabase.channel('global-notifications').send({ 
+          sendReliableBroadcast({ 
             type: 'broadcast', 
             event: 'update_match', 
             payload: {
@@ -639,7 +639,7 @@ export const useStore = create<StoreState>()(
             }
           }).eq('id', match.id).then();
           
-          supabase.channel('global-notifications').send({ 
+          sendReliableBroadcast({ 
             type: 'broadcast', 
             event: 'update_match', 
             payload: {
@@ -686,7 +686,7 @@ export const useStore = create<StoreState>()(
         
         // SYNC TO SUPABASE & BROADCAST
         supabase.from('matches').update({ status: 'rejected' }).eq('id', match.id).then();
-        supabase.channel('global-notifications').send({ 
+        sendReliableBroadcast({ 
             type: 'broadcast', 
             event: 'update_match', 
             payload: {
@@ -1028,7 +1028,7 @@ export const useStore = create<StoreState>()(
 
         // Push to Supabase
         supabase.from('posts').update({ liked_by: finalLikedBy.map(String) }).eq('id', postId.toString()).then();
-        supabase.channel('global-notifications').send({
+        sendReliableBroadcast({
             type: 'broadcast',
             event: 'update_post',
             payload: {
@@ -1045,7 +1045,7 @@ export const useStore = create<StoreState>()(
               related_match_id: postId.toString()
             }).select().then(({ data }) => {
               if (data && data.length > 0) {
-                 supabase.channel('global-notifications').send({
+                 sendReliableBroadcast({
                     type: 'broadcast',
                     event: 'new_notification',
                     payload: data[0]
@@ -1235,7 +1235,7 @@ export const useStore = create<StoreState>()(
                 message: followMsg
               }).select().then(({ data }) => {
                 if (data && data.length > 0) {
-                   supabase.channel('global-notifications').send({
+                   sendReliableBroadcast({
                       type: 'broadcast',
                       event: 'new_notification',
                       payload: data[0]
@@ -1441,7 +1441,7 @@ export const useStore = create<StoreState>()(
            content: content.trim(),
            is_read: false
         }).then();
-        supabase.channel('global-notifications').send({
+        sendReliableBroadcast({
            type: 'broadcast',
            event: 'new_message',
            payload: {

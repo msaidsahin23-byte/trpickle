@@ -3,7 +3,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, Send, CornerDownRight } from 'lucide-react';
-import { supabase } from '@/lib/supabase';
+import { supabase, sendReliableBroadcast } from '@/lib/supabase';
 import { useStore } from '@/store/useStore';
 import Link from 'next/link';
 
@@ -162,7 +162,7 @@ export default function CommentDrawer({ isOpen, onClose, postId }: CommentDrawer
       supabase.from('notifications').insert(notificationsToInsert).then();
       
       broadcastNotifs.forEach(notif => {
-         supabase.channel('global-notifications').send({
+         sendReliableBroadcast({
             type: 'broadcast',
             event: 'new_notification',
             payload: notif
