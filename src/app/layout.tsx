@@ -31,8 +31,8 @@ export default function RootLayout({
             {children}
           </main>
           <Toaster position="bottom-right" />
-          <div className="fixed bottom-2 right-2 text-[10px] font-bold text-gray-400 opacity-50 pointer-events-none z-[9999]">
-            Beta v1.0.8
+          <div className="fixed bottom-0 right-0 p-2 text-[10px] text-slate-400/30 font-mono pointer-events-none z-50">
+            Beta v1.2.0
           </div>
           <Analytics />
         </ThemeProvider>

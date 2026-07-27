@@ -151,16 +151,22 @@ export default function CommentDrawer({ isOpen, onClose, postId }: CommentDrawer
     }
 
     if (notificationsToInsert.length > 0) {
-      supabase.from('notifications').insert(notificationsToInsert).select().then(({ data }) => {
-          if (data && data.length > 0) {
-             data.forEach(notif => {
-                supabase.channel('global-notifications').send({
-                   type: 'broadcast',
-                   event: 'new_notification',
-                   payload: notif
-                });
-             });
-          }
+      // Add a temporary ID for local broadcast so it renders immediately
+      const broadcastNotifs = notificationsToInsert.map((n, idx) => ({
+         ...n,
+         id: Date.now() + idx,
+         created_at: new Date().toISOString(),
+         read: false
+      }));
+      
+      supabase.from('notifications').insert(notificationsToInsert).then();
+      
+      broadcastNotifs.forEach(notif => {
+         supabase.channel('global-notifications').send({
+            type: 'broadcast',
+            event: 'new_notification',
+            payload: notif
+         });
       });
     }
   };

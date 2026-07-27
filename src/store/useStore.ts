@@ -497,7 +497,20 @@ export const useStore = create<StoreState>()(
         if (!allApproved) {
           // Not everyone has approved yet, just update the approvedBy array
           const updatedMatches = [...state.matches];
-          updatedMatches[matchIndex] = { ...match, approvedBy: currentApprovedBy };
+          const newMatchState = { ...match, approvedBy: currentApprovedBy };
+          updatedMatches[matchIndex] = newMatchState;
+
+          // SYNC TO SUPABASE & BROADCAST
+          supabase.from('matches').update({ approved_by: currentApprovedBy }).eq('id', match.id).then();
+          supabase.channel('global-notifications').send({ 
+            type: 'broadcast', 
+            event: 'update_match', 
+            payload: {
+              id: match.id,
+              approved_by: currentApprovedBy
+            }
+          });
+
           return { matches: updatedMatches };
         }
 
@@ -612,6 +625,49 @@ export const useStore = create<StoreState>()(
 
           const finalCurrentUser = notifiedUsers.find(u => u.id === newCurrentUser?.id) || newCurrentUser;
 
+          // SYNC TO SUPABASE & BROADCAST (UNANIMOUS APPROVAL)
+          supabase.from('matches').update({ 
+            status: 'approved', 
+            approved_by: currentApprovedBy,
+            team1_elo: t1Ratings,
+            team2_elo: t2Ratings,
+            elo_change: {
+              team1Change: result.team1Change,
+              team2Change: result.team2Change,
+              team1Changes: result.team1Changes,
+              team2Changes: result.team2Changes
+            }
+          }).eq('id', match.id).then();
+          
+          supabase.channel('global-notifications').send({ 
+            type: 'broadcast', 
+            event: 'update_match', 
+            payload: {
+              id: match.id,
+              status: 'approved',
+              approved_by: currentApprovedBy,
+              team1_elo: t1Ratings,
+              team2_elo: t2Ratings,
+              elo_change: {
+                team1Change: result.team1Change,
+                team2Change: result.team2Change,
+                team1Changes: result.team1Changes,
+                team2Changes: result.team2Changes
+              }
+            } 
+          });
+
+          // Sync user rating changes to Supabase
+          updates.forEach(up => {
+            const u = newUsers.find(nu => nu.id === up.id);
+            if (u) {
+              supabase.from('users').update({ 
+                singles_rating: u.singlesRating, 
+                doubles_rating: u.doublesRating 
+              }).eq('id', u.id).then();
+            }
+          });
+
           return { matches: updatedMatches, users: notifiedUsers, currentUser: finalCurrentUser };
         });
         get().checkAchievements();
@@ -628,6 +684,17 @@ export const useStore = create<StoreState>()(
         const updatedMatches = [...state.matches];
         updatedMatches[matchIndex] = { ...match, status: 'rejected' };
         
+        // SYNC TO SUPABASE & BROADCAST
+        supabase.from('matches').update({ status: 'rejected' }).eq('id', match.id).then();
+        supabase.channel('global-notifications').send({ 
+            type: 'broadcast', 
+            event: 'update_match', 
+            payload: {
+              id: match.id,
+              status: 'rejected'
+            }
+        });
+
         return { matches: updatedMatches };
       }),
 
@@ -961,6 +1028,14 @@ export const useStore = create<StoreState>()(
 
         // Push to Supabase
         supabase.from('posts').update({ liked_by: finalLikedBy.map(String) }).eq('id', postId.toString()).then();
+        supabase.channel('global-notifications').send({
+            type: 'broadcast',
+            event: 'update_post',
+            payload: {
+              id: postId.toString(),
+              liked_by: finalLikedBy.map(String)
+            }
+        });
 
         if (authorToNotify !== null) {
           supabase.from('notifications').insert({
@@ -1366,6 +1441,18 @@ export const useStore = create<StoreState>()(
            content: content.trim(),
            is_read: false
         }).then();
+        supabase.channel('global-notifications').send({
+           type: 'broadcast',
+           event: 'new_message',
+           payload: {
+              id: tempMsg.id,
+              sender_id: state.currentUser.id.toString(),
+              receiver_id: receiverId.toString(),
+              content: content.trim(),
+              is_read: false,
+              created_at: tempMsg.createdAt
+           }
+        });
 
         return { directMessages: newDirectMessages };
       }),

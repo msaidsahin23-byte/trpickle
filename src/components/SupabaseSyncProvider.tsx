@@ -455,8 +455,98 @@ export default function SupabaseSyncProvider() {
                     const newCurrentUser = state.currentUser ? (newUsers.find(x => x.id === state.currentUser!.id) || state.currentUser) : state.currentUser;
                     return { users: newUsers, currentUser: newCurrentUser };
                   });
-              })
-              .subscribe();
+              });
+
+            notifChannel.on('broadcast', { event: 'new_message' }, (payload) => {
+              const m = payload.payload as any;
+              useStore.setState((state) => {
+                if (state.directMessages?.some(existing => String(existing.id) === String(m.id))) return state;
+                const filteredMsgs = (state.directMessages || []).filter(msg => {
+                    if (String(msg.id).startsWith('temp-') && String(msg.senderId) === String(m.sender_id) && msg.content === m.content) {
+                        return false;
+                    }
+                    return true;
+                });
+                const newMsg = {
+                  id: m.id,
+                  senderId: m.sender_id,
+                  receiverId: m.receiver_id,
+                  content: m.content,
+                  createdAt: m.created_at,
+                  isRead: m.is_read
+                };
+                return { directMessages: [...filteredMsgs, newMsg] };
+              });
+            });
+
+            notifChannel.on('broadcast', { event: 'new_comment' }, (payload) => {
+              const c = payload.payload as any;
+              useStore.setState((state) => {
+                 const newPosts = state.posts.map(p => {
+                    if (String(p.id) === String(c.post_id)) {
+                        return { ...p, comments: [...(p.comments || []), {} as any] };
+                    }
+                    return p;
+                 });
+                 return { posts: newPosts };
+              });
+            });
+
+            notifChannel.on('broadcast', { event: 'new_post' }, (payload) => {
+              const p = payload.payload as any;
+              useStore.setState((state) => {
+                  if (state.posts.some(existing => String(existing.id) === String(p.id))) return state;
+                  let contentStr = p.content || "";
+                  let pollObj = undefined;
+                  if (contentStr.includes("<!--POLL:")) {
+                     const parts = contentStr.split("<!--POLL:");
+                     contentStr = parts[0];
+                     try { pollObj = JSON.parse(parts[1].split("-->")[0]); } catch(e){}
+                  }
+                  return { 
+                    posts: [{
+                      id: p.id,
+                      authorId: p.author_id,
+                      author: p.author_name || "Kullanıcı",
+                      rating: p.rating || 2.5,
+                      content: contentStr,
+                      poll: pollObj,
+                      time: p.time || new Date().toISOString(),
+                      likedBy: p.liked_by || [],
+                      comments: []
+                    }, ...state.posts] 
+                  };
+              });
+            });
+
+            notifChannel.on('broadcast', { event: 'update_post' }, (payload) => {
+              const p = payload.payload as any;
+              useStore.setState((state) => {
+                  return {
+                    posts: state.posts.map(x => {
+                      if (String(x.id) === String(p.id)) {
+                         let contentStr = p.content || "";
+                         let pollObj = x.poll;
+                         if (contentStr.includes("<!--POLL:")) {
+                            const parts = contentStr.split("<!--POLL:");
+                            contentStr = parts[0];
+                            try { pollObj = JSON.parse(parts[1].split("-->")[0]); } catch(e){}
+                         }
+                         return {
+                           ...x,
+                           content: contentStr,
+                           poll: pollObj,
+                           likedBy: p.liked_by || [],
+                           comments: x.comments
+                         };
+                      }
+                      return x;
+                    })
+                  };
+              });
+            });
+
+            notifChannel.subscribe();
 ;
           }
         } else {

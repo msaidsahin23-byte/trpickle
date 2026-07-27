@@ -594,6 +594,8 @@ function MatchCardItem({ match, idx, userState, renderTeamWithElo, currentUser, 
 }
 
 export default function ProfilePage({ params }: { params: { username: string } }) {
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => setMounted(true), []);
   const router = useRouter();
   const [activeCommentPostId, setActiveCommentPostId] = useState<string | number | null>(null);
   const users = useStore(state => state.users);
@@ -613,10 +615,12 @@ export default function ProfilePage({ params }: { params: { username: string } }
   const userState = users.find(u => u.username === profileUsername || u.id.toString() === profileUsername);
 
   useEffect(() => {
-    if (userState && userState.username && userState.username !== profileUsername) {
+    if (mounted && userState && userState.username && userState.username !== profileUsername) {
       router.replace(`/profile/${userState.username}`);
     }
-  }, [userState, profileUsername, router]);
+  }, [mounted, userState, profileUsername, router]);
+
+  if (!mounted) return null;
 
   if (!userState) {
     return <div className="p-12 text-center font-bold text-slate-500">Kullanıcı bulunamadı.</div>;
