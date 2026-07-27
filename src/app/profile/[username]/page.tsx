@@ -629,7 +629,7 @@ export default function ProfilePage({ params }: { params: { username: string } }
   const isOwnProfile = currentUser?.id === userState.id;
 
   const [isEditingTags, setIsEditingTags] = useState(false);
-  const [tags, setTags] = useState(userState.tags);
+  const [tags, setTags] = useState<string[]>(userState.tags || []);
   const [tagError, setTagError] = useState("");
   const [followersModalTab, setFollowersModalTab] = useState<"followers" | "following" | null>(null);
   const [showQrCardModal, setShowQrCardModal] = useState(false);
