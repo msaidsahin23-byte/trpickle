@@ -17,7 +17,7 @@ import FriendBadge, { isMutualFriend } from "@/components/FriendBadge";
 import PlayerQrModal from "@/components/PlayerQrModal";
 
 // Helpers
-function getInitials(name: string) {
+function getInitials(name?: string) { if (!name) return '?';
   return name.split(" ").map(n => n.charAt(0)).join("").toUpperCase().substring(0, 2);
 }
 
@@ -197,7 +197,7 @@ function getEarnableBadges(history: MatchRecord[], user: User): BadgeItem[] {
     icon: <Crown className="w-5 h-5 text-amber-500" />,
     title: "👑 Sezon 1 Şampiyonu",
     description: "Sezon 1 özel görevlerini ve Mega Sandığı tamamla",
-    isUnlocked: Boolean(user.claimedWeeklyQuests?.includes("season1-mega-chest") || user.unlockedAchievements?.includes("season-1-champion")),
+    isUnlocked: Boolean((Array.isArray(user.claimedWeeklyQuests) ? user.claimedWeeklyQuests : []).includes("season1-mega-chest") || (Array.isArray(user.unlockedAchievements) ? user.unlockedAchievements : []).includes("season-1-champion")),
     color: "amber",
     bgClass: "bg-amber-500/20",
     textClass: "text-amber-600 dark:text-amber-400",
@@ -312,7 +312,7 @@ function getEarnableBadges(history: MatchRecord[], user: User): BadgeItem[] {
     borderClass: "border-purple-200"
   });
 
-  const unlockedIds = user.unlockedAchievements || [];
+  const unlockedIds = Array.isArray(user.unlockedAchievements) ? user.unlockedAchievements : [];
   ACHIEVEMENTS.forEach(ach => {
     if (ach.id !== "season-1-champion") {
       badges.push({
@@ -682,7 +682,7 @@ export default function ProfilePage({ params }: { params: { username: string } }
   const unlockedBadges = allEarnableBadges.filter(b => b.isUnlocked);
   const lockedBadges = allEarnableBadges.filter(b => !b.isUnlocked);
 
-  const activeFeaturedIds = userState.featuredBadges && userState.featuredBadges.length > 0
+  const activeFeaturedIds = Array.isArray(userState.featuredBadges) && userState.featuredBadges.length > 0
     ? userState.featuredBadges
     : unlockedBadges.slice(0, 3).map(b => b.id);
 
@@ -736,17 +736,17 @@ export default function ProfilePage({ params }: { params: { username: string } }
       
       if (isT1) {
         const idx = m.team1.indexOf(userId);
-        if (m.eloChange.team1Changes && m.eloChange.team1Changes[idx] !== undefined) {
-          elo -= m.eloChange.team1Changes[idx];
+        if ((m.eloChange || {}).team1Changes && (m.eloChange || {}).team1Changes[idx] !== undefined) {
+          elo -= (m.eloChange || {}).team1Changes[idx];
         } else {
-          elo -= m.eloChange.team1Change;
+          elo -= (m.eloChange || {}).team1Change;
         }
       } else if (isT2) {
         const idx = m.team2.indexOf(userId);
-        if (m.eloChange.team2Changes && m.eloChange.team2Changes[idx] !== undefined) {
-          elo -= m.eloChange.team2Changes[idx];
+        if ((m.eloChange || {}).team2Changes && (m.eloChange || {}).team2Changes[idx] !== undefined) {
+          elo -= (m.eloChange || {}).team2Changes[idx];
         } else {
-          elo -= m.eloChange.team2Change;
+          elo -= (m.eloChange || {}).team2Change;
         }
       }
     }
@@ -776,9 +776,9 @@ export default function ProfilePage({ params }: { params: { username: string } }
             const tIdx = isTeam1 ? m.team1.indexOf(tId) : m.team2.indexOf(tId);
             let gain = 0;
             if (isTeam1) {
-              gain = (m.eloChange.team1Changes && m.eloChange.team1Changes[tIdx] !== undefined) ? m.eloChange.team1Changes[tIdx] : m.eloChange.team1Change;
+              gain = ((m.eloChange || {}).team1Changes && (m.eloChange || {}).team1Changes[tIdx] !== undefined) ? (m.eloChange || {}).team1Changes[tIdx] : (m.eloChange || {}).team1Change;
             } else {
-              gain = (m.eloChange.team2Changes && m.eloChange.team2Changes[tIdx] !== undefined) ? m.eloChange.team2Changes[tIdx] : m.eloChange.team2Change;
+              gain = ((m.eloChange || {}).team2Changes && (m.eloChange || {}).team2Changes[tIdx] !== undefined) ? (m.eloChange || {}).team2Changes[tIdx] : (m.eloChange || {}).team2Change;
             }
             isPositiveGain = gain >= 0;
             // For gray formatting if 0
@@ -999,12 +999,12 @@ export default function ProfilePage({ params }: { params: { username: string } }
               <div className="flex sm:flex-col items-center justify-center gap-4 bg-gray-50 dark:bg-slate-800/80 px-6 py-4 rounded-3xl border border-gray-200/80 dark:border-slate-700/80 shrink-0 mt-4 lg:mt-6">
                 <div className="text-center">
                   <span className="text-[10px] font-extrabold uppercase tracking-widest text-gray-400 block">Tekli Rating</span>
-                  <span className="text-2xl font-black text-pb-blue">{userState.singlesRating.toFixed(1)}</span>
+                  <span className="text-2xl font-black text-pb-blue">{(userState.singlesRating || 1200).toFixed(1)}</span>
                 </div>
                 <div className="w-px h-8 sm:w-12 sm:h-px bg-gray-200 dark:bg-slate-700" />
                 <div className="text-center">
                   <span className="text-[10px] font-extrabold uppercase tracking-widest text-gray-400 block">Eşli Rating</span>
-                  <span className="text-2xl font-black text-purple-500">{userState.doublesRating.toFixed(1)}</span>
+                  <span className="text-2xl font-black text-purple-500">{(userState.doublesRating || 1200).toFixed(1)}</span>
                 </div>
               </div>
             </div>
@@ -1205,7 +1205,7 @@ export default function ProfilePage({ params }: { params: { username: string } }
                   </div>
                 </div>
                 <div>
-                  <span className="text-3xl font-black text-slate-900 dark:text-white block">{userState.singlesRating.toFixed(1)}</span>
+                  <span className="text-3xl font-black text-slate-900 dark:text-white block">{(userState.singlesRating || 1200).toFixed(1)}</span>
                   <span className="text-xs font-bold text-pb-green block mt-1">Seviye {Math.floor(userState.singlesRating / 200) + 1} Oyuncu</span>
                 </div>
               </div>
@@ -1218,7 +1218,7 @@ export default function ProfilePage({ params }: { params: { username: string } }
                   </div>
                 </div>
                 <div>
-                  <span className="text-3xl font-black text-slate-900 dark:text-white block">{userState.doublesRating.toFixed(1)}</span>
+                  <span className="text-3xl font-black text-slate-900 dark:text-white block">{(userState.doublesRating || 1200).toFixed(1)}</span>
                   <span className="text-xs font-bold text-purple-400 block mt-1">Seviye {Math.floor(userState.doublesRating / 200) + 1} Çiftler</span>
                 </div>
               </div>
