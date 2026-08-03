@@ -1200,10 +1200,20 @@ export const useStore = create<StoreState>()(
           newFollowing = [...following, targetUserId];
           newFollowers = [...followers, currentUserId];
         }
-        
         // PUSH TO SUPABASE
         supabase.from('users').update({ following: newFollowing.map(String) }).eq('id', currentUserId.toString()).then();
         supabase.from('users').update({ followers: newFollowers.map(String) }).eq('id', targetUserId.toString()).then();
+
+        sendReliableBroadcast({
+           type: 'broadcast',
+           event: 'update_follow',
+           payload: {
+               userId1: currentUserId.toString(),
+               userId1Following: newFollowing,
+               userId2: targetUserId.toString(),
+               userId2Followers: newFollowers
+           }
+        });
 
         const now = Date.now();
         const oneDayMs = 24 * 60 * 60 * 1000;

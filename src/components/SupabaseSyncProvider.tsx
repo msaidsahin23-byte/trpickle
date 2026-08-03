@@ -1,6 +1,6 @@
 "use client";
 import { useEffect } from "react";
-import { supabase, getGlobalChannel } from "@/lib/supabase";
+import { supabase, getGlobalChannel, subscribeGlobalChannel } from "@/lib/supabase";
 import { useStore } from "@/store/useStore";
 
 export default function SupabaseSyncProvider() {
@@ -425,7 +425,7 @@ export default function SupabaseSyncProvider() {
               )
               .subscribe()
 
-            const notifChannel = supabase.channel('global-notifications')
+            const notifChannel = getGlobalChannel()
               .on('broadcast', { event: 'new_notification' }, (payload) => {
                   const n = payload.payload as any;
                   if (!n || !n.user_id) return;

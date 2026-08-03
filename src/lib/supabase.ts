@@ -11,13 +11,19 @@ let isSubscribed = false;
 export const getGlobalChannel = () => {
   if (!globalChannel) {
     globalChannel = supabase.channel('global-notifications');
-    globalChannel.subscribe((status: string) => {
+  }
+  return globalChannel;
+};
+
+export const subscribeGlobalChannel = () => {
+  const channel = getGlobalChannel();
+  if (!isSubscribed) {
+    channel.subscribe((status: string) => {
       if (status === 'SUBSCRIBED') {
         isSubscribed = true;
       }
     });
   }
-  return globalChannel;
 };
 
 export const sendReliableBroadcast = async (payloadObj: any) => {
