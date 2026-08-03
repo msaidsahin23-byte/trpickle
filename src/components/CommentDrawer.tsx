@@ -142,12 +142,17 @@ export default function CommentDrawer({ isOpen, onClose, postId }: CommentDrawer
     }
 
     if (ownerToNotify && !notifIdsToSkip.has(ownerToNotify)) {
-      notificationsToInsert.push({
-        user_id: ownerToNotify,
-        type: 'comment',
-        message: parentId ? `${currentUser.name} yorumunuza yanıt verdi.` : `${currentUser.name} gönderinize yorum yaptı.`,
-        related_match_id: postId.toString()
-      });
+      const ownerUser = allUsers.find((u: any) => String(u.id) === String(ownerToNotify));
+      const ownerPrefs = ownerUser?.notificationPreferences || { likes: true, comments: true, follows: true, messages: true, milestones: true, system: true };
+      
+      if (ownerPrefs.comments !== false) {
+        notificationsToInsert.push({
+          user_id: ownerToNotify,
+          type: 'new_comment',
+          message: parentId ? `${currentUser.name} yorumunuza yanıt verdi.` : `${currentUser.name} gönderinize yorum yaptı.`,
+          related_match_id: postId.toString()
+        });
+      }
     }
 
     if (notificationsToInsert.length > 0) {

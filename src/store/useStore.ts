@@ -12,7 +12,7 @@ export type AppNotification = {
   id: number | string;
   postId?: number | string;
   matchId?: number | string;
-  type: 'like' | 'comment' | 'system' | 'new_follower';
+  type: 'like' | 'comment' | 'system' | 'new_follower' | 'like_milestone' | 'new_comment';
   message: string;
   isRead: boolean;
   createdAt: string;
@@ -50,7 +50,15 @@ export type User = {
   claimedWeeklyQuests?: string[];
   featuredBadges?: string[];
   appTheme?: 'light' | 'dark' | 'system';
-  notificationsEnabled?: boolean;
+  notificationsEnabled?: boolean; // Legacy fallback
+  notificationPreferences?: {
+    likes?: boolean;
+    comments?: boolean;
+    follows?: boolean;
+    messages?: boolean;
+    milestones?: boolean;
+    system?: boolean;
+  };
   updatedAt?: number;
   followSpamTimestamps?: { [senderId: string]: number[] };
   mutedActivityUserIds?: (number | string)[];
@@ -212,7 +220,7 @@ export type StoreState = {
   toggleBlockUser: (targetUserId: string | number) => void;
   blockUser: (targetUserId: string | number) => void;
   unblockUser: (targetUserId: string | number) => void;
-  updatePreferences: (prefs: { appTheme?: 'light' | 'dark' | 'system', notificationsEnabled?: boolean }) => void;
+  updatePreferences: (prefs: { appTheme?: 'light' | 'dark' | 'system', notificationsEnabled?: boolean, notificationPreferences?: { likes?: boolean; comments?: boolean; follows?: boolean; messages?: boolean; milestones?: boolean; system?: boolean; } }) => void;
   toggleLike: (postId: number | string, userId: number | string) => void;
   votePoll: (postId: number | string, optionIndex: number, userId: number | string) => void;
   markNotificationsAsRead: (userId: number | string) => void;
@@ -997,17 +1005,32 @@ export const useStore = create<StoreState>()(
 
       updatePreferences: (prefs) => set((state) => {
         if (!state.currentUser) return state;
-        const updatedUser = { ...state.currentUser, ...prefs };
+        
+        let mergedPrefs = { ...prefs };
+        if (prefs.notificationPreferences) {
+          mergedPrefs.notificationPreferences = {
+            ...(state.currentUser.notificationPreferences || { likes: true, comments: true, follows: true, messages: true, milestones: true, system: true }),
+            ...prefs.notificationPreferences
+          };
+        }
+        
+        const updatedUser = { ...state.currentUser, ...mergedPrefs };
+        
+        if (prefs.notificationPreferences) {
+          supabase.from('users').update({ notification_preferences: mergedPrefs.notificationPreferences }).eq('id', updatedUser.id.toString()).then();
+        }
+
         return {
           currentUser: updatedUser,
           users: state.users.map(u => u.id === updatedUser.id ? updatedUser : u),
-          activeSessions: state.activeSessions.map(u => u.id === updatedUser.id ? updatedUser : u)
+          activeSessions: (state.activeSessions || []).map(u => u.id === updatedUser.id ? updatedUser : u)
         };
       }),
 
       toggleLike: (postId, userId) => { set((state) => {
         let authorToNotify: number | string | null = null;
         let finalLikedBy: (string|number)[] = [];
+        let likeCount = 0;
 
         const newPosts = state.posts.map(p => {
           if (p.id !== postId) return p;
@@ -1021,6 +1044,8 @@ export const useStore = create<StoreState>()(
           finalLikedBy = hasLiked 
               ? currentLikedBy.filter(id => String(id) !== String(userId))
               : [...currentLikedBy, userId];
+
+          likeCount = finalLikedBy.length;
 
           return {
             ...p,
@@ -1040,28 +1065,62 @@ export const useStore = create<StoreState>()(
         });
 
         if (authorToNotify !== null) {
-          const notifId = uuidv4();
-          supabase.from('notifications').insert({
-              id: notifId,
-              user_id: String(authorToNotify),
-              type: 'like',
-              message: "Bir gönderiniz yeni beğeniler aldı.",
-              related_match_id: postId.toString()
-            }).then();
-            
-          sendReliableBroadcast({
-             type: 'broadcast',
-             event: 'new_notification',
-             payload: {
+          const authorUser = state.users.find(u => String(u.id) === String(authorToNotify));
+          const authorPrefs = authorUser?.notificationPreferences || { likes: true, comments: true, follows: true, messages: true, milestones: true, system: true };
+          
+          // Check milestone
+          const milestones = [1, 5, 10, 25, 50, 100, 250, 500, 1000];
+          const isMilestone = milestones.includes(likeCount);
+
+          if (isMilestone && authorPrefs.milestones !== false) {
+             const notifId = uuidv4();
+             const msg = `Tebrikler! Gönderiniz ${likeCount} beğeniye ulaştı! 🎉`;
+             supabase.from('notifications').insert({
+                 id: notifId,
+                 user_id: String(authorToNotify),
+                 type: 'like_milestone',
+                 message: msg,
+                 related_match_id: postId.toString()
+               }).then();
+               
+             sendReliableBroadcast({
+                type: 'broadcast',
+                event: 'new_notification',
+                payload: {
+                   id: notifId,
+                   user_id: String(authorToNotify),
+                   type: 'like_milestone',
+                   message: msg,
+                   related_match_id: postId.toString(),
+                   read: false,
+                   created_at: new Date().toISOString()
+                }
+             });
+          } else if (authorPrefs.likes !== false) {
+            const notifId = uuidv4();
+            const msg = state.currentUser ? `${state.currentUser.name} gönderinizi beğendi.` : "Gönderiniz yeni bir beğeni aldı.";
+            supabase.from('notifications').insert({
                 id: notifId,
                 user_id: String(authorToNotify),
                 type: 'like',
-                message: "Bir gönderiniz yeni beğeniler aldı.",
-                related_match_id: postId.toString(),
-                read: false,
-                created_at: new Date().toISOString()
-             }
-          });
+                message: msg,
+                related_match_id: postId.toString()
+              }).then();
+              
+            sendReliableBroadcast({
+               type: 'broadcast',
+               event: 'new_notification',
+               payload: {
+                  id: notifId,
+                  user_id: String(authorToNotify),
+                  type: 'like',
+                  message: msg,
+                  related_match_id: postId.toString(),
+                  read: false,
+                  created_at: new Date().toISOString()
+               }
+            });
+          }
 
           const newUsers = state.users.map(u => {
             if (u.id === authorToNotify) {

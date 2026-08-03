@@ -4,14 +4,14 @@ import React, { useEffect, useState, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useStore } from "@/store/useStore";
 import { useRouter } from "next/navigation";
-import { MessageSquare, X, UserPlus, Award } from "lucide-react";
+import { MessageSquare, X, UserPlus, Award, MessageCircle, Bell, Trophy } from "lucide-react";
 import Image from "next/image";
 
 type ToastAlert = {
   id: string;
   title: string;
   subtitle?: string;
-  type: "message" | "notification" | "follow";
+  type: "message" | "notification" | "follow" | "milestone" | "comment";
   avatarUrl?: string;
   link?: string;
 };
@@ -80,6 +80,12 @@ export default function NotificationBanner() {
           type = "follow";
         } else if (notif.type === 'like') {
           title = "Yeni Beğeni";
+        } else if (notif.type === 'like_milestone') {
+          title = "Tebrikler! 🏆";
+          type = "milestone";
+        } else if (notif.type === 'new_comment') {
+          title = "Yeni Yorum";
+          type = "comment";
         }
 
         newToasts.push({
@@ -150,15 +156,13 @@ export default function NotificationBanner() {
                   repeatType: "reverse",
                   ease: "easeOut"
                 }}
-                className="w-full h-full flex items-center justify-center"
+                className="w-full h-full flex items-center justify-center text-slate-900"
               >
-                {toast.type === "message" ? (
-                  <MessageSquare className="w-5 h-5 text-slate-900" />
-                ) : toast.type === "follow" ? (
-                  <UserPlus className="w-5 h-5 text-slate-900" />
-                ) : (
-                  <Award className="w-5 h-5 text-slate-900" />
-                )}
+                {toast.type === 'message' && <MessageCircle className="w-5 h-5" />}
+                {toast.type === 'follow' && <UserPlus className="w-5 h-5" />}
+                {toast.type === 'notification' && <Bell className="w-5 h-5" />}
+                {toast.type === 'milestone' && <Trophy className="w-5 h-5" />}
+                {toast.type === 'comment' && <MessageSquare className="w-5 h-5" />}
               </motion.div>
             </div>
 

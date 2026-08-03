@@ -46,6 +46,7 @@ export default function SupabaseSyncProvider() {
                 accentColor: userData.accent_color || "#cfff50",
                 appTheme: userData.app_theme || "light",
                 notificationsEnabled: userData.notifications_enabled ?? true,
+                notificationPreferences: typeof userData.notification_preferences === 'string' ? JSON.parse(userData.notification_preferences) : userData.notification_preferences,
                 showPostsOnProfile: userData.show_posts_on_profile ?? true
               }));
 
@@ -418,7 +419,12 @@ export default function SupabaseSyncProvider() {
                            following: u.following || existing.following,
                            avatarUrl: u.avatar_url || existing.avatarUrl,
                            bannerUrl: u.banner_url || existing.bannerUrl,
-                           bio: u.bio || existing.bio
+                           bio: u.bio || existing.bio,
+                           accentColor: u.accent_color || existing.accentColor,
+                           appTheme: u.app_theme || existing.appTheme,
+                           notificationsEnabled: u.notifications_enabled ?? existing.notificationsEnabled,
+                           notificationPreferences: typeof u.notification_preferences === 'string' ? JSON.parse(u.notification_preferences) : u.notification_preferences ?? existing.notificationPreferences,
+                           showPostsOnProfile: u.show_posts_on_profile ?? existing.showPostsOnProfile
                          };
                       }
                       return existing;

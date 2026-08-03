@@ -146,8 +146,10 @@ export default function SettingsPage() {
     .map(bid => users.find(u => u.id === bid))
     .filter(Boolean) as typeof users;
 
-  const notificationsEnabled = currentUser.notificationsEnabled !== false; // defaults to true
   const appTheme = currentUser.appTheme || 'light';
+  
+  const defaultPrefs = { likes: true, comments: true, follows: true, messages: true, milestones: true, system: true };
+  const prefs = currentUser.notificationPreferences || defaultPrefs;
 
   return (
     <div className="w-full max-w-3xl mx-auto px-4 sm:px-6 py-8">
@@ -160,22 +162,44 @@ export default function SettingsPage() {
           <h2 className="text-sm font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-4 px-2">Görünüm ve Bildirimler</h2>
           <div className="bg-white dark:bg-slate-800 rounded-3xl shadow-sm border border-gray-100 dark:border-slate-700 overflow-hidden divide-y divide-gray-50 dark:divide-slate-700">
             
-            <div className="flex items-center justify-between p-6">
-              <div className="flex items-center gap-4">
+            {/* Detaylı Bildirim Ayarları */}
+            <div className="p-6">
+              <div className="flex items-center gap-4 mb-6">
                 <div className="w-10 h-10 rounded-full bg-blue-50 flex items-center justify-center text-blue-500">
                   <Bell className="w-5 h-5" />
                 </div>
                 <div>
-                  <h3 className="font-bold text-pb-dark dark:text-white">Bildirimler</h3>
-                  <p className="text-sm text-gray-500 dark:text-gray-400">Uygulama içi bildirimleri aç veya kapat.</p>
+                  <h3 className="font-bold text-pb-dark dark:text-white">Bildirim Tercihleri</h3>
+                  <p className="text-sm text-gray-500 dark:text-gray-400">Hangi durumlarda bildirim almak istediğinizi seçin.</p>
                 </div>
               </div>
-              <button
-                onClick={() => updatePreferences({ notificationsEnabled: !notificationsEnabled })}
-                className={`w-12 h-6 rounded-full transition-colors relative ${notificationsEnabled ? 'bg-pb-green' : 'bg-gray-300'}`}
-              >
-                <div className={`w-4 h-4 rounded-full bg-white absolute top-1 transition-transform ${notificationsEnabled ? 'left-7' : 'left-1'}`} />
-              </button>
+
+              <div className="space-y-4 pl-14">
+                {[
+                  { key: 'likes', label: 'Beğeniler', desc: 'Gönderileriniz beğenildiğinde.' },
+                  { key: 'comments', label: 'Yorumlar', desc: 'Gönderilerinize yorum yapıldığında.' },
+                  { key: 'follows', label: 'Yeni Takipçiler', desc: 'Biri sizi takip ettiğinde.' },
+                  { key: 'messages', label: 'Mesajlar', desc: 'Yeni bir mesaj aldığınızda.' },
+                  { key: 'milestones', label: 'Kilometre Taşları', desc: 'Gönderiniz belirli beğeni sayılarına ulaştığında.' },
+                  { key: 'system', label: 'Sistem', desc: 'Önemli sistem duyuruları.' }
+                ].map((item) => {
+                  const isEnabled = prefs[item.key as keyof typeof prefs] !== false;
+                  return (
+                    <div key={item.key} className="flex items-center justify-between py-2 border-b border-gray-50 dark:border-slate-700/50 last:border-0">
+                      <div>
+                        <h4 className="font-medium text-pb-dark dark:text-white text-sm">{item.label}</h4>
+                        <p className="text-xs text-gray-500 dark:text-gray-400">{item.desc}</p>
+                      </div>
+                      <button
+                        onClick={() => updatePreferences({ notificationPreferences: { [item.key]: !isEnabled } })}
+                        className={`w-10 h-5 rounded-full transition-colors relative ${isEnabled ? 'bg-pb-green' : 'bg-gray-300'}`}
+                      >
+                        <div className={`w-3.5 h-3.5 rounded-full bg-white absolute top-[3px] transition-transform ${isEnabled ? 'left-[22px]' : 'left-[3px]'}`} />
+                      </button>
+                    </div>
+                  )
+                })}
+              </div>
             </div>
 
             <div className="flex items-center justify-between p-6">
