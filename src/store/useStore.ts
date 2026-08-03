@@ -260,7 +260,74 @@ const initialDirectMessages: DirectMessage[] = [];
 
 const initialPosts: Post[] = [];
 
-const initialCourts: CourtRecord[] = [];
+const initialCourts: CourtRecord[] = [
+  {
+    id: 1,
+    name: "Cemal Kamacı Spor Kompleksi",
+    city: "İstanbul",
+    district: "Kâğıthane",
+    surface: "Sert Zemin",
+    lighting: true,
+    isPublic: true,
+    mapsUrl: "https://maps.app.goo.gl/3X5t6nQwS4L8A3f48",
+    isVerified: true
+  },
+  {
+    id: 2,
+    name: "İBB Maltepe Spor Tesisleri",
+    city: "İstanbul",
+    district: "Maltepe",
+    surface: "Akrilik",
+    lighting: true,
+    isPublic: true,
+    mapsUrl: "https://maps.app.goo.gl/zD9yY5v3b3R3f4E28",
+    isVerified: true
+  },
+  {
+    id: 3,
+    name: "Kafkale Spor Kompleksi",
+    city: "İstanbul",
+    district: "Tuzla",
+    surface: "Akrilik",
+    lighting: true,
+    isPublic: true,
+    mapsUrl: "https://maps.app.goo.gl/f2g5K3L9r3F2S4D6A",
+    isVerified: true
+  },
+  {
+    id: 4,
+    name: "Koç Topluluğu Spor Kulübü (Koru)",
+    city: "İstanbul",
+    district: "Üsküdar",
+    surface: "Akrilik",
+    lighting: true,
+    isPublic: false,
+    mapsUrl: "https://maps.app.goo.gl/L3g5F9X8q2E1W4C5A",
+    isVerified: true
+  },
+  {
+    id: 5,
+    name: "Regnum Carya",
+    city: "Antalya",
+    district: "Belek",
+    surface: "Sert Zemin",
+    lighting: true,
+    isPublic: false,
+    mapsUrl: "https://maps.app.goo.gl/Q2F8N7X9p5E4W3C2A",
+    isVerified: true
+  },
+  {
+    id: 6,
+    name: "No1 Padel & Pickleball",
+    city: "İstanbul",
+    district: "Sarıyer",
+    surface: "Akrilik",
+    lighting: true,
+    isPublic: false,
+    mapsUrl: "https://maps.app.goo.gl/P4G9N7X9p5E4W3C2B",
+    isVerified: true
+  }
+];
 
 const initialCourtSubmissions: CourtSubmission[] = [];
 
@@ -1955,8 +2022,13 @@ export const useStore = create<StoreState>()(
           : currentState.activeSessions;
 
         const persistedCourts = Array.isArray(persistedState.courts) ? persistedState.courts : [];
-        const hasNewCourtsList = persistedCourts.some((c: any) => c.name === "Pickleball Türkiye") && persistedCourts.some((c: any) => c.name === "No1 Padel");
-        const sanitizedCourts = hasNewCourtsList ? persistedCourts : initialCourts;
+        const mergedCourts = [...initialCourts];
+        persistedCourts.forEach((pc: any) => {
+          if (!mergedCourts.some(mc => mc.name === pc.name)) {
+            mergedCourts.push(pc);
+          }
+        });
+        const sanitizedCourts = mergedCourts;
 
         return {
           ...currentState,

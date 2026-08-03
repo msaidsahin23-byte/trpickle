@@ -599,37 +599,7 @@ export default function CourtsPage() {
                   </div>
                 </div>
 
-                <div className="grid grid-cols-2 gap-3">
-                  <div>
-                    <label className="text-xs font-extrabold text-gray-500 dark:text-gray-400 uppercase tracking-wider block mb-1">
-                      Zemin Türü
-                    </label>
-                    <select
-                      value={newCourtSurface}
-                      onChange={e => setNewCourtSurface(e.target.value as any)}
-                      className="w-full px-4 py-2.5 rounded-xl bg-gray-50 dark:bg-slate-900 border border-gray-200 dark:border-slate-700 font-bold text-sm text-gray-800 dark:text-white outline-none focus:border-emerald-500"
-                    >
-                      <option value="Akrilik">Akrilik</option>
-                      <option value="Sert Zemin">Sert Zemin</option>
-                      <option value="Sentetik Çim">Sentetik Çim</option>
-                      <option value="Parke (Kapalı)">Parke (Kapalı)</option>
-                    </select>
-                  </div>
 
-                  <div>
-                    <label className="text-xs font-extrabold text-gray-500 dark:text-gray-400 uppercase tracking-wider block mb-1">
-                      Aydınlatma
-                    </label>
-                    <select
-                      value={newCourtLighting ? "true" : "false"}
-                      onChange={e => setNewCourtLighting(e.target.value === "true")}
-                      className="w-full px-4 py-2.5 rounded-xl bg-gray-50 dark:bg-slate-900 border border-gray-200 dark:border-slate-700 font-bold text-sm text-gray-800 dark:text-white outline-none focus:border-emerald-500"
-                    >
-                      <option value="true">Var (Akşam Oynanır)</option>
-                      <option value="false">Yok (Sadece Gündüz)</option>
-                    </select>
-                  </div>
-                </div>
 
                 <div>
                   <label className="text-xs font-extrabold text-gray-500 dark:text-gray-400 uppercase tracking-wider block mb-1">
