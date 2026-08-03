@@ -425,8 +425,8 @@ export default function SupabaseSyncProvider() {
               )
               .subscribe()
 
-            const notifChannel = getGlobalChannel()
-              .on('broadcast', { event: 'new_notification' }, (payload) => {
+            const notifChannel = getGlobalChannel() as ReturnType<typeof supabase.channel>;
+            notifChannel.on('broadcast', { event: 'new_notification' }, (payload: any) => {
                   const n = payload.payload as any;
                   if (!n || !n.user_id) return;
                   
