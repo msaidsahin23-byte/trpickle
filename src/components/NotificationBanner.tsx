@@ -4,14 +4,14 @@ import React, { useEffect, useState, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useStore } from "@/store/useStore";
 import { useRouter } from "next/navigation";
-import { MessageSquare, Bell, X, UserPlus, Heart, Award } from "lucide-react";
+import { MessageSquare, X, UserPlus, Award } from "lucide-react";
 import Image from "next/image";
 
 type ToastAlert = {
   id: string;
   title: string;
   subtitle?: string;
-  type: "message" | "notification";
+  type: "message" | "notification" | "follow";
   avatarUrl?: string;
   link?: string;
 };
@@ -26,13 +26,13 @@ export default function NotificationBanner() {
   const seenIdsRef = useRef<Set<string>>(new Set());
   const initialMountRef = useRef(true);
 
-  // Mark all currently existing unread items on initial mount so we don't toast historical unread items
+  // Auto-mark existing items so we don't spam toasts on load
   useEffect(() => {
     if (!currentUser) return;
     if (initialMountRef.current) {
       initialMountRef.current = false;
       (directMessages || []).forEach((msg) => {
-        seenIdsRef.current.add(msg.id);
+        seenIdsRef.current.add(String(msg.id));
       });
       (currentUser.notifications || []).forEach((notif) => {
         seenIdsRef.current.add(String(notif.id));
@@ -47,17 +47,18 @@ export default function NotificationBanner() {
 
     // Check for new Direct Messages
     (directMessages || []).forEach((msg) => {
+      const msgIdStr = String(msg.id);
       if (
         String(msg.receiverId) === String(currentUser.id) &&
         !msg.isRead &&
-        !seenIdsRef.current.has(msg.id)
+        !seenIdsRef.current.has(msgIdStr)
       ) {
-        seenIdsRef.current.add(msg.id);
+        seenIdsRef.current.add(msgIdStr);
         const sender = users.find((u) => String(u.id) === String(msg.senderId));
         newToasts.push({
-          id: msg.id,
-          title: `${sender ? sender.name : "Bir kullanıcı"}'dan yeni mesaj var!`,
-          subtitle: msg.content.length > 40 ? msg.content.slice(0, 40) + "..." : msg.content,
+          id: msgIdStr,
+          title: sender ? sender.name : "Yeni Mesaj",
+          subtitle: msg.content.length > 30 ? msg.content.slice(0, 30) + "..." : msg.content,
           type: "message",
           avatarUrl: sender?.avatarUrl,
           link: "/messages",
@@ -70,11 +71,22 @@ export default function NotificationBanner() {
       const notifIdStr = String(notif.id);
       if (!notif.isRead && !seenIdsRef.current.has(notifIdStr)) {
         seenIdsRef.current.add(notifIdStr);
+        
+        let title = "Yeni Bildirim";
+        let type: ToastAlert["type"] = "notification";
+        
+        if (notif.type === 'new_follower') {
+          title = "Yeni Takipçi!";
+          type = "follow";
+        } else if (notif.type === 'like') {
+          title = "Yeni Beğeni";
+        }
+
         newToasts.push({
           id: notifIdStr,
-          title: "Yeni Bildirim",
+          title: title,
           subtitle: notif.message,
-          type: "notification",
+          type: type,
           link: "/notifications",
         });
       }
@@ -113,88 +125,62 @@ export default function NotificationBanner() {
   if (toasts.length === 0) return null;
 
   return (
-    <div className="fixed top-20 right-4 sm:right-6 z-[9999] flex flex-col gap-3 max-w-sm w-full pointer-events-none">
+    <div className="fixed top-4 left-0 right-0 sm:left-auto sm:right-6 z-[9999] flex flex-col items-center sm:items-end gap-3 px-4 pointer-events-none w-full sm:w-auto">
       <AnimatePresence>
         {toasts.map((toast) => (
           <motion.div
             key={toast.id}
-            initial={{ opacity: 0, x: 120, scale: 0.85, rotate: 5 }}
-            animate={{ opacity: 1, x: 0, scale: 1, rotate: 0 }}
-            exit={{ opacity: 0, scale: 0.8, filter: "blur(10px)" }}
-            transition={{ type: "spring", stiffness: 350, damping: 25 }}
+            initial={{ opacity: 0, y: -50, scale: 0.9, filter: "blur(10px)" }}
+            animate={{ opacity: 1, y: 0, scale: 1, filter: "blur(0px)" }}
+            exit={{ opacity: 0, y: -20, scale: 0.8, filter: "blur(10px)" }}
+            transition={{ type: "spring", stiffness: 300, damping: 25 }}
+            className="pointer-events-auto flex items-center gap-3 bg-white/20 dark:bg-slate-900/40 backdrop-blur-xl border border-white/30 dark:border-white/10 shadow-[0_8px_32px_rgba(0,0,0,0.12)] p-3 rounded-2xl w-full max-w-[340px] cursor-pointer hover:bg-white/30 dark:hover:bg-slate-900/60 transition-colors"
             onClick={() => {
               removeToast(toast.id);
               if (toast.link) router.push(toast.link);
             }}
-            className="pointer-events-auto cursor-pointer group relative overflow-visible bg-slate-900/95 backdrop-blur-xl border border-pb-green/30 hover:border-pb-green shadow-[0_10px_40px_-10px_rgba(0,0,0,0.7),_0_0_20px_rgba(200,245,96,0.15)] rounded-2xl p-4 flex items-center gap-3 transition-all duration-300"
           >
-            {/* The Bouncing Pickleball */}
-            <motion.div 
-               initial={{ y: -80, opacity: 0, rotate: -180 }}
-               animate={{ y: [0, -20, 0, -8, 0], opacity: 1, rotate: 0 }}
-               transition={{ duration: 1, ease: "easeOut", delay: 0.1 }}
-               className="absolute -top-3 -left-3 w-7 h-7 rounded-full bg-pb-green shadow-[0_0_20px_rgba(200,245,96,0.8)] flex items-center justify-center border-[3px] border-slate-900 z-10 overflow-hidden"
-            >
-               {/* Ball holes pattern */}
-               <div className="w-full h-full flex flex-wrap items-center justify-center gap-[1px] opacity-40 p-[2px]">
-                 {[...Array(6)].map((_, i) => (
-                   <span key={i} className="w-1 h-1 rounded-full bg-slate-900" />
-                 ))}
-               </div>
-            </motion.div>
-
-            {/* Subtle Court Lines Background */}
-            <div className="absolute inset-0 opacity-[0.03] pointer-events-none overflow-hidden rounded-2xl">
-              <div className="absolute top-1/2 left-0 w-full h-[2px] bg-white" />
-              <div className="absolute top-0 left-1/2 w-[2px] h-full bg-white" />
-              <div className="absolute top-3 left-3 right-3 bottom-3 border-2 border-white rounded" />
-            </div>
-
-            {/* Glowing left edge */}
-            <div className="absolute left-0 top-0 bottom-0 w-1.5 bg-gradient-to-b from-pb-green to-emerald-400 opacity-80 group-hover:opacity-100 transition-opacity" />
-
-            {/* Icon or Avatar */}
-            <div className="flex-shrink-0 ml-2 z-10">
-              {toast.avatarUrl ? (
-                <div className="relative w-11 h-11 rounded-full overflow-hidden border-2 border-pb-green/50 group-hover:border-pb-green transition-colors">
-                  <Image
-                    src={toast.avatarUrl}
-                    alt="avatar"
-                    fill
-                    className="object-cover"
-                  />
-                </div>
-              ) : toast.type === "message" ? (
-                <div className="w-11 h-11 rounded-full bg-pb-green/20 text-pb-green flex items-center justify-center border-2 border-pb-green/50 group-hover:border-pb-green transition-colors">
-                  <MessageSquare className="w-5 h-5" />
-                </div>
-              ) : (
-                <div className="w-11 h-11 rounded-full bg-blue-500/20 text-blue-400 flex items-center justify-center border-2 border-blue-500/50 group-hover:border-blue-400 transition-colors">
-                  <Bell className="w-5 h-5" />
-                </div>
-              )}
+            {/* Animated Icon Container */}
+            <div className="relative shrink-0 flex items-center justify-center w-12 h-12 rounded-full bg-gradient-to-tr from-pb-green to-emerald-400 shadow-inner">
+              <motion.div
+                animate={{ y: [0, -6, 0] }}
+                transition={{
+                  duration: 0.6,
+                  repeat: Infinity,
+                  repeatType: "reverse",
+                  ease: "easeOut"
+                }}
+                className="w-full h-full flex items-center justify-center"
+              >
+                {toast.type === "message" ? (
+                  <MessageSquare className="w-5 h-5 text-slate-900" />
+                ) : toast.type === "follow" ? (
+                  <UserPlus className="w-5 h-5 text-slate-900" />
+                ) : (
+                  <Award className="w-5 h-5 text-slate-900" />
+                )}
+              </motion.div>
             </div>
 
             {/* Content */}
-            <div className="flex-1 min-w-0 pr-6 z-10">
-              <p className="text-sm font-black text-white tracking-wide truncate group-hover:text-pb-green transition-colors drop-shadow-md">
+            <div className="flex-1 min-w-0 pr-2">
+              <h4 className="text-sm font-bold text-slate-800 dark:text-white truncate">
                 {toast.title}
-              </p>
+              </h4>
               {toast.subtitle && (
-                <p className="text-xs text-slate-300 line-clamp-2 mt-1 leading-relaxed">
+                <p className="text-xs text-slate-600 dark:text-slate-300 truncate mt-0.5 font-medium">
                   {toast.subtitle}
                 </p>
               )}
             </div>
 
-            {/* Close button */}
+            {/* Close Button */}
             <button
-              type="button"
               onClick={(e) => {
                 e.stopPropagation();
                 removeToast(toast.id);
               }}
-              className="absolute right-3 top-3 p-1.5 text-slate-400 hover:text-white rounded-full hover:bg-slate-800/80 hover:scale-110 transition-all z-20"
+              className="p-1.5 rounded-full hover:bg-black/10 dark:hover:bg-white/10 shrink-0 text-slate-500 dark:text-slate-400 transition-colors"
             >
               <X className="w-4 h-4" />
             </button>

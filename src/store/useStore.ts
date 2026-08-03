@@ -1241,7 +1241,8 @@ export const useStore = create<StoreState>()(
           } else {
             supabase.from('notifications').insert({
                 user_id: targetUserId.toString(),
-                type: 'system',
+                related_user_id: currentUserId.toString(),
+                type: 'new_follower',
                 message: followMsg
               }).select().then(({ data }) => {
                 if (data && data.length > 0) {
