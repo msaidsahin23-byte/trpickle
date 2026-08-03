@@ -429,8 +429,60 @@ export default function SupabaseSyncProvider() {
                       }
                       return existing;
                     });
-                    const newCurrentUser = state.currentUser ? (newUsers.find(x => String(x.id) === String(state.currentUser!.id)) || state.currentUser) : state.currentUser;
+                    
+                    let newCurrentUser = state.currentUser;
+                    if (newCurrentUser && String(newCurrentUser.id) === String(u.id)) {
+                       newCurrentUser = newUsers.find(x => String(x.id) === String(u.id)) || newCurrentUser;
+                    }
+
                     return { users: newUsers, currentUser: newCurrentUser };
+                  });
+                }
+              )
+              .on(
+                'postgres_changes',
+                {
+                  event: '*',
+                  schema: 'public',
+                  table: 'matches',
+                },
+                (payload) => {
+                  useStore.setState((state) => {
+                    if (payload.eventType === 'DELETE') {
+                      const oldM = payload.old as any;
+                      return { matches: state.matches.filter(m => String(m.id) !== String(oldM.id)) };
+                    }
+                    
+                    const m = payload.new as any;
+                    const matchRecord = {
+                      id: m.id,
+                      matchFormat: m.match_format,
+                      team1: m.team1 || [],
+                      team2: m.team2 || [],
+                      team1Score: m.team1_score,
+                      team2Score: m.team2_score,
+                      status: m.status,
+                      date: m.date,
+                      location: m.location,
+                      approvedBy: m.approved_by || [],
+                      submittedBy: m.submitted_by,
+                      eloChange: m.elo_change,
+                    };
+
+                    if (payload.eventType === 'INSERT') {
+                      if (state.matches.some(existing => String(existing.id) === String(m.id))) return state;
+                      return { matches: [matchRecord, ...state.matches] };
+                    }
+
+                    if (payload.eventType === 'UPDATE') {
+                      return {
+                        matches: state.matches.map(existing => 
+                          String(existing.id) === String(m.id) ? { ...existing, ...matchRecord } : existing
+                        )
+                      };
+                    }
+                    
+                    return state;
                   });
                 }
               )
