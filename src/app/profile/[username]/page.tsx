@@ -480,7 +480,7 @@ function MatchCardItem({ match, idx, userState, renderTeamWithElo, currentUser, 
           <div className="flex flex-col items-center sm:items-start w-full sm:w-24 shrink-0">
             <ClientTime dateString={match.date} className="text-xs font-bold text-gray-400 dark:text-gray-500 uppercase" />
             <span className="text-sm font-bold text-pb-dark dark:text-white bg-gray-50 dark:bg-slate-700 px-2 py-0.5 rounded mt-1 mb-1">
-              {match.team1.length > 1 ? "2v2" : "1v1"}
+              {(match.team1?.length > 1) ? "2v2" : "1v1"}
             </span>
             {(match.location || match.eventName) && (
               <div className="flex flex-col gap-1 mt-1">

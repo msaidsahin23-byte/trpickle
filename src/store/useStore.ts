@@ -391,23 +391,47 @@ export const useStore = create<StoreState>()(
            submitted_by: match.submittedBy
         }).select().single();
 
-        if (data) {
-          const newMatch = { ...match, id: data.id };
-          set((state) => ({ matches: [newMatch, ...state.matches] }));
-          get().checkAchievements();
-          sendReliableBroadcast({ 
-            type: 'broadcast', 
-            event: 'new_match', 
-            payload: newMatch
-          });
-        } else {
-          const newMatch = {...match, id: Date.now().toString()};
-          set((state) => ({ matches: [newMatch, ...state.matches] }));
-          get().checkAchievements();
-          sendReliableBroadcast({ 
-            type: 'broadcast', 
-            event: 'new_match', 
-            payload: newMatch
+        const matchIdToUse = data ? data.id : Date.now().toString();
+        const newMatch = { ...match, id: matchIdToUse };
+        
+        set((state) => ({ matches: [newMatch, ...state.matches] }));
+        get().checkAchievements();
+        
+        sendReliableBroadcast({ 
+          type: 'broadcast', 
+          event: 'new_match', 
+          payload: newMatch
+        });
+
+        // Send notifications to other participants
+        const currentUser = get().currentUser;
+        if (currentUser) {
+          const allParticipants = Array.from(new Set([...match.team1, ...match.team2]));
+          const others = allParticipants.filter(pid => String(pid) !== String(currentUser.id));
+          
+          others.forEach(pid => {
+            const notifId = uuidv4();
+            supabase.from('notifications').insert({
+              id: notifId,
+              user_id: String(pid),
+              type: 'system',
+              message: `${currentUser.name} seni bir maça ekledi ve skor onayı bekliyor.`,
+              match_id: String(matchIdToUse)
+            }).then();
+            
+            sendReliableBroadcast({
+              type: 'broadcast',
+              event: 'new_notification',
+              payload: {
+                id: notifId,
+                user_id: String(pid),
+                type: 'system',
+                message: `${currentUser.name} seni bir maça ekledi ve skor onayı bekliyor.`,
+                match_id: String(matchIdToUse),
+                read: false,
+                created_at: new Date().toISOString()
+              }
+            });
           });
         }
       },
