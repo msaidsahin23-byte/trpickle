@@ -4,6 +4,7 @@ import { calculateNewRatings } from '@/lib/rating-engine';
 import { ACHIEVEMENTS } from '@/data/achievements';
 import toast from 'react-hot-toast';
 import { supabase, sendReliableBroadcast } from '@/lib/supabase';
+import { v4 as uuidv4 } from 'uuid';
 
 export type UserRole = 'admin' | 'user';
 
@@ -1039,20 +1040,28 @@ export const useStore = create<StoreState>()(
         });
 
         if (authorToNotify !== null) {
+          const notifId = uuidv4();
           supabase.from('notifications').insert({
+              id: notifId,
               user_id: String(authorToNotify),
               type: 'like',
               message: "Bir gönderiniz yeni beğeniler aldı.",
               related_match_id: postId.toString()
-            }).select().then(({ data }) => {
-              if (data && data.length > 0) {
-                 sendReliableBroadcast({
-                    type: 'broadcast',
-                    event: 'new_notification',
-                    payload: data[0]
-                 });
-              }
-            });
+            }).then();
+            
+          sendReliableBroadcast({
+             type: 'broadcast',
+             event: 'new_notification',
+             payload: {
+                id: notifId,
+                user_id: String(authorToNotify),
+                type: 'like',
+                message: "Bir gönderiniz yeni beğeniler aldı.",
+                related_match_id: postId.toString(),
+                read: false,
+                created_at: new Date().toISOString()
+             }
+          });
 
           const newUsers = state.users.map(u => {
             if (u.id === authorToNotify) {
@@ -1232,7 +1241,7 @@ export const useStore = create<StoreState>()(
         );
 
         if (!isFollowing) {
-          if (recentFollowTimes.length >= 3) {
+          if (recentFollowTimes.length >= 1000) {
             newUsers[targetUserIndex] = {
               ...targetUserData,
               followers: newFollowers,
@@ -1240,20 +1249,28 @@ export const useStore = create<StoreState>()(
               updatedAt: now,
             };
           } else {
+            const notifId = uuidv4();
             supabase.from('notifications').insert({
+                id: notifId,
                 user_id: targetUserId.toString(),
                 related_user_id: currentUserId.toString(),
                 type: 'new_follower',
                 message: followMsg
-              }).select().then(({ data }) => {
-                if (data && data.length > 0) {
-                   sendReliableBroadcast({
-                      type: 'broadcast',
-                      event: 'new_notification',
-                      payload: data[0]
-                   });
-                }
-              });
+              }).then();
+              
+            sendReliableBroadcast({
+               type: 'broadcast',
+               event: 'new_notification',
+               payload: {
+                  id: notifId,
+                  user_id: targetUserId.toString(),
+                  related_user_id: currentUserId.toString(),
+                  type: 'new_follower',
+                  message: followMsg,
+                  read: false,
+                  created_at: new Date().toISOString()
+               }
+            });
 
             const updatedTimes = [...recentFollowTimes, now];
             const notif: AppNotification = {
