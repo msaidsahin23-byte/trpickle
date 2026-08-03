@@ -16,6 +16,12 @@ export const getGlobalChannel = () => {
   return globalChannel;
 };
 
+export const clearGlobalChannel = () => {
+  globalChannel = null;
+  isSubscribed = false;
+  isSubscribing = false;
+};
+
 export const subscribeGlobalChannel = () => {
   const channel = getGlobalChannel();
   if (!isSubscribed && !isSubscribing) {

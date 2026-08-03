@@ -192,9 +192,14 @@ export default function SupabaseSyncProvider() {
             });
             
             // Set up Realtime Subscriptions
-            supabase.removeAllChannels();
-            const channel = supabase.channel('schema-db-changes-' + Date.now())
-              .on(
+            if ((window as any)._activeDbChannel) {
+              supabase.removeChannel((window as any)._activeDbChannel);
+            }
+            const channelName = 'schema-db-changes-' + Date.now();
+            const channel = supabase.channel(channelName)
+            ;(window as any)._activeDbChannel = channel;
+            
+            channel.on(
                 'postgres_changes',
                 {
                   event: '*',
@@ -577,6 +582,7 @@ export default function SupabaseSyncProvider() {
       // Unsubscribe the global channel as well when the app unmounts
       const channel = getGlobalChannel();
       supabase.removeChannel(channel);
+      import('@/lib/supabase').then(m => m.clearGlobalChannel());
     };
   }, []);
 
