@@ -326,6 +326,39 @@ const initialCourts: CourtRecord[] = [
     isPublic: false,
     mapsUrl: "https://maps.app.goo.gl/P4G9N7X9p5E4W3C2B",
     isVerified: true
+  },
+  {
+    id: 7,
+    name: "Caddebostan Sahil Kortları",
+    city: "İstanbul",
+    district: "Kadıköy",
+    surface: "Akrilik",
+    lighting: true,
+    isPublic: true,
+    mapsUrl: "https://maps.google.com/?q=Caddebostan+Sahil",
+    isVerified: true
+  },
+  {
+    id: 8,
+    name: "Levent Tenis Kulübü",
+    city: "İstanbul",
+    district: "Beşiktaş",
+    surface: "Akrilik",
+    lighting: true,
+    isPublic: false,
+    mapsUrl: "https://maps.google.com/?q=Levent+Tenis+Kulübü",
+    isVerified: true
+  },
+  {
+    id: 9,
+    name: "Kalamış Parkı Kortu",
+    city: "İstanbul",
+    district: "Kadıköy",
+    surface: "Sert Zemin",
+    lighting: true,
+    isPublic: true,
+    mapsUrl: "https://maps.google.com/?q=Kalamış+Parkı",
+    isVerified: true
   }
 ];
 
