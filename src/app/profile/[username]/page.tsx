@@ -57,7 +57,7 @@ function calculateAnalytics(history: MatchRecord[], userId: number | string, use
   const oppLosses: { [id: string]: { played: number; lost: number } } = {};
 
   history.forEach(m => {
-    const isT1 = m.team1.includes(userId);
+    const isT1 = (Array.isArray(m.team1) ? m.team1 : []).includes(userId);
     const myScore = isT1 ? m.team1Score : m.team2Score;
     const oppScore = isT1 ? m.team2Score : m.team1Score;
     const won = myScore > oppScore;
@@ -125,8 +125,8 @@ function calculateAnalytics(history: MatchRecord[], userId: number | string, use
     }
   });
 
-  const bestPartnerUser = bestPartnerId ? users.find(u => u.id === bestPartnerId) : null;
-  const toughestOppUser = toughestOppId ? users.find(u => u.id === toughestOppId) : null;
+  const bestPartnerUser = bestPartnerId ? (Array.isArray(users) ? users : []).find(u => u.id === bestPartnerId) : null;
+  const toughestOppUser = toughestOppId ? (Array.isArray(users) ? users : []).find(u => u.id === toughestOppId) : null;
 
   return {
     winRate: Math.round((wins / history.length) * 100),
@@ -165,7 +165,7 @@ function getEarnableBadges(history: MatchRecord[], user: User): BadgeItem[] {
   let maxStreak = 0;
   const chronological = [...history].reverse();
   chronological.forEach(match => {
-    const isUserTeam1 = match.team1.includes(user.id);
+    const isUserTeam1 = (Array.isArray(match.team1) ? match.team1 : []).includes(user.id);
     const userScore = isUserTeam1 ? match.team1Score : match.team2Score;
     const oppScore = isUserTeam1 ? match.team2Score : match.team1Score;
     if (userScore > oppScore) {
@@ -177,14 +177,14 @@ function getEarnableBadges(history: MatchRecord[], user: User): BadgeItem[] {
   });
 
   const hasWin = history.some(match => {
-    const isUserTeam1 = match.team1.includes(user.id);
+    const isUserTeam1 = (Array.isArray(match.team1) ? match.team1 : []).includes(user.id);
     const userScore = isUserTeam1 ? match.team1Score : match.team2Score;
     const oppScore = isUserTeam1 ? match.team2Score : match.team1Score;
     return userScore > oppScore;
   });
 
   const hasFlawless = history.some(match => {
-    const isUserTeam1 = match.team1.includes(user.id);
+    const isUserTeam1 = (Array.isArray(match.team1) ? match.team1 : []).includes(user.id);
     const userScore = isUserTeam1 ? match.team1Score : match.team2Score;
     const oppScore = isUserTeam1 ? match.team2Score : match.team1Score;
     return userScore > 0 && oppScore === 0;
@@ -454,8 +454,8 @@ function MatchCardItem({ match, idx, userState, renderTeamWithElo, currentUser, 
     setNewComment("");
   };
 
-  const isUserTeam1 = match.team1.includes(userState.id);
-  const isUserTeam2 = match.team2.includes(userState.id);
+  const isUserTeam1 = (Array.isArray(match.team1) ? match.team1 : []).includes(userState.id);
+  const isUserTeam2 = (Array.isArray(match.team2) ? match.team2 : []).includes(userState.id);
   
   let won = false;
   let eloChangeVal = 0;
@@ -612,7 +612,7 @@ export default function ProfilePage({ params }: { params: { username: string } }
   const deleteUser = useStore(state => state.deleteUser);
   
   const profileUsername = params.username;
-  const userState = users.find(u => u.username === profileUsername || u.id.toString() === profileUsername);
+  const userState = (Array.isArray(users) ? users : []).find(u => u.username === profileUsername || u.id.toString() === profileUsername);
 
   useEffect(() => {
     if (mounted && userState && userState.username && userState.username !== profileUsername) {
@@ -620,16 +620,8 @@ export default function ProfilePage({ params }: { params: { username: string } }
     }
   }, [mounted, userState, profileUsername, router]);
 
-  if (!mounted) return null;
-
-  if (!userState) {
-    return <div className="p-12 text-center font-bold text-slate-500">Kullanıcı bulunamadı.</div>;
-  }
-
-  const isOwnProfile = currentUser?.id === userState.id;
-
   const [isEditingTags, setIsEditingTags] = useState(false);
-  const [tags, setTags] = useState<string[]>(userState.tags || []);
+  const [tags, setTags] = useState<string[]>(userState?.tags || []);
   const [tagError, setTagError] = useState("");
   const [followersModalTab, setFollowersModalTab] = useState<"followers" | "following" | null>(null);
   const [showQrCardModal, setShowQrCardModal] = useState(false);
@@ -638,6 +630,14 @@ export default function ProfilePage({ params }: { params: { username: string } }
   const [showcaseError, setShowcaseError] = useState("");
   const [activeTab, setActiveTab] = useState<"overview" | "trophies" | "matches" | "posts">("overview");
   const [matchFilter, setMatchFilter] = useState<"all" | "singles" | "doubles" | "wins">("all");
+
+  if (!mounted) return null;
+
+  if (!userState) {
+    return <div className="p-12 text-center font-bold text-slate-500">Kullanıcı bulunamadı.</div>;
+  }
+
+  const isOwnProfile = currentUser?.id === userState.id;
 
   const handleSaveTags = () => {
     updateUserTags(userState.id, tags);
@@ -659,16 +659,16 @@ export default function ProfilePage({ params }: { params: { username: string } }
     }
   };
 
-  const userMatches = matches.filter(m => 
-    m.team1.includes(userState.id) || m.team2.includes(userState.id)
+  const userMatches = (Array.isArray(matches) ? matches : []).filter(m => 
+    (Array.isArray(m.team1) ? m.team1 : []).includes(userState.id) || (Array.isArray(m.team2) ? m.team2 : []).includes(userState.id)
   );
 
   const history = userMatches;
 
   const recent10 = history.slice(0, 10);
   const formTrend = recent10.map(match => {
-    const isTeam1 = match.team1.includes(userState.id);
-    const isTeam2 = match.team2.includes(userState.id);
+    const isTeam1 = (Array.isArray(match.team1) ? match.team1 : []).includes(userState.id);
+    const isTeam2 = (Array.isArray(match.team2) ? match.team2 : []).includes(userState.id);
     let won = false;
     if (isTeam1) won = match.team1Score > match.team2Score;
     else if (isTeam2) won = match.team2Score > match.team1Score;
@@ -694,14 +694,14 @@ export default function ProfilePage({ params }: { params: { username: string } }
     if (matchFilter === "singles") return m.matchFormat === "singles";
     if (matchFilter === "doubles") return m.matchFormat === "doubles";
     if (matchFilter === "wins") {
-      const isTeam1 = m.team1.includes(userState.id);
+      const isTeam1 = (Array.isArray(m.team1) ? m.team1 : []).includes(userState.id);
       return isTeam1 ? m.team1Score > m.team2Score : m.team2Score > m.team1Score;
     }
     return true;
   });
 
   const totalWinsCount = history.filter(m => {
-    const isTeam1 = m.team1.includes(userState.id);
+    const isTeam1 = (Array.isArray(m.team1) ? m.team1 : []).includes(userState.id);
     return isTeam1 ? m.team1Score > m.team2Score : m.team2Score > m.team1Score;
   }).length;
   const winRatePercentage = history.length > 0 ? Math.round((totalWinsCount / history.length) * 100) : 0;
@@ -717,12 +717,12 @@ export default function ProfilePage({ params }: { params: { username: string } }
   };
 
   const getUserId = (name: string) => {
-    const u = users.find(user => user.name === name);
+    const u = (Array.isArray(users) ? users : []).find(user => user.name === name);
     return u ? u.id : null;
   };
 
   const getHistoricalElo = (userId: number, matchIdx: number, matchFormat: 'singles' | 'doubles') => {
-    const user = users.find(u => u.id === userId);
+    const user = (Array.isArray(users) ? users : []).find(u => u.id === userId);
     if (!user) return null;
     
     let elo = matchFormat === 'singles' ? user.singlesRating : user.doublesRating;
@@ -731,8 +731,8 @@ export default function ProfilePage({ params }: { params: { username: string } }
       const m = history[i];
       if (m.matchFormat !== matchFormat || m.status === 'pending' || m.status === 'rejected') continue;
       
-      const isT1 = m.team1.includes(userId);
-      const isT2 = m.team2.includes(userId);
+      const isT1 = (Array.isArray(m.team1) ? m.team1 : []).includes(userId);
+      const isT2 = (Array.isArray(m.team2) ? m.team2 : []).includes(userId);
       
       if (isT1) {
         const idx = m.team1.indexOf(userId);
@@ -757,8 +757,8 @@ export default function ProfilePage({ params }: { params: { username: string } }
   const renderTeamWithElo = (teamIds: number[], teamElos: number[] | undefined, isUserTeam: boolean, align: 'left' | 'right', matchIdx: number, matchFormat: 'singles' | 'doubles', m: MatchRecord, isTeam1: boolean) => {
     return (
       <div className={`flex flex-wrap gap-x-1.5 items-center justify-center ${align === 'left' ? 'sm:justify-start text-left' : 'sm:justify-end text-right'} flex-1 ${isUserTeam ? 'font-extrabold text-pb-dark dark:text-white' : 'font-medium text-gray-500 dark:text-gray-400'}`}>
-        {teamIds.map((tId, i) => {
-          const u = users.find(user => user.id === tId);
+        {(Array.isArray(teamIds) ? teamIds : []).map((tId, i) => {
+          const u = (Array.isArray(users) ? users : []).find(user => user.id === tId);
           const name = u ? u.name : "Bilinmeyen Kullanıcı";
           
           let eloStr = null;
