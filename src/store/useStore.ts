@@ -395,14 +395,30 @@ export const useStore = create<StoreState>()(
           const newMatch = { ...match, id: data.id };
           set((state) => ({ matches: [newMatch, ...state.matches] }));
           get().checkAchievements();
+          sendReliableBroadcast({ 
+            type: 'broadcast', 
+            event: 'new_match', 
+            payload: newMatch
+          });
         } else {
-          // fallback for local optimisitc if DB fails
-          set((state) => ({ matches: [{...match, id: Date.now().toString()}, ...state.matches] }));
+          const newMatch = {...match, id: Date.now().toString()};
+          set((state) => ({ matches: [newMatch, ...state.matches] }));
           get().checkAchievements();
+          sendReliableBroadcast({ 
+            type: 'broadcast', 
+            event: 'new_match', 
+            payload: newMatch
+          });
         }
       },
       
       deleteMatch: (id) => set((state) => {
+        supabase.from('matches').delete().eq('id', id).then();
+        sendReliableBroadcast({ 
+            type: 'broadcast', 
+            event: 'delete_match', 
+            payload: { id }
+        });
         const matchIndex = state.matches.findIndex(m => m.id === id);
         if (matchIndex === -1) return state;
         const match = state.matches[matchIndex];

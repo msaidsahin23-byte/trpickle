@@ -555,6 +555,32 @@ export default function SupabaseSyncProvider() {
               });
             });
 
+            notifChannel.on('broadcast', { event: 'new_match' }, (payload) => {
+              const m = payload.payload as any;
+              useStore.setState((state) => {
+                  if (state.matches.some(existing => String(existing.id) === String(m.id))) return state;
+                  return { matches: [m, ...state.matches] };
+              });
+            });
+
+            notifChannel.on('broadcast', { event: 'update_match' }, (payload) => {
+              const m = payload.payload as any;
+              useStore.setState((state) => {
+                  return {
+                    matches: state.matches.map(existing => 
+                      String(existing.id) === String(m.id) ? { ...existing, ...m } : existing
+                    )
+                  };
+              });
+            });
+
+            notifChannel.on('broadcast', { event: 'delete_match' }, (payload) => {
+              const m = payload.payload as any;
+              useStore.setState((state) => {
+                  return { matches: state.matches.filter(existing => String(existing.id) !== String(m.id)) };
+              });
+            });
+
             notifChannel.on('broadcast', { event: 'new_post' }, (payload) => {
               const p = payload.payload as any;
               useStore.setState((state) => {
