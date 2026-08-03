@@ -30,8 +30,8 @@ export function FollowersModal({ isOpen, onClose, initialTab, targetUser }: Foll
 
   if (!isOpen) return null;
 
-  const followerIds = targetUser.followers || [];
-  const followingIds = targetUser.following || [];
+  const followerIds = Array.isArray(targetUser.followers) ? targetUser.followers : [];
+  const followingIds = Array.isArray(targetUser.following) ? targetUser.following : [];
 
   const followerUsers = users.filter((u) => followerIds.includes(u.id));
   const followingUsers = users.filter((u) => followingIds.includes(u.id));
@@ -144,11 +144,11 @@ export function FollowersModal({ isOpen, onClose, initialTab, targetUser }: Foll
             ) : (
               filteredList.map((user) => {
                 const isMe = currentUser?.id === user.id;
-                const isFollowing = Boolean(currentUser?.following?.includes(user.id));
+                const isFollowing = Boolean((Array.isArray(currentUser?.following) ? currentUser.following : []).includes(user.id));
                 const isFriend = Boolean(
                   currentUser &&
                     currentUser.following?.includes(user.id) &&
-                    user.following?.includes(currentUser.id)
+                    (Array.isArray(user.following) ? user.following : []).includes(currentUser.id)
                 );
 
                 return (
@@ -170,7 +170,7 @@ export function FollowersModal({ isOpen, onClose, initialTab, targetUser }: Foll
                           />
                         ) : (
                           <div className="w-full h-full rounded-full bg-pb-dark text-pb-green flex items-center justify-center font-black text-sm">
-                            {user.name.charAt(0)}
+                            {(user.name || '?').charAt(0)}
                           </div>
                         )}
                       </div>

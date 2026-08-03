@@ -561,7 +561,7 @@ function MatchCardItem({ match, idx, userState, renderTeamWithElo, currentUser, 
       {showComments && (
         <div className="overflow-hidden border-t border-gray-100 dark:border-slate-700 bg-white dark:bg-slate-800 rounded-b-2xl">
           <div className="p-4 flex flex-col gap-4">
-            {match.comments && match.comments.map((c: any) => (
+            {(Array.isArray(match.comments) ? match.comments : []).map((c: any) => (
               <div key={c.id} className="flex flex-col">
                 <span className="text-xs font-bold text-pb-dark dark:text-white">{c.author}</span>
                 <span className="text-sm text-gray-600 dark:text-gray-300">{c.text}</span>
@@ -983,12 +983,12 @@ export default function ProfilePage({ params }: { params: { username: string } }
                       <button
                         onClick={() => toggleFollow(userState.id)}
                         className={`px-6 py-2 rounded-2xl font-black text-xs transition-all shadow-md flex items-center gap-2 ${
-                          currentUser.following?.includes(userState.id)
+                          (Array.isArray(currentUser?.following) ? currentUser.following : []).includes(userState.id)
                             ? 'bg-gray-100 dark:bg-slate-800 text-gray-700 dark:text-gray-300 border border-gray-300 dark:border-slate-700'
                             : 'bg-gradient-to-r from-pb-blue to-indigo-600 text-white hover:scale-105'
                         }`}
                       >
-                        {currentUser.following?.includes(userState.id) ? "Takip Ediliyor" : "+ Takip Et"}
+                        {(Array.isArray(currentUser?.following) ? currentUser.following : []).includes(userState.id) ? "Takip Ediliyor" : "+ Takip Et"}
                       </button>
                     )}
                   </div>

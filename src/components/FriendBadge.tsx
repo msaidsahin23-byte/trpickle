@@ -6,8 +6,8 @@ import { User } from "@/store/useStore";
 
 export function isMutualFriend(userA?: User | null, userB?: User | null): boolean {
   if (!userA || !userB || userA.id === userB.id) return false;
-  const aFollowsB = (userA.following || []).includes(userB.id) || (userB.followers || []).includes(userA.id);
-  const bFollowsA = (userB.following || []).includes(userA.id) || (userA.followers || []).includes(userB.id);
+  const aFollowsB = (Array.isArray(userA.following) ? userA.following : []).includes(userB.id) || (Array.isArray(userB.followers) ? userB.followers : []).includes(userA.id);
+  const bFollowsA = (Array.isArray(userB.following) ? userB.following : []).includes(userA.id) || (Array.isArray(userA.followers) ? userA.followers : []).includes(userB.id);
   return aFollowsB && bFollowsA;
 }
 
