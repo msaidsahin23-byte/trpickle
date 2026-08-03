@@ -27,15 +27,16 @@ function AuthContent() {
 
   const [activeTab, setActiveTab] = useState<"login" | "signup">(isAddAccount ? "signup" : "signup");
   const [isSignUpSuccess, setIsSignUpSuccess] = useState(false);
+  const [isSigningUp, setIsSigningUp] = useState(false);
   const router = useRouter();
   const currentUser = useStore(state => state.currentUser);
   const users = useStore(state => state.users);
 
   useEffect(() => {
-    if (currentUser && !isAddAccount && !isSignUpSuccess) {
+    if (currentUser && !isAddAccount && !isSignUpSuccess && !isSigningUp) {
       router.push("/feed");
     }
-  }, [currentUser, isAddAccount, isSignUpSuccess, router]);
+  }, [currentUser, isAddAccount, isSignUpSuccess, isSigningUp, router]);
 
   useEffect(() => {
     if (isAddAccount) {
@@ -104,6 +105,7 @@ function AuthContent() {
       }
 
       try {
+        setIsSigningUp(true);
         const { data, error } = await supabase.auth.signUp({
           email,
           password,
@@ -115,7 +117,7 @@ function AuthContent() {
               lastName: lastName.trim(),
               city: selectedCity,
               gender: selectedGender,
-              birthdate: selectedBirthdate
+              birthdate: selectedBirthdate || "2000-01-01"
             }
           }
         });
@@ -133,7 +135,7 @@ function AuthContent() {
             username: cleanUsername,
             city: selectedCity,
             gender: selectedGender,
-            birthdate: selectedBirthdate,
+            birthdate: selectedBirthdate || "2000-01-01",
             singles_rating: 2.5,
             doubles_rating: 2.5,
             role: "user"
@@ -150,6 +152,8 @@ function AuthContent() {
         } else {
           setAuthError(err.message);
         }
+      } finally {
+        setIsSigningUp(false);
       }
     } else {
       // LOGIN
@@ -409,8 +413,8 @@ function AuthContent() {
               </div>
             )}
             
-            <button type="submit" className="w-full bg-pb-green text-pb-dark font-bold py-4 rounded-xl shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all duration-300 mt-2">
-              {activeTab === "login" ? "Giriş Yap" : "Kayıt Ol"}
+            <button disabled={isSigningUp} type="submit" className="w-full bg-pb-green text-pb-dark font-bold py-4 rounded-xl shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all duration-300 mt-2 disabled:opacity-50">
+              {activeTab === "login" ? "Giriş Yap" : isSigningUp ? "Kayıt Olunuyor..." : "Kayıt Ol"}
             </button>
         </form>
 
