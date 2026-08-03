@@ -49,7 +49,7 @@ export default function SupabaseSyncProvider() {
                 showPostsOnProfile: userData.show_posts_on_profile ?? true
               }));
 
-              let currentUser = mappedUsers.find(u => u.id === session.user.id) || null;
+              let currentUser = mappedUsers.find(u => String(u.id) === String(session.user.id)) || null;
 
               if (!currentUser) {
                 // Auto-heal missing public.users record
@@ -151,7 +151,7 @@ export default function SupabaseSyncProvider() {
               }));
 
               const finalUsers = mappedUsers.map(mu => {
-                const existing = state.users.find(eu => eu.id === mu.id);
+                const existing = state.users.find(eu => String(eu.id) === String(mu.id));
                 
                 const userNotifs = mappedNotifications.filter(n => n._userId === mu.id).map(n => {
                   const { _userId, ...rest } = n;
@@ -172,7 +172,7 @@ export default function SupabaseSyncProvider() {
                 } : mu;
               });
               
-              const finalCurrentUser = finalUsers.find(u => u.id === session.user.id) || currentUser;
+              const finalCurrentUser = finalUsers.find(u => String(u.id) === String(session.user.id)) || currentUser;
 
               // MERGE POSTS & MESSAGES WITH LOCAL STATE TO AVOID LOSING LOCALLY CREATED ONES
               const finalPosts = [...mappedPosts];
@@ -288,7 +288,7 @@ export default function SupabaseSyncProvider() {
                       }
                       return u;
                     });
-                    const newCurrentUser = state.currentUser ? (newUsers.find(x => x.id === state.currentUser!.id) || state.currentUser) : state.currentUser;
+                    const newCurrentUser = state.currentUser ? (newUsers.find(x => String(x.id) === String(state.currentUser!.id)) || state.currentUser) : state.currentUser;
                     return { users: newUsers, currentUser: newCurrentUser };
                   });
                 }
@@ -418,7 +418,7 @@ export default function SupabaseSyncProvider() {
                       }
                       return existing;
                     });
-                    const newCurrentUser = state.currentUser ? (newUsers.find(x => x.id === state.currentUser!.id) || state.currentUser) : state.currentUser;
+                    const newCurrentUser = state.currentUser ? (newUsers.find(x => String(x.id) === String(state.currentUser!.id)) || state.currentUser) : state.currentUser;
                     return { users: newUsers, currentUser: newCurrentUser };
                   });
                 }
@@ -452,7 +452,7 @@ export default function SupabaseSyncProvider() {
                       return u;
                     });
                     
-                    const newCurrentUser = state.currentUser ? (newUsers.find(x => x.id === state.currentUser!.id) || state.currentUser) : state.currentUser;
+                    const newCurrentUser = state.currentUser ? (newUsers.find(x => String(x.id) === String(state.currentUser!.id)) || state.currentUser) : state.currentUser;
                     return { users: newUsers, currentUser: newCurrentUser };
                   });
               });
@@ -558,7 +558,7 @@ export default function SupabaseSyncProvider() {
                     }
                     return u;
                  });
-                 const newCurrentUser = state.currentUser ? (newUsers.find(x => x.id === state.currentUser!.id) || state.currentUser) : state.currentUser;
+                 const newCurrentUser = state.currentUser ? (newUsers.find(x => String(x.id) === String(state.currentUser!.id)) || state.currentUser) : state.currentUser;
                  return { users: newUsers, currentUser: newCurrentUser };
               });
             });
