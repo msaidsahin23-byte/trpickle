@@ -10,7 +10,8 @@ export type UserRole = 'admin' | 'user';
 export type AppNotification = {
   id: number | string;
   postId?: number | string;
-  type: 'like' | 'comment' | 'system';
+  matchId?: number | string;
+  type: 'like' | 'comment' | 'system' | 'new_follower';
   message: string;
   isRead: boolean;
   createdAt: string;
