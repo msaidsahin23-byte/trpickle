@@ -48,12 +48,12 @@ export default function NotificationBanner() {
     // Check for new Direct Messages
     (directMessages || []).forEach((msg) => {
       if (
-        msg.receiverId === currentUser.id &&
+        String(msg.receiverId) === String(currentUser.id) &&
         !msg.isRead &&
         !seenIdsRef.current.has(msg.id)
       ) {
         seenIdsRef.current.add(msg.id);
-        const sender = users.find((u) => u.id === msg.senderId);
+        const sender = users.find((u) => String(u.id) === String(msg.senderId));
         newToasts.push({
           id: msg.id,
           title: `${sender ? sender.name : "Bir kullanıcı"}'dan yeni mesaj var!`,

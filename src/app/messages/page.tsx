@@ -65,8 +65,8 @@ function MessagesContent() {
   const currentChatMessages = directMessages
     .filter(
       msg =>
-        (msg.senderId === currentUser?.id && msg.receiverId === selectedFriendId) ||
-        (msg.senderId === selectedFriendId && msg.receiverId === currentUser?.id)
+        (String(msg.senderId) === String(currentUser?.id) && String(msg.receiverId) === String(selectedFriendId)) ||
+        (String(msg.senderId) === String(selectedFriendId) && String(msg.receiverId) === String(currentUser?.id))
     )
     .sort((a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime());
 
@@ -134,7 +134,7 @@ function MessagesContent() {
             ) : (
               mutualFriends.map(friend => {
                 const unreadCount = directMessages.filter(
-                  msg => msg.senderId === friend.id && msg.receiverId === currentUser.id && !msg.isRead
+                  msg => String(msg.senderId) === String(friend.id) && String(msg.receiverId) === String(currentUser.id) && !msg.isRead
                 ).length;
 
                 return (
@@ -142,7 +142,7 @@ function MessagesContent() {
                     key={friend.id}
                     onClick={() => setSelectedFriendId(friend.id)}
                     className={`w-full text-left p-3.5 sm:p-4 flex items-center justify-between transition-all ${
-                      selectedFriendId === friend.id
+                      String(selectedFriendId) === String(friend.id)
                         ? "bg-pb-green/15 dark:bg-pb-green/20 border-l-4 border-pb-green"
                         : "hover:bg-slate-50 dark:hover:bg-slate-700/40"
                     }`}
@@ -227,7 +227,7 @@ function MessagesContent() {
                   </div>
                 ) : (
                   currentChatMessages.map(msg => {
-                    const isMine = msg.senderId === currentUser.id;
+                    const isMine = String(msg.senderId) === String(currentUser.id);
                     return (
                       <div
                         key={msg.id}
