@@ -546,8 +546,24 @@ export default function SupabaseSyncProvider() {
               });
             });
 
-            // getGlobalChannel already subscribes
-;
+            notifChannel.on('broadcast', { event: 'update_follow' }, (payload: any) => {
+              const data = payload.payload;
+              useStore.setState(state => {
+                 const newUsers = state.users.map(u => {
+                    if (String(u.id) === String(data.userId1)) {
+                       return { ...u, following: data.userId1Following };
+                    }
+                    if (String(u.id) === String(data.userId2)) {
+                       return { ...u, followers: data.userId2Followers };
+                    }
+                    return u;
+                 });
+                 const newCurrentUser = state.currentUser ? (newUsers.find(x => x.id === state.currentUser!.id) || state.currentUser) : state.currentUser;
+                 return { users: newUsers, currentUser: newCurrentUser };
+              });
+            });
+
+            subscribeGlobalChannel();
           }
         } else {
           // Logged out
