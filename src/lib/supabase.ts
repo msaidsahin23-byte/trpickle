@@ -7,6 +7,7 @@ export const supabase = createClient(supabaseUrl, supabaseAnonKey)
 
 let globalChannel: any = null;
 let isSubscribed = false;
+let isSubscribing = false;
 
 export const getGlobalChannel = () => {
   if (!globalChannel) {
@@ -17,10 +18,16 @@ export const getGlobalChannel = () => {
 
 export const subscribeGlobalChannel = () => {
   const channel = getGlobalChannel();
-  if (!isSubscribed) {
+  if (!isSubscribed && !isSubscribing) {
+    isSubscribing = true;
     channel.subscribe((status: string) => {
       if (status === 'SUBSCRIBED') {
         isSubscribed = true;
+        isSubscribing = false;
+      }
+      if (status === 'CLOSED' || status === 'CHANNEL_ERROR') {
+        isSubscribed = false;
+        isSubscribing = false;
       }
     });
   }
