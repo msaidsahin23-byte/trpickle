@@ -133,7 +133,15 @@ export default function Navbar() {
                   <span>Maç Gir</span>
                 </Link>
 
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-1 sm:gap-2">
+                  {/* Mobile QR Okut Button */}
+                  <button 
+                    onClick={() => setScannerOpen(true)}
+                    className="sm:hidden relative p-2.5 rounded-xl bg-slate-800/50 text-slate-300 hover:text-white hover:bg-slate-800 transition-colors"
+                    title="QR Okut"
+                  >
+                    <QrCode size={20} />
+                  </button>
                   <Link href="/messages" className="relative p-2.5 rounded-xl bg-slate-800/50 text-slate-300 hover:text-white hover:bg-slate-800 transition-colors">
                     <MessageSquare size={20} />
                     {unreadMsgs > 0 && (
