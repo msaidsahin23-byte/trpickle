@@ -178,9 +178,9 @@ export default function PlayerQrModal({ isOpen, onClose, user }: PlayerQrModalPr
                     src: "/logo.png",
                     x: undefined,
                     y: undefined,
-                    height: 48,
-                    width: 48,
-                    excavate: true,
+                    height: 32,
+                    width: 32,
+                    excavate: false,
                   }}
                 />
               </div>

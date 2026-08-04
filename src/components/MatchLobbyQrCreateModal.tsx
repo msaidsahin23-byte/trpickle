@@ -73,9 +73,9 @@ export default function MatchLobbyQrCreateModal({
                   src: "/logo.png",
                   x: undefined,
                   y: undefined,
-                  height: 48,
-                  width: 48,
-                  excavate: true,
+                  height: 36,
+                  width: 36,
+                  excavate: false,
                 }}
               />
             </div>
