@@ -744,9 +744,17 @@ export default function Feed({ filterUserId }: { filterUserId?: number | string 
         className="bg-white dark:bg-slate-800 rounded-3xl p-4 sm:p-5 shadow-sm border border-gray-200 dark:border-slate-700 flex items-center justify-between gap-3"
       >
         <div className="flex items-center gap-3 flex-1 min-w-0">
-          <div className="w-11 h-11 rounded-2xl bg-gradient-to-br from-pb-green to-lime-400 text-slate-950 font-black flex items-center justify-center text-lg shadow-sm shrink-0">
-            {currentUser?.name ? currentUser.name.charAt(0) : "🎾"}
-          </div>
+          {currentUser?.avatarUrl ? (
+            <img 
+              src={getProxyUrl(currentUser.avatarUrl)} 
+              alt={currentUser.name || ""} 
+              className="w-11 h-11 rounded-2xl object-cover shrink-0 ring-1 ring-slate-200 dark:ring-slate-700 shadow-sm" 
+            />
+          ) : (
+            <div className="w-11 h-11 rounded-2xl bg-gradient-to-br from-pb-green to-lime-400 text-slate-950 font-black flex items-center justify-center text-lg shadow-sm shrink-0">
+              {currentUser?.name ? currentUser.name.charAt(0) : "🎾"}
+            </div>
+          )}
           <button
             type="button"
             onClick={() => setIsPostModalOpen(true)}

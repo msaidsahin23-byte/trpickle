@@ -87,7 +87,7 @@ export default function Navbar() {
         <div className="flex items-center justify-between h-16">
           
           {/* Logo Alanı */}
-          <Link href="/" className="flex items-center gap-3 shrink-0" onClick={closeMenu}>
+          <Link href={currentUser ? "/feed" : "/"} className="flex items-center gap-3 shrink-0" onClick={closeMenu}>
             <Image alt="Logo" className="object-contain" height={32} width={32} src={logoPic} />
             <Image alt="TRPickle.com" className="object-contain hidden sm:block" height={20} width={130} src={logoTextPic} />
           </Link>
