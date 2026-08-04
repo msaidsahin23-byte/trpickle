@@ -1309,7 +1309,7 @@ export default function ProfilePage({ params }: { params: { username: string } }
                 </div>
                 <div>
                   <span className="text-3xl font-black text-slate-900 dark:text-white block">{analytics?.doublePoints?.toFixed(3) || "2.500"}</span>
-                  <span className="text-xs font-bold text-pb-green block mt-1">Erkek-Erkek / Kız-Kız Puanı</span>
+                  <span className="text-xs font-bold text-pb-green block mt-1">Çift Erkekler & Çift Kadınlar Puanı</span>
                 </div>
               </div>
 
@@ -1322,7 +1322,7 @@ export default function ProfilePage({ params }: { params: { username: string } }
                 </div>
                 <div>
                   <span className="text-3xl font-black text-slate-900 dark:text-white block">{analytics?.mixPoints?.toFixed(3) || "2.500"}</span>
-                  <span className="text-xs font-bold text-purple-400 block mt-1">Erkek-Kız Puanı</span>
+                  <span className="text-xs font-bold text-purple-400 block mt-1">Karma Çiftler Puanı</span>
                 </div>
               </div>
 
