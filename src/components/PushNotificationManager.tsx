@@ -22,6 +22,7 @@ export default function PushNotificationManager() {
   const [subscription, setSubscription] = useState<PushSubscription | null>(null)
   const [isDenied, setIsDenied] = useState(false)
   const [isDismissed, setIsDismissed] = useState(false)
+  const [isGranted, setIsGranted] = useState(false)
   
   useEffect(() => {
     if ('serviceWorker' in navigator && 'PushManager' in window) {
@@ -29,6 +30,15 @@ export default function PushNotificationManager() {
       registerServiceWorker()
       if (Notification.permission === 'denied') {
         setIsDenied(true)
+      } else if (Notification.permission === 'granted') {
+        setIsGranted(true)
+      }
+    }
+    
+    if (typeof window !== 'undefined') {
+      const dismissed = localStorage.getItem('push_prompt_dismissed')
+      if (dismissed === 'true') {
+        setIsDismissed(true)
       }
     }
   }, [])
@@ -111,6 +121,7 @@ export default function PushNotificationManager() {
       })
       
       setSubscription(sub)
+      setIsGranted(true)
       await sendSubscriptionToServer(sub)
       alert('Bildirimler başarıyla açıldı!')
     } catch (error) {
@@ -119,7 +130,7 @@ export default function PushNotificationManager() {
     }
   }
 
-  if (!isSupported || !currentUser || isDenied || isDismissed) {
+  if (!isSupported || !currentUser || isDenied || isDismissed || isGranted) {
     return null
   }
 
@@ -136,7 +147,12 @@ export default function PushNotificationManager() {
             İzin Ver
           </button>
           <button 
-            onClick={() => setIsDismissed(true)}
+            onClick={() => {
+              setIsDismissed(true)
+              if (typeof window !== 'undefined') {
+                localStorage.setItem('push_prompt_dismissed', 'true')
+              }
+            }}
             className="flex-1 bg-emerald-700 text-emerald-100 font-bold py-2 rounded-xl text-xs hover:bg-emerald-800 transition-colors"
           >
             Şimdi Değil
