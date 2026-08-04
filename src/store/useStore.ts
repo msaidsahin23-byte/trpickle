@@ -1714,7 +1714,9 @@ export const useStore = create<StoreState>()(
            receiver_id: receiverId.toString(),
            content: content.trim(),
            is_read: false
-        }).then();
+        }).then(() => {
+          triggerPushNotification(receiverId.toString(), `Yeni Mesaj: ${state.currentUser?.name || 'Biri'}`, content.trim(), `/messages`);
+        });
         sendReliableBroadcast({
            type: 'broadcast',
            event: 'new_message',
