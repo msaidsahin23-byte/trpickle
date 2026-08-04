@@ -8,10 +8,11 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useStore } from "@/store/useStore";
 import { 
   Activity, Trophy, MapPin, GraduationCap, 
-  PlusCircle, User, LogOut, Menu, X, Bell, MessageSquare, Settings, ChevronDown, Users, Repeat, Award
+  PlusCircle, User, LogOut, Menu, X, Bell, MessageSquare, Settings, ChevronDown, Users, Repeat, Award, Camera, QrCode
 } from "lucide-react";
 import logoPic from "@/assets/logo.png";
 import logoTextPic from "@/assets/logo-text.png";
+import QRScannerModal from "@/components/QRScannerModal";
 
 const Avatar = ({ src, name, size = 32 }: { src?: string, name: string, size?: number }) => {
   const [error, setError] = useState(false);
@@ -49,6 +50,7 @@ export default function Navbar() {
   
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [dropdownOpen, setDropdownOpen] = useState(false);
+  const [scannerOpen, setScannerOpen] = useState(false);
   
   
   const dropdownRef = useRef<HTMLDivElement>(null);
@@ -115,6 +117,14 @@ export default function Navbar() {
           <div className="flex items-center gap-3 shrink-0">
             {currentUser ? (
               <>
+                <button
+                  onClick={() => setScannerOpen(true)}
+                  className="hidden sm:flex items-center gap-2 px-4 py-2 bg-slate-800 text-white rounded-xl font-bold text-sm hover:bg-slate-700 transition-all"
+                >
+                  <QrCode size={18} />
+                  <span>QR Okut</span>
+                </button>
+
                 <Link 
                   href="/add-match" 
                   className="hidden sm:flex items-center gap-2 px-4 py-2 bg-pb-green text-[#17212f] rounded-xl font-bold text-sm hover:brightness-110 transition-all"
@@ -255,6 +265,7 @@ export default function Navbar() {
           </motion.div>
         )}
       </AnimatePresence>
+      <QRScannerModal isOpen={scannerOpen} onClose={() => setScannerOpen(false)} />
     </nav>
   );
 }

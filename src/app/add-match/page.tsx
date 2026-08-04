@@ -380,65 +380,9 @@ export default function AddMatchPage() {
                     </div>
                   </div>
 
-                  {/* Step 3: Players */}
-                  <div className="bg-white dark:bg-slate-800 rounded-3xl p-8 shadow-sm border border-gray-100 dark:border-slate-700">
-                    <h3 className="text-sm font-bold text-gray-400 dark:text-gray-500 uppercase tracking-widest mb-6">Adım 3: Oyuncular</h3>
-
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                  {/* Team 1 */}
-                  <div className="bg-gray-50 dark:bg-slate-900/50 rounded-2xl p-6 border border-gray-100 dark:border-slate-700">
-                    <h4 className="font-extrabold text-pb-dark dark:text-white mb-4 flex items-center gap-2"><span className="w-2 h-2 rounded-full bg-pb-blue"></span> 1. Takım</h4>
-                    <div className="flex flex-col gap-3">
-                      {team1Players.map((player, index) => (
-                        index === 0 && currentUser ? (
-                          <div key={`t1-${index}-locked`} className="bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl px-4 py-3 flex justify-between items-center opacity-80 cursor-not-allowed">
-                            <span className="font-bold text-pb-dark dark:text-white text-sm">{currentUser.name} <span className="text-gray-400 dark:text-gray-500 font-medium ml-1">(Sen)</span></span>
-                            <span className="text-xs font-bold text-gray-500 dark:text-gray-400 bg-gray-100 dark:bg-slate-700 px-2 py-1 rounded-lg">{(matchFormat === 'singles' ? currentUser.singlesRating : currentUser.doublesRating)?.toFixed(3)}</span>
-                          </div>
-                        ) : (
-                          <PlayerSelect 
-                            key={`t1-${index}`}
-                            placeholder="Oyuncu Seç..."
-                            value={player}
-                            matchFormat={matchFormat}
-                            disabledPlayerIds={allSelectedPlayerIds}
-                            onChange={(p) => {
-                              const newArr = [...team1Players];
-                              newArr[index] = p;
-                              setTeam1Players(newArr);
-                            }}
-                          />
-                        )
-                      ))}
-                    </div>
-                  </div>
-                  
-                  {/* Team 2 */}
-                  <div className="bg-gray-50 dark:bg-slate-900/50 rounded-2xl p-6 border border-gray-100 dark:border-slate-700">
-                    <h4 className="font-extrabold text-pb-dark dark:text-white mb-4 flex items-center gap-2"><span className="w-2 h-2 rounded-full bg-red-400"></span> 2. Takım</h4>
-                    <div className="flex flex-col gap-3">
-                      {team2Players.map((player, index) => (
-                        <PlayerSelect 
-                          key={`t2-${index}`}
-                          placeholder="Oyuncu Seç..."
-                          value={player}
-                          matchFormat={matchFormat}
-                          disabledPlayerIds={allSelectedPlayerIds}
-                          onChange={(p) => {
-                            const newArr = [...team2Players];
-                            newArr[index] = p;
-                            setTeam2Players(newArr);
-                          }}
-                        />
-                      ))}
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              {/* Step 4: Scoring Engine */}
+                  {/* Step 4: Scoring Engine */}
               <div className="bg-white dark:bg-slate-800 rounded-3xl p-8 shadow-sm border border-gray-100 dark:border-slate-700">
-                <h3 className="text-sm font-bold text-gray-400 dark:text-gray-500 uppercase tracking-widest mb-6">Adım 4: Akıllı Skor Motoru</h3>
+                <h3 className="text-sm font-bold text-gray-400 dark:text-gray-500 uppercase tracking-widest mb-6">Adım 3: Akıllı Skor Motoru</h3>
                 <div className="flex items-center justify-center gap-8 mb-4">
                   <div className="flex flex-col items-center gap-2">
                     <span className="font-bold text-gray-500 dark:text-gray-400">1. Takım Skoru</span>
@@ -484,7 +428,7 @@ export default function AddMatchPage() {
               <div className="bg-white dark:bg-slate-800 rounded-3xl p-8 shadow-sm border border-gray-100 dark:border-slate-700">
                 <div className="flex items-center justify-between mb-6">
                   <h3 className="text-sm font-bold text-gray-400 dark:text-gray-500 uppercase tracking-widest">
-                    Adım 5: Konum & Kort Seçimi (Zorunlu)
+                    Adım 4: Konum & Kort Seçimi (Zorunlu)
                   </h3>
                   <span className="text-xs font-black px-3 py-1 rounded-full bg-red-500/10 text-red-500 border border-red-500/20">
                     Zorunlu Alan *
@@ -625,7 +569,63 @@ export default function AddMatchPage() {
                   </button>
                 </div>
 
-                <button 
+                {/* Step 3: Players */}
+                  <div className="bg-white dark:bg-slate-800 rounded-3xl p-8 shadow-sm border border-gray-100 dark:border-slate-700">
+                    <h3 className="text-sm font-bold text-gray-400 dark:text-gray-500 uppercase tracking-widest mb-6">Adım 5: Oyuncular</h3>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                  {/* Team 1 */}
+                  <div className="bg-gray-50 dark:bg-slate-900/50 rounded-2xl p-6 border border-gray-100 dark:border-slate-700">
+                    <h4 className="font-extrabold text-pb-dark dark:text-white mb-4 flex items-center gap-2"><span className="w-2 h-2 rounded-full bg-pb-blue"></span> 1. Takım</h4>
+                    <div className="flex flex-col gap-3">
+                      {team1Players.map((player, index) => (
+                        index === 0 && currentUser ? (
+                          <div key={`t1-${index}-locked`} className="bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl px-4 py-3 flex justify-between items-center opacity-80 cursor-not-allowed">
+                            <span className="font-bold text-pb-dark dark:text-white text-sm">{currentUser.name} <span className="text-gray-400 dark:text-gray-500 font-medium ml-1">(Sen)</span></span>
+                            <span className="text-xs font-bold text-gray-500 dark:text-gray-400 bg-gray-100 dark:bg-slate-700 px-2 py-1 rounded-lg">{(matchFormat === 'singles' ? currentUser.singlesRating : currentUser.doublesRating)?.toFixed(3)}</span>
+                          </div>
+                        ) : (
+                          <PlayerSelect 
+                            key={`t1-${index}`}
+                            placeholder="Oyuncu Seç..."
+                            value={player}
+                            matchFormat={matchFormat}
+                            disabledPlayerIds={allSelectedPlayerIds}
+                            onChange={(p) => {
+                              const newArr = [...team1Players];
+                              newArr[index] = p;
+                              setTeam1Players(newArr);
+                            }}
+                          />
+                        )
+                      ))}
+                    </div>
+                  </div>
+                  
+                  {/* Team 2 */}
+                  <div className="bg-gray-50 dark:bg-slate-900/50 rounded-2xl p-6 border border-gray-100 dark:border-slate-700">
+                    <h4 className="font-extrabold text-pb-dark dark:text-white mb-4 flex items-center gap-2"><span className="w-2 h-2 rounded-full bg-red-400"></span> 2. Takım</h4>
+                    <div className="flex flex-col gap-3">
+                      {team2Players.map((player, index) => (
+                        <PlayerSelect 
+                          key={`t2-${index}`}
+                          placeholder="Oyuncu Seç..."
+                          value={player}
+                          matchFormat={matchFormat}
+                          disabledPlayerIds={allSelectedPlayerIds}
+                          onChange={(p) => {
+                            const newArr = [...team2Players];
+                            newArr[index] = p;
+                            setTeam2Players(newArr);
+                          }}
+                        />
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <button 
                   onClick={handleSubmit}
                   disabled={isSubmitting}
                   className={`w-full py-5 rounded-2xl font-extrabold text-xl shadow-sm transition-all flex items-center justify-center gap-2 mt-4 ${
@@ -660,6 +660,8 @@ export default function AddMatchPage() {
             location: location.trim() || "Kort Belirtilmedi",
             team1Score: parseInt(team1Score) || 11,
             team2Score: parseInt(team2Score) || 8,
+            qrId: Math.random().toString(36).substring(2, 15),
+            maxUses: matchFormat === "singles" ? 1 : 3,
           })}
           format={matchFormat}
           team1Score={parseInt(team1Score) || 11}

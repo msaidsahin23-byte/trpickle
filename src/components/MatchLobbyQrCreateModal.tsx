@@ -23,6 +23,9 @@ export default function MatchLobbyQrCreateModal({
   team2Score,
   location,
 }: MatchLobbyQrCreateModalProps) {
+  const baseUrl = typeof window !== 'undefined' ? window.location.origin : 'https://trpickle.com';
+  const qrUrl = `${baseUrl}/scan?data=${typeof window !== 'undefined' ? window.btoa(unescape(encodeURIComponent(payloadJSON))) : ''}`;
+  
   if (!isOpen) return null;
 
   return (
@@ -61,11 +64,19 @@ export default function MatchLobbyQrCreateModal({
 
             <div className="p-6 bg-white rounded-3xl shadow-xl border-4 border-emerald-500/20 flex items-center justify-center">
               <QRCodeSVG
-                value={payloadJSON}
+                value={qrUrl}
                 size={220}
                 fgColor="#047857"
                 bgColor="#ffffff"
-                level="M"
+                level="H"
+                imageSettings={{
+                  src: "/logo.png",
+                  x: undefined,
+                  y: undefined,
+                  height: 48,
+                  width: 48,
+                  excavate: true,
+                }}
               />
             </div>
 

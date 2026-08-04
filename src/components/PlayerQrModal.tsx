@@ -60,7 +60,8 @@ export default function PlayerQrModal({ isOpen, onClose, user }: PlayerQrModalPr
 
   if (!isOpen || !user) return null;
 
-  const inviteUrl = `profile:${user.id}`;
+  const baseUrl = typeof window !== 'undefined' ? window.location.origin : 'https://trpickle.com';
+  const inviteUrl = `${baseUrl}/profile/${user.id}`;
 
   const handleCopyLink = () => {
     navigator.clipboard.writeText(`https://trpickle.com/profile/${user.id}`);
@@ -150,7 +151,11 @@ export default function PlayerQrModal({ isOpen, onClose, user }: PlayerQrModalPr
                   <div className="flex items-center gap-2 text-xs text-gray-300 font-medium mt-0.5">
                     <span>📍 {user.city || "İstanbul"}</span>
                     <span>•</span>
-                    <span className="text-amber-400 font-extrabold">⭐ {(user.singlesRating || 3.5).toFixed(2)}</span>
+                    <div className="flex items-center gap-1.5">
+                      <span className="text-pb-green font-extrabold">Tek: {(user.singlesRating || 2.5).toFixed(3)}</span>
+                      <span className="text-gray-400">|</span>
+                      <span className="text-purple-400 font-extrabold">Eş: {(user.doublesRating || 2.5).toFixed(3)}</span>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -163,14 +168,15 @@ export default function PlayerQrModal({ isOpen, onClose, user }: PlayerQrModalPr
                   fgColor={selectedTheme.fgColor}
                   bgColor="#ffffff"
                   level="H"
-                  includeMargin={false}
+                  imageSettings={{
+                    src: "/logo.png",
+                    x: undefined,
+                    y: undefined,
+                    height: 48,
+                    width: 48,
+                    excavate: true,
+                  }}
                 />
-                {/* Center Brand Badge inside QR */}
-                <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-                  <div className="w-10 h-10 rounded-xl bg-white shadow-md border border-gray-200 flex items-center justify-center font-black text-emerald-600 text-xs tracking-tighter">
-                    🎾
-                  </div>
-                </div>
               </div>
 
               {/* Footer Tagline */}
@@ -178,32 +184,6 @@ export default function PlayerQrModal({ isOpen, onClose, user }: PlayerQrModalPr
                 <div className="text-2xl sm:text-3xl font-black tracking-tight text-[#84cc16] drop-shadow-md">
                   trpickle.com
                 </div>
-              </div>
-            </div>
-
-            {/* Theme Customizer Toolbar */}
-            <div className="w-full max-w-sm flex flex-col gap-2">
-              <div className="flex items-center justify-between text-xs font-bold text-gray-300">
-                <span className="flex items-center gap-1.5">
-                  <Palette className="w-4 h-4 text-emerald-400" />
-                  QR Kart Rengi & Teması
-                </span>
-                <span className="text-emerald-400 text-[11px] font-extrabold uppercase">Özelleştir</span>
-              </div>
-              <div className="grid grid-cols-4 gap-2">
-                {QR_THEMES.map((theme) => (
-                  <button
-                    key={theme.id}
-                    onClick={() => setSelectedTheme(theme)}
-                    className={`py-2 px-2 rounded-xl text-xs font-extrabold transition-all border ${
-                      selectedTheme.id === theme.id
-                        ? "bg-emerald-500/20 border-emerald-500 text-white scale-105 shadow-md"
-                        : "bg-slate-800/80 border-slate-700 text-gray-400 hover:border-slate-600"
-                    }`}
-                  >
-                    {theme.name.split(" ")[1]}
-                  </button>
-                ))}
               </div>
             </div>
 

@@ -204,6 +204,8 @@ export type CourtSubmission = {
 };
 
 export type StoreState = {
+  qrScans: Record<string, number>;
+  incrementQrScan: (qrId: string) => number;
   users: User[];
   matches: MatchRecord[];
   posts: Post[];
@@ -430,6 +432,16 @@ export const useStore = create<StoreState>()(
       courts: initialCourts,
       courtSubmissions: initialCourtSubmissions,
       currentUser: null,
+      qrScans: {},
+      incrementQrScan: (qrId) => {
+        let newCount = 1;
+        set((state) => {
+          const count = (state.qrScans[qrId] || 0) + 1;
+          newCount = count;
+          return { qrScans: { ...state.qrScans, [qrId]: count } };
+        });
+        return newCount;
+      },
       activeSessions: [],
     deleteOwnAccount: async (password: string) => {
         const currentUser = get().currentUser;
