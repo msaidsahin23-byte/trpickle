@@ -1047,12 +1047,28 @@ export const useStore = create<StoreState>()(
         };
       });
         
+        let finalContent = post.content;
+        const meta: any = {};
+        if (post.taggedCourt) meta.taggedCourt = post.taggedCourt;
+        if (post.categoryBadge) meta.categoryBadge = post.categoryBadge;
+        if (post.taggedUsers) meta.taggedUsers = post.taggedUsers;
+        if (post.matchScoreCard) meta.matchScoreCard = post.matchScoreCard;
+        if (post.isOfficial) meta.isOfficial = post.isOfficial;
+        if (post.isPinned) meta.isPinned = post.isPinned;
+        
+        if (Object.keys(meta).length > 0) {
+          finalContent += "\n\n<!--META:" + JSON.stringify(meta) + "-->";
+        }
+        if (post.poll) {
+          finalContent += "\n\n<!--POLL:" + JSON.stringify(post.poll) + "-->";
+        }
+
         supabase.from('posts').insert({
           id: post.id.toString(),
           author_id: post.authorId.toString(),
           author_name: post.author,
           rating: post.rating,
-          content: post.poll ? post.content + "\n\n<!--POLL:" + JSON.stringify(post.poll) + "-->" : post.content,
+          content: finalContent,
           time: post.time,
           liked_by: (post.likedBy || []).map(String),
           comments: post.comments || [],
@@ -1151,6 +1167,10 @@ export const useStore = create<StoreState>()(
 
         const newActiveSessions = (state.activeSessions || []).filter(s => s.id !== id);
         const newCurrentUser = state.currentUser?.id === id ? null : state.currentUser;
+
+        // DELETE FROM SUPABASE
+        supabase.from('users').delete().eq('id', id.toString()).then(({error}) => { if(error) console.error(error) });
+        supabase.from('posts').delete().eq('author_id', id.toString()).then();
 
         if (typeof window !== "undefined") {
           if (newCurrentUser === null) {
@@ -1391,9 +1411,23 @@ export const useStore = create<StoreState>()(
           });
 
           if (updatedPostData && updatedPostData.poll) {
-             const baseContent = updatedPostData.content.split("\n\n<!--POLL:")[0];
-             const newContent = baseContent + "\n\n<!--POLL:" + JSON.stringify(updatedPostData.poll) + "-->";
-             supabase.from('posts').update({ content: newContent }).eq('id', postId.toString()).then();
+             let finalContent = updatedPostData.content.split("\n\n<!--POLL:")[0].split("\n\n<!--META:")[0];
+             
+             const meta: any = {};
+             if (updatedPostData.taggedCourt) meta.taggedCourt = updatedPostData.taggedCourt;
+             if (updatedPostData.categoryBadge) meta.categoryBadge = updatedPostData.categoryBadge;
+             if (updatedPostData.taggedUsers) meta.taggedUsers = updatedPostData.taggedUsers;
+             if (updatedPostData.matchScoreCard) meta.matchScoreCard = updatedPostData.matchScoreCard;
+             if (updatedPostData.isOfficial) meta.isOfficial = updatedPostData.isOfficial;
+             if (updatedPostData.isPinned) meta.isPinned = updatedPostData.isPinned;
+             
+             if (Object.keys(meta).length > 0) {
+               finalContent += "\n\n<!--META:" + JSON.stringify(meta) + "-->";
+             }
+             
+             finalContent += "\n\n<!--POLL:" + JSON.stringify(updatedPostData.poll) + "-->";
+             
+             supabase.from('posts').update({ content: finalContent }).eq('id', postId.toString()).then();
           }
 
           return { posts: newPosts };
@@ -2071,6 +2105,13 @@ export const useStore = create<StoreState>()(
           level: newLevel,
           notifications: [newNotif, ...(state.currentUser.notifications || [])]
         };
+
+        supabase.from('users').update({
+           claimed_weekly_quests: updatedUser.claimedWeeklyQuests,
+           unlocked_achievements: updatedUser.unlockedAchievements,
+           xp: updatedUser.xp,
+           level: updatedUser.level
+        }).eq('id', updatedUser.id.toString()).then();
 
         return {
           currentUser: updatedUser,

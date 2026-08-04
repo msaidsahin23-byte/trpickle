@@ -123,8 +123,8 @@ const handleLike = (e?: React.MouseEvent) => {
           <div>
             <div className="flex items-center gap-2 flex-wrap">
               {post.authorId !== -1 ? (
-                <Link href={`/profile/${post.authorId}`} onClick={(e) => e.stopPropagation()}>
-                  <h3 className="font-bold text-lg text-pb-dark dark:text-white leading-tight hover:text-pb-blue transition-colors cursor-pointer">{post.author}</h3>
+                <Link href={`/profile/${authorUser?.username || post.authorId}`} onClick={(e) => e.stopPropagation()}>
+                  <h3 className="font-bold text-lg text-pb-dark dark:text-white leading-tight hover:text-pb-blue transition-colors cursor-pointer">{authorUser ? `@${authorUser.username}` : post.author}</h3>
                 </Link>
               ) : (
                 <h3 className="font-bold text-lg text-pb-dark dark:text-white leading-tight">{post.author}</h3>
@@ -985,11 +985,11 @@ export default function Feed({ filterUserId }: { filterUserId?: number | string 
                       </div>
                       <div className="max-h-48 overflow-y-auto flex flex-col gap-1.5 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
                         {(() => {
-                          const myMatches = matches.filter(m => currentUser && (m.team1.includes(currentUser.id) || m.team2.includes(currentUser.id)));
+                          const myMatches = matches.filter(m => currentUser && (!m.status || m.status === 'approved') && (m.team1.includes(currentUser.id) || m.team2.includes(currentUser.id)));
                           if (myMatches.length === 0) {
                             return (
                               <div className="p-4 text-center text-xs text-gray-400 font-medium">
-                                Henüz kayıtlı bir maçın bulunmuyor. Maç ekledikten sonra skorunu buradan paylaşabilirsin!
+                                Henüz onaylanmış bir maçınız bulunmuyor. Onaylanmış maçlarınızı buradan paylaşabilirsiniz!
                               </div>
                             );
                           }

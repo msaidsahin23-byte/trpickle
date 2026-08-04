@@ -17,8 +17,7 @@ export async function GET() {
       singlesRating: u.singles_rating || 2.5,
       doublesRating: u.doubles_rating || 2.5,
       tags: u.tags || [],
-      // Ensure admin roles are hidden from standard sync
-      role: u.role === 'admin' ? 'user' : (u.role || 'user'),
+      role: u.role || 'user',
       city: u.city || 'İstanbul',
       gender: u.gender || 'male',
       birthdate: u.birthdate || '1995-01-01',

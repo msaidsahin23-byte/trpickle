@@ -109,6 +109,8 @@ export default function SupabaseSyncProvider() {
                 const pComments = (allComments || []).filter((c: any) => c.post_id === p.id || c.post_id === String(p.id));
                 let contentStr = p.content || "";
                 let pollObj = undefined;
+                let metaObj: any = {};
+                
                 if (contentStr.includes("<!--POLL:")) {
                    const parts = contentStr.split("<!--POLL:");
                    contentStr = parts[0].trim();
@@ -116,6 +118,15 @@ export default function SupabaseSyncProvider() {
                      pollObj = JSON.parse(parts[1].replace("-->", ""));
                    } catch(e) {}
                 }
+                
+                if (contentStr.includes("<!--META:")) {
+                   const parts = contentStr.split("<!--META:");
+                   contentStr = parts[0].trim();
+                   try {
+                     metaObj = JSON.parse(parts[1].replace("-->", ""));
+                   } catch(e) {}
+                }
+                
                 return {
                   id: p.id,
                   authorId: p.author_id,
@@ -127,7 +138,8 @@ export default function SupabaseSyncProvider() {
                   likedBy: p.liked_by || [],
                   comments: Array.from({ length: pComments.length }) as any[],
                   imageUrl: p.image_url,
-                  linkedMatchId: p.linked_match_id
+                  linkedMatchId: p.linked_match_id,
+                  ...metaObj
                 };
               });
 

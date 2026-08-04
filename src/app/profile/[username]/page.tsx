@@ -204,33 +204,31 @@ function calculateAnalytics(history: MatchRecord[], userId: number | string, use
     }
   });
 
-  let bestPartnerId: number | null = null;
+  let bestPartnerId: string | null = null;
   let bestPartnerRate = -1;
   Object.keys(partnerWins).forEach(pidStr => {
-    const pid = Number(pidStr);
-    const data = partnerWins[pid];
-    if (data.played >= 1) {
+    const data = partnerWins[pidStr];
+    if (data && data.played >= 1) {
       const rate = (data.won / data.played) * 100;
       if (rate > bestPartnerRate) {
         bestPartnerRate = rate;
-        bestPartnerId = pid;
+        bestPartnerId = pidStr;
       }
     }
   });
 
-  let toughestOppId: number | null = null;
+  let toughestOppId: string | null = null;
   let maxLosses = -1;
   Object.keys(oppLosses).forEach(oidStr => {
-    const oid = Number(oidStr);
-    const data = oppLosses[oid];
-    if (data.lost > maxLosses) {
+    const data = oppLosses[oidStr];
+    if (data && data.lost > maxLosses) {
       maxLosses = data.lost;
-      toughestOppId = oid;
+      toughestOppId = oidStr;
     }
   });
 
-  const bestPartnerUser = bestPartnerId ? (Array.isArray(users) ? users : []).find(u => u.id === bestPartnerId) : null;
-  const toughestOppUser = toughestOppId ? (Array.isArray(users) ? users : []).find(u => u.id === toughestOppId) : null;
+  const bestPartnerUser = (Array.isArray(users) ? users : []).find(u => String(u.id) === String(bestPartnerId));
+  const toughestOppUser = (Array.isArray(users) ? users : []).find(u => String(u.id) === String(toughestOppId));
 
   return {
     winRate: Math.round((wins / history.length) * 100),
