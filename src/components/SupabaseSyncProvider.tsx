@@ -175,13 +175,8 @@ export default function SupabaseSyncProvider() {
               
               const finalCurrentUser = finalUsers.find(u => String(u.id) === String(session.user.id)) || currentUser;
 
-              // MERGE POSTS & MESSAGES WITH LOCAL STATE TO AVOID LOSING LOCALLY CREATED ONES
-              const finalPosts = [...mappedPosts];
-              state.posts.forEach(lp => {
-                if (!finalPosts.find(fp => fp.id.toString() === lp.id.toString())) {
-                  finalPosts.push(lp);
-                }
-              });
+              // Use Supabase state as the ultimate source of truth to avoid zombie posts
+              const finalPosts = mappedPosts;
 
               return {
                 currentUser: finalCurrentUser,
