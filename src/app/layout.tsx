@@ -34,7 +34,7 @@ export default function RootLayout({
           <Toaster position="bottom-right" />
           <PushNotificationManager />
           <div className="fixed bottom-0 right-0 p-2 text-[10px] text-slate-400/30 font-mono pointer-events-none z-50">
-            Beta v1.4.1
+            Beta v1.4.2
           </div>
           <Analytics />
         </ThemeProvider>
