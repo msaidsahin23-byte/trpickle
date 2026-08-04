@@ -24,8 +24,8 @@ export async function POST(req: Request) {
       ContentType: file.type,
     }));
 
-    // The public URL the user gave us earlier
-    const publicUrl = `https://pub-4b1522a337474571adb7aefec13e7526.r2.dev/${filename}`;
+    // The public URL the user gave us earlier, wrapped in Next.js Image Optimization
+    const publicUrl = `/_next/image?url=https%3A%2F%2Fpub-4b1522a337474571adb7aefec13e7526.r2.dev%2F${encodeURIComponent(filename)}&w=1080&q=75`;
 
     return NextResponse.json({ url: publicUrl });
   } catch (error: any) {

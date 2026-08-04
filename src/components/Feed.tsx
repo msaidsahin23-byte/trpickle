@@ -1,12 +1,12 @@
 "use client";
 import { motion, AnimatePresence } from "framer-motion";
 import { Heart, MessageCircle, Send, X, PlusCircle, ImageIcon, BarChart2, Trash2, CheckCircle2, Trophy, MapPin, Share2, User as UserIcon, Users, Zap, Hash, AtSign, Search, Wand2, Lock, Crown } from "lucide-react";
-import { useState, useEffect } from "react";
+import { getProxyUrl } from '@/lib/imageProxy';
+import { useState, useEffect, useRef } from "react";
 import { useStore, Post, Comment } from "@/store/useStore";
 import { useRouter, useSearchParams, usePathname } from "next/navigation";
 import Link from "next/link";
 import CommentDrawer from "@/components/CommentDrawer";
-import { useRef } from "react";
 import { AuthModal } from "@/components/AuthModal";
 import { ClientTime } from "@/components/ClientTime";
 import { resizeImage } from "@/lib/image-utils";
@@ -113,7 +113,7 @@ const handleLike = (e?: React.MouseEvent) => {
         <div className="flex items-center gap-4">
           {authorUser?.avatarUrl ? (
             <div className="w-12 h-12 rounded-full overflow-hidden border border-gray-200 shrink-0">
-              <img src={authorUser.avatarUrl} alt={post.author} className="w-full h-full object-cover" />
+              <img src={getProxyUrl(authorUser.avatarUrl)} alt={post.author} className="w-full h-full object-cover" />
             </div>
           ) : (
             <div className="w-12 h-12 bg-gray-100 dark:bg-slate-700 border border-gray-200 dark:border-slate-600 text-pb-dark dark:text-white rounded-full flex items-center justify-center font-bold text-xl shrink-0">
@@ -225,7 +225,7 @@ const handleLike = (e?: React.MouseEvent) => {
                   className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-slate-100 dark:bg-slate-700/80 hover:bg-pb-blue/15 border border-gray-200 dark:border-slate-600 text-xs font-bold text-pb-dark dark:text-gray-200 transition-colors shadow-2xs"
                 >
                   {u.avatarUrl ? (
-                    <img src={u.avatarUrl} alt={u.name} className="w-4 h-4 rounded-full object-cover shrink-0" />
+                    <img src={getProxyUrl(u.avatarUrl)} alt={u.name} className="w-4 h-4 rounded-full object-cover shrink-0" />
                   ) : (
                     <span className="w-4 h-4 rounded-full bg-pb-blue text-white flex items-center justify-center text-[9px] shrink-0 font-black">
                       {u.name.charAt(0)}
@@ -301,7 +301,7 @@ const handleLike = (e?: React.MouseEvent) => {
 
         {post.imageUrl && (
           <div className="mt-4" onClick={(e) => e.stopPropagation()}>
-            <img src={post.imageUrl} alt="Gönderi görseli" className="w-full max-h-[500px] object-cover rounded-2xl border border-gray-100" />
+            <img src={getProxyUrl(post.imageUrl)} alt="Gönderi görseli" className="w-full max-h-[500px] object-cover rounded-2xl border border-gray-100" />
           </div>
         )}
         
@@ -828,7 +828,7 @@ export default function Feed({ filterUserId }: { filterUserId?: number | string 
                           className="flex items-center gap-1.5 px-3 py-1 rounded-xl bg-white dark:bg-slate-800 text-purple-700 dark:text-purple-300 font-bold text-xs hover:bg-purple-600 hover:text-white transition-all shadow-2xs shrink-0"
                         >
                           {u.avatarUrl ? (
-                            <img src={u.avatarUrl} alt={u.name} className="w-4 h-4 rounded-full object-cover" />
+                            <img src={getProxyUrl(u.avatarUrl)} alt={u.name} className="w-4 h-4 rounded-full object-cover" />
                           ) : (
                             <span className="w-4 h-4 rounded-full bg-pb-blue text-white flex items-center justify-center text-[9px] font-black">
                               {u.name.charAt(0)}
@@ -851,7 +851,7 @@ export default function Feed({ filterUserId }: { filterUserId?: number | string 
                   
                   {postImagePreview && (
                     <div className="relative mt-2 rounded-2xl overflow-hidden border border-gray-100">
-                      <img src={postImagePreview} alt="Preview" className="w-full max-h-[400px] object-cover" />
+                      <img src={getProxyUrl(postImagePreview)} alt="Preview" className="w-full max-h-[400px] object-cover" />
                       <button 
                         type="button" 
                         onClick={() => setPostImagePreview(null)}
