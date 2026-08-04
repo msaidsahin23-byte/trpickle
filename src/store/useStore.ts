@@ -6,6 +6,19 @@ import toast from 'react-hot-toast';
 import { supabase, sendReliableBroadcast } from '@/lib/supabase';
 import { v4 as uuidv4 } from 'uuid';
 
+export const triggerPushNotification = async (userId: string | number, title: string, body: string, url?: string) => {
+  try {
+    await fetch('/api/push/send', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ userId, title, body, url })
+    });
+  } catch (err) {
+    console.error('Push trigger error:', err);
+  }
+};
+
+
 export type UserRole = 'admin' | 'user';
 
 export type AppNotification = {
@@ -550,7 +563,7 @@ export const useStore = create<StoreState>()(
               type: 'system',
               message: `${currentUser.name} seni bir maça ekledi ve skor onayı bekliyor.`,
               match_id: String(matchIdToUse)
-            }).then();
+            }).then(() => triggerPushNotification(pid, "Yeni Maç İsteği", `${currentUser.name} seni bir maça ekledi ve skor onayı bekliyor.`, "/"));
             
             sendReliableBroadcast({
               type: 'broadcast',
@@ -1254,7 +1267,7 @@ export const useStore = create<StoreState>()(
                  type: 'like_milestone',
                  message: msg,
                  related_match_id: postId.toString()
-               }).then();
+               }).then(() => triggerPushNotification(String(authorToNotify), "Tebrikler!", msg, "/"));
                
              sendReliableBroadcast({
                 type: 'broadcast',
@@ -1278,7 +1291,7 @@ export const useStore = create<StoreState>()(
                 type: 'like',
                 message: msg,
                 related_match_id: postId.toString()
-              }).then();
+              }).then(() => triggerPushNotification(String(authorToNotify), "Yeni Beğeni", msg, "/"));
               
             sendReliableBroadcast({
                type: 'broadcast',
@@ -1488,7 +1501,7 @@ export const useStore = create<StoreState>()(
                 related_user_id: currentUserId.toString(),
                 type: 'new_follower',
                 message: followMsg
-              }).then();
+              }).then(() => triggerPushNotification(targetUserId, "Yeni Takipçi", followMsg, "/profile/" + (state.currentUser?.username || '')));
               
             sendReliableBroadcast({
                type: 'broadcast',

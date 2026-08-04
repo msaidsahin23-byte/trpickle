@@ -4,6 +4,7 @@ import "./globals.css";
 import Navbar from "@/components/Navbar";
 import { ThemeProvider } from "@/components/ThemeProvider";
 import { Toaster } from "react-hot-toast";
+import PushNotificationManager from "@/components/PushNotificationManager";
 import NotificationBanner from "@/components/NotificationBanner";
 import SupabaseSyncProvider from "@/components/SupabaseSyncProvider";
 import { Analytics } from '@vercel/analytics/next';
@@ -31,6 +32,7 @@ export default function RootLayout({
             {children}
           </main>
           <Toaster position="bottom-right" />
+          <PushNotificationManager />
           <div className="fixed bottom-0 right-0 p-2 text-[10px] text-slate-400/30 font-mono pointer-events-none z-50">
             Beta v1.4.1
           </div>
