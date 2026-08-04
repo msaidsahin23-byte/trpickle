@@ -141,11 +141,17 @@ export default function PlayerQrModal({ isOpen, onClose, user }: PlayerQrModalPr
 
               {/* Player Avatar & Info */}
               <div className="flex items-center gap-3.5 w-full bg-white/5 backdrop-blur-md p-3.5 rounded-2xl border border-white/10 mb-5 text-left">
-                <img
-                  src={user.avatarUrl || "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=400&auto=format&fit=crop&q=80"}
-                  alt={user.name}
-                  className="w-12 h-12 rounded-xl object-cover border-2 border-white/20 shrink-0"
-                />
+                {user.avatarUrl ? (
+                  <img
+                    src={user.avatarUrl}
+                    alt={user.name}
+                    className="w-12 h-12 rounded-xl object-cover border-2 border-white/20 shrink-0 bg-slate-800"
+                  />
+                ) : (
+                  <div className="w-12 h-12 rounded-xl border-2 border-white/20 shrink-0 bg-slate-800/80 flex items-center justify-center text-white font-bold text-xl uppercase">
+                    {user.name.charAt(0)}
+                  </div>
+                )}
                 <div className="min-w-0 flex-1">
                   <div className="font-extrabold text-white text-base truncate">{user.name}</div>
                   <div className="flex items-center gap-2 text-xs text-gray-300 font-medium mt-0.5">
