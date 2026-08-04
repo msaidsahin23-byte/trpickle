@@ -359,6 +359,39 @@ const initialCourts: CourtRecord[] = [
     isPublic: true,
     mapsUrl: "https://maps.google.com/?q=Kalamış+Parkı",
     isVerified: true
+  },
+  {
+    id: 10,
+    name: "Hüdavendigar Spor Tesisleri",
+    city: "Bursa",
+    district: "Osmangazi",
+    surface: "Akrilik",
+    lighting: true,
+    isPublic: true,
+    mapsUrl: "https://maps.google.com/?q=Hüdavendigar+Spor+Tesisleri+Bursa",
+    isVerified: true
+  },
+  {
+    id: 11,
+    name: "Bursa Büyükşehir Belediyesi Spor Tesisleri Tenis Kortları",
+    city: "Bursa",
+    district: "Osmangazi",
+    surface: "Akrilik",
+    lighting: true,
+    isPublic: true,
+    mapsUrl: "https://maps.google.com/?q=Bursa+Büyükşehir+Belediyesi+Spor+Tesisleri+Tenis+Kortları",
+    isVerified: true
+  },
+  {
+    id: 12,
+    name: "Bursa Büyükşehir Belediyespor Kulübü",
+    city: "Bursa",
+    district: "Nilüfer",
+    surface: "Sert Zemin",
+    lighting: true,
+    isPublic: true,
+    mapsUrl: "https://maps.google.com/?q=Bursa+Büyükşehir+Belediyespor+Kulübü",
+    isVerified: true
   }
 ];
 
