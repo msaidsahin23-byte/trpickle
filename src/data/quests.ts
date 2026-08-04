@@ -42,7 +42,7 @@ export const SEASON_1_QUESTS: QuestItem[] = [
   {
     id: "s1-q2-court-explorer",
     title: "Kort Fatihi",
-    subtitle: "Kortlar sayfasına giderek bir korta check-in yap veya favorilerine ekle.",
+    subtitle: "Kortlar sayfasına giderek bir korta check-in yap.",
     xpReward: 200,
     badge: "Harita Fatihi",
     category: "court",
@@ -62,7 +62,7 @@ export const SEASON_1_QUESTS: QuestItem[] = [
   {
     id: "s1-q4-partner-sync",
     title: "Ağını Genişlet",
-    subtitle: "Sistemde en az 1 oyuncuyu takip et veya bir çiftler (2v2) maçına katıl.",
+    subtitle: "Sistemde en az 1 oyuncuyu takip et.",
     xpReward: 250,
     badge: "Kort Ortağı",
     category: "partner",
@@ -72,7 +72,7 @@ export const SEASON_1_QUESTS: QuestItem[] = [
   {
     id: "s1-q5-social-spark",
     title: "Topluluk Sesi",
-    subtitle: "Profiline bir biyografi yaz veya akışta bir gönderi paylaş.",
+    subtitle: "Topluluk akışında bir gönderi paylaş veya beğen.",
     xpReward: 200,
     badge: "Topluluk Ateşi",
     category: "social",
@@ -153,23 +153,43 @@ export const WEEKLY_QUEST_POOL: QuestItem[] = [
   {
     id: "wq-court-1",
     title: "Kort Radarı",
-    subtitle: "Kortlar sayfasında bulunduğun korta Check-in yap veya bir kortu favorilerine ekle.",
+    subtitle: "Kortlar sayfasında bulunduğun korta Check-in yap.",
     xpReward: 110,
     badge: "Lokal Oyuncu",
     category: "court",
     gradient: "from-emerald-500 to-teal-600",
     iconName: "MapPin",
   },
+  {
+    id: "wq-court-2",
+    title: "Favori Kort",
+    subtitle: "Kortlar haritasından beğendiğin bir kortu favorilerine ekle.",
+    xpReward: 90,
+    badge: "Kort Sever",
+    category: "court",
+    gradient: "from-emerald-600 to-teal-700",
+    iconName: "Bookmark",
+  },
 
   // --- SOSYAL GÖREVLER ---
   {
     id: "wq-soc-1",
     title: "Profilini Canlandır",
-    subtitle: "Kendi profiline bir biyografi ekle veya akışta bir post paylaş/beğen.",
+    subtitle: "Kendi profiline bir biyografi (hakkımda) yazısı ekle.",
+    xpReward: 80,
+    badge: "Kişisel Marka",
+    category: "social",
+    gradient: "from-blue-500 to-indigo-600",
+    iconName: "UserCheck",
+  },
+  {
+    id: "wq-soc-2",
+    title: "Topluluk Ateşi",
+    subtitle: "Akışta bir gönderi paylaş veya beğeni bırak.",
     xpReward: 80,
     badge: "Sosyal Elçi",
     category: "social",
-    gradient: "from-blue-500 to-indigo-600",
+    gradient: "from-blue-600 to-indigo-700",
     iconName: "Sparkles",
   },
 
@@ -177,12 +197,12 @@ export const WEEKLY_QUEST_POOL: QuestItem[] = [
   {
     id: "wq-part-1",
     title: "Yeni Bağlantılar",
-    subtitle: "Sistemde en az 1 yeni kişiyi takip et veya bir çiftler maçına katıl.",
+    subtitle: "Sistemde en az 1 yeni kişiyi takip et.",
     xpReward: 110,
     badge: "Ağ Kurucu",
     category: "partner",
-    gradient: "from-emerald-500 to-green-600",
-    iconName: "UserCheck",
+    gradient: "from-purple-500 to-pink-600",
+    iconName: "Users",
   },
 
   // --- LİDERLİK TABLOSU GÖREVLERİ ---

@@ -82,30 +82,39 @@ function computeQuestProgress(quest: any, storeState: any) {
       break;
 
     case "court":
-      const hasFav = Boolean(user.favoriteCourt);
-      const hasCheckIn = (storeState.courts || []).some((c: any) =>
-        c.checkedInUsers?.some((u: any) => u.id === user.id)
-      );
-      current = (hasFav || hasCheckIn) ? 1 : 0;
-      actionText = "Kortları İncele ->";
+      if (quest.id === "wq-court-1") {
+        const hasCheckIn = (storeState.courts || []).some((c: any) =>
+          c.checkedInUsers?.some((u: any) => u.id === user.id)
+        );
+        current = hasCheckIn ? 1 : 0;
+        actionText = "Kortlara Git ->";
+      } else {
+        const hasFav = Boolean(user.favoriteCourt);
+        current = hasFav ? 1 : 0;
+        actionText = "Kort Beğen ->";
+      }
       targetHref = "/courts";
       break;
 
     case "social":
-      const hasProfile = Boolean(user.bio);
-      const hasPost = (storeState.posts || []).some(
-        (p: any) => p.authorId === user.id || p.likedBy?.includes(user.name)
-      );
-      current = (hasProfile || hasPost) ? 1 : 0;
-      actionText = "Topluluk Akışı ->";
-      targetHref = "/feed";
+      if (quest.id === "wq-soc-1") {
+        current = Boolean(user.bio) ? 1 : 0;
+        actionText = "Profili Düzenle ->";
+        targetHref = `/profile/${user.username}`;
+      } else {
+        const hasPost = (storeState.posts || []).some(
+          (p: any) => p.authorId === user.id || p.likedBy?.includes(user.name)
+        );
+        current = hasPost ? 1 : 0;
+        actionText = "Topluluk Akışı ->";
+        targetHref = "/feed";
+      }
       break;
 
     case "partner":
       const hasFollow = (user.following?.length || 0) >= 1;
-      const hasPartnerMatch = userMatches.some((m: any) => m.matchFormat === "doubles");
-      current = (hasFollow || hasPartnerMatch) ? 1 : 0;
-      actionText = "Partner Bul ->";
+      current = hasFollow ? 1 : 0;
+      actionText = "Oyuncu Ara ->";
       targetHref = "/partners";
       break;
 

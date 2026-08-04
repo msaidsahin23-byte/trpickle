@@ -405,6 +405,17 @@ const initialCourts: CourtRecord[] = [
     isPublic: true,
     mapsUrl: "https://maps.google.com/?q=Bursa+Büyükşehir+Belediyespor+Kulübü",
     isVerified: true
+  },
+  {
+    id: 13,
+    name: "ESKİŞEHİR ANADOLU ÜNİVERSİTESİ KAMPÜSÜ / SAĞLIKLI YAŞAM BİRİMİ PICKLEBALL KORTLARI",
+    city: "Eskişehir",
+    district: "Tepebaşı",
+    surface: "Sert Zemin",
+    lighting: true,
+    isPublic: true,
+    mapsUrl: "https://maps.google.com/?q=Eskişehir+Anadolu+Üniversitesi",
+    isVerified: true
   }
 ];
 
