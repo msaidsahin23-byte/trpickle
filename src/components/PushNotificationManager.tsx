@@ -20,11 +20,16 @@ export default function PushNotificationManager() {
   const currentUser = useStore(state => state.currentUser)
   const [isSupported, setIsSupported] = useState(false)
   const [subscription, setSubscription] = useState<PushSubscription | null>(null)
+  const [isDenied, setIsDenied] = useState(false)
+  const [isDismissed, setIsDismissed] = useState(false)
   
   useEffect(() => {
     if ('serviceWorker' in navigator && 'PushManager' in window) {
       setIsSupported(true)
       registerServiceWorker()
+      if (Notification.permission === 'denied') {
+        setIsDenied(true)
+      }
     }
   }, [])
 
@@ -85,8 +90,9 @@ export default function PushNotificationManager() {
       // First ask for permission
       const permission = await Notification.requestPermission()
       
-      if (permission !== 'granted') {
-        alert('Bildirim izni reddedildi.')
+      if (permission === 'denied') {
+        setIsDenied(true)
+        alert('Bildirim izni reddedildi. Tarayıcı ayarlarından açmanız gerekmektedir.')
         return
       }
 
@@ -94,6 +100,7 @@ export default function PushNotificationManager() {
       const vapidPublicKey = process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY
       
       if (!vapidPublicKey) {
+        alert('Sistem Hatası: VAPID public key bulunamadı. Lütfen Vercel panelinden "Redeploy" yaptığınızdan emin olun.')
         console.error('VAPID public key not found')
         return
       }
@@ -112,17 +119,10 @@ export default function PushNotificationManager() {
     }
   }
 
-  if (!isSupported) {
+  if (!isSupported || !currentUser || isDenied || isDismissed) {
     return null
   }
 
-  if (!currentUser) {
-    return null
-  }
-
-  // We only show the UI to enable notifications if they are not already subscribed
-  // Alternatively, this can be moved to a settings page.
-  // For now, if they are not subscribed, we can show a small prompt.
   if (!subscription) {
     return (
       <div className="fixed bottom-24 left-4 right-4 md:left-auto md:right-8 md:w-80 p-4 bg-emerald-600 text-white rounded-2xl shadow-xl z-50 flex flex-col gap-3">
@@ -136,7 +136,7 @@ export default function PushNotificationManager() {
             İzin Ver
           </button>
           <button 
-            onClick={() => setIsSupported(false)} // Temporarily hide it
+            onClick={() => setIsDismissed(true)}
             className="flex-1 bg-emerald-700 text-emerald-100 font-bold py-2 rounded-xl text-xs hover:bg-emerald-800 transition-colors"
           >
             Şimdi Değil
