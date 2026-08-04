@@ -61,10 +61,10 @@ export default function PlayerQrModal({ isOpen, onClose, user }: PlayerQrModalPr
   if (!isOpen || !user) return null;
 
   const baseUrl = typeof window !== 'undefined' ? window.location.origin : 'https://trpickle.com';
-  const inviteUrl = `${baseUrl}/profile/${user.id}`;
+  const inviteUrl = `${baseUrl}/profile/${user.username || user.id}`;
 
   const handleCopyLink = () => {
-    navigator.clipboard.writeText(`https://trpickle.com/profile/${user.id}`);
+    navigator.clipboard.writeText(`${baseUrl}/profile/${user.username || user.id}`);
     setCopied(true);
     toast.success("Profil bağlantısı panoya kopyalandı!");
     setTimeout(() => setCopied(false), 2500);

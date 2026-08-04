@@ -24,7 +24,7 @@ export default function MatchLobbyQrCreateModal({
   location,
 }: MatchLobbyQrCreateModalProps) {
   const baseUrl = typeof window !== 'undefined' ? window.location.origin : 'https://trpickle.com';
-  const qrUrl = `${baseUrl}/scan?data=${typeof window !== 'undefined' ? window.btoa(unescape(encodeURIComponent(payloadJSON))) : ''}`;
+  const qrUrl = `${baseUrl}/scan?data=${typeof window !== 'undefined' ? encodeURIComponent(window.btoa(unescape(encodeURIComponent(payloadJSON)))) : ''}`;
   
   if (!isOpen) return null;
 

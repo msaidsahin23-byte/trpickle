@@ -92,7 +92,7 @@ export default function QRScannerModal({ isOpen, onClose }: QRScannerModalProps)
         if (payloadData) {
           toast.success("QR başarıyla okundu!");
           onClose();
-          router.push(`/scan?data=${payloadData}`);
+          router.push(`/scan?data=${encodeURIComponent(payloadData)}`);
         } else {
           toast.error("Geçersiz maç QR kodu.");
         }
