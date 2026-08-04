@@ -42,6 +42,7 @@ function calculateAnalytics(history: MatchRecord[], userId: number | string, use
   if (!history || history.length === 0) return null;
 
   let wins = 0;
+  let losses = 0;
   let flawlessWins = 0;
   let overtimeWins = 0;
   let overtimeTotal = 0;
@@ -53,8 +54,22 @@ function calculateAnalytics(history: MatchRecord[], userId: number | string, use
   let doublesPlayed = 0;
   let doublesWon = 0;
 
+  let winDiffTotal = 0;
+  let lossDiffTotal = 0;
+
+  let doublePoints = 2.500;
+  let mixPoints = 2.500;
+
+  let partnerRatingSum = 0;
+  let partnerRatingCount = 0;
+  let opponentRatingSum = 0;
+  let opponentRatingCount = 0;
+
   const partnerWins: { [id: string]: { played: number; won: number } } = {};
   const oppLosses: { [id: string]: { played: number; lost: number } } = {};
+
+  const me = (Array.isArray(users) ? users : []).find(u => u.id === userId);
+  const myGender = me?.gender || 'male';
 
   history.forEach(m => {
     const isT1 = (Array.isArray(m.team1) ? m.team1 : []).includes(userId);
@@ -62,7 +77,14 @@ function calculateAnalytics(history: MatchRecord[], userId: number | string, use
     const oppScore = isT1 ? m.team2Score : m.team1Score;
     const won = myScore > oppScore;
 
-    if (won) wins++;
+    if (won) {
+      wins++;
+      winDiffTotal += (myScore - oppScore);
+    } else {
+      losses++;
+      lossDiffTotal += (oppScore - myScore);
+    }
+
     if (won && oppScore === 0) flawlessWins++;
 
     if (myScore >= 10 && oppScore >= 10) {
@@ -75,15 +97,39 @@ function calculateAnalytics(history: MatchRecord[], userId: number | string, use
       if (won) closeMatchesWon++;
     }
 
+    const myTeam = isT1 ? m.team1 : m.team2;
+    const oppTeam = isT1 ? m.team2 : m.team1;
+
     if (m.matchFormat === 'singles') {
       singlesPlayed++;
       if (won) singlesWon++;
     } else {
       doublesPlayed++;
       if (won) doublesWon++;
+
+      // Double vs Mix logic
+      const pIdx = myTeam.findIndex(id => id !== userId);
+      if (pIdx !== -1) {
+        const partnerId = myTeam[pIdx];
+        const partner = (Array.isArray(users) ? users : []).find(u => u.id === partnerId);
+        const partnerGender = partner?.gender || 'male';
+
+        let myChange = 0;
+        const myIdx = myTeam.indexOf(userId);
+        if (isT1) {
+          myChange = m.eloChange?.team1Changes?.[myIdx] ?? m.eloChange?.team1Change ?? 0;
+        } else {
+          myChange = m.eloChange?.team2Changes?.[myIdx] ?? m.eloChange?.team2Change ?? 0;
+        }
+
+        if (myGender === partnerGender) {
+          doublePoints += myChange;
+        } else {
+          mixPoints += myChange;
+        }
+      }
     }
 
-    const myTeam = isT1 ? m.team1 : m.team2;
     myTeam.forEach(pid => {
       if (pid !== userId) {
         if (!partnerWins[pid]) partnerWins[pid] = { played: 0, won: 0 };
@@ -92,12 +138,70 @@ function calculateAnalytics(history: MatchRecord[], userId: number | string, use
       }
     });
 
-    const oppTeam = isT1 ? m.team2 : m.team1;
     oppTeam.forEach(oid => {
       if (!oppLosses[oid]) oppLosses[oid] = { played: 0, lost: 0 };
       oppLosses[oid].played++;
       if (!won) oppLosses[oid].lost++;
     });
+
+    // Ratings
+    if (isT1) {
+      if (m.team2Elo) {
+        m.team2Elo.forEach(elo => {
+          opponentRatingSum += elo;
+          opponentRatingCount++;
+        });
+      } else {
+        oppTeam.forEach(oid => {
+           const u = (Array.isArray(users) ? users : []).find(u => u.id === oid);
+           opponentRatingSum += u ? (m.matchFormat === 'singles' ? u.singlesRating : u.doublesRating) : 2.500;
+           opponentRatingCount++;
+        });
+      }
+      if (m.matchFormat === 'doubles' && m.team1Elo) {
+        const pIdx = m.team1.findIndex(id => id !== userId);
+        if (pIdx !== -1) {
+          partnerRatingSum += m.team1Elo[pIdx];
+          partnerRatingCount++;
+        }
+      } else if (m.matchFormat === 'doubles') {
+        const pIdx = m.team1.findIndex(id => id !== userId);
+        if (pIdx !== -1) {
+           const partnerId = m.team1[pIdx];
+           const u = (Array.isArray(users) ? users : []).find(u => u.id === partnerId);
+           partnerRatingSum += u ? u.doublesRating : 2.500;
+           partnerRatingCount++;
+        }
+      }
+    } else {
+      if (m.team1Elo) {
+        m.team1Elo.forEach(elo => {
+          opponentRatingSum += elo;
+          opponentRatingCount++;
+        });
+      } else {
+        oppTeam.forEach(oid => {
+           const u = (Array.isArray(users) ? users : []).find(u => u.id === oid);
+           opponentRatingSum += u ? (m.matchFormat === 'singles' ? u.singlesRating : u.doublesRating) : 2.500;
+           opponentRatingCount++;
+        });
+      }
+      if (m.matchFormat === 'doubles' && m.team2Elo) {
+        const pIdx = m.team2.findIndex(id => id !== userId);
+        if (pIdx !== -1) {
+          partnerRatingSum += m.team2Elo[pIdx];
+          partnerRatingCount++;
+        }
+      } else if (m.matchFormat === 'doubles') {
+        const pIdx = m.team2.findIndex(id => id !== userId);
+        if (pIdx !== -1) {
+           const partnerId = m.team2[pIdx];
+           const u = (Array.isArray(users) ? users : []).find(u => u.id === partnerId);
+           partnerRatingSum += u ? u.doublesRating : 2.500;
+           partnerRatingCount++;
+        }
+      }
+    }
   });
 
   let bestPartnerId: number | null = null;
@@ -142,7 +246,13 @@ function calculateAnalytics(history: MatchRecord[], userId: number | string, use
     toughestOpp: {
       name: toughestOppUser ? toughestOppUser.name : "Yok",
       text: maxLosses >= 0 ? `${maxLosses} Kez Yenilgi` : "Yok"
-    }
+    },
+    doublePoints,
+    mixPoints,
+    avgWinDiff: wins > 0 ? (winDiffTotal / wins) : 0,
+    avgLossDiff: losses > 0 ? (lossDiffTotal / losses) : 0,
+    avgPartnerRating: partnerRatingCount > 0 ? (partnerRatingSum / partnerRatingCount) : 0,
+    avgOpponentRating: opponentRatingCount > 0 ? (opponentRatingSum / opponentRatingCount) : 0
   };
 }
 
@@ -660,7 +770,8 @@ export default function ProfilePage({ params }: { params: { username: string } }
   };
 
   const userMatches = (Array.isArray(matches) ? matches : []).filter(m => 
-    (Array.isArray(m.team1) ? m.team1 : []).includes(userState.id) || (Array.isArray(m.team2) ? m.team2 : []).includes(userState.id)
+    (!m.status || m.status === 'approved') && 
+    ((Array.isArray(m.team1) ? m.team1 : []).includes(userState.id) || (Array.isArray(m.team2) ? m.team2 : []).includes(userState.id))
   );
 
   const history = userMatches;
@@ -684,7 +795,9 @@ export default function ProfilePage({ params }: { params: { username: string } }
 
   const activeFeaturedIds = Array.isArray(userState.featuredBadges) && userState.featuredBadges.length > 0
     ? userState.featuredBadges
-    : unlockedBadges.slice(0, 3).map(b => b.id);
+    : [];
+
+  const hasShowcase = activeFeaturedIds.length > 0;
 
   const featuredBadgesList = activeFeaturedIds
     .map(id => allEarnableBadges.find(b => b.id === id))
@@ -999,12 +1112,12 @@ export default function ProfilePage({ params }: { params: { username: string } }
               <div className="flex sm:flex-col items-center justify-center gap-4 bg-gray-50 dark:bg-slate-800/80 px-6 py-4 rounded-3xl border border-gray-200/80 dark:border-slate-700/80 shrink-0 mt-4 lg:mt-6">
                 <div className="text-center">
                   <span className="text-[10px] font-extrabold uppercase tracking-widest text-gray-400 block">Tekli Rating</span>
-                  <span className="text-2xl font-black text-pb-blue">{(userState.singlesRating || 1200).toFixed(1)}</span>
+                  <span className="text-2xl font-black text-pb-blue">{(userState.singlesRating || 2.500).toFixed(3)}</span>
                 </div>
                 <div className="w-px h-8 sm:w-12 sm:h-px bg-gray-200 dark:bg-slate-700" />
                 <div className="text-center">
                   <span className="text-[10px] font-extrabold uppercase tracking-widest text-gray-400 block">Eşli Rating</span>
-                  <span className="text-2xl font-black text-purple-500">{(userState.doublesRating || 1200).toFixed(1)}</span>
+                  <span className="text-2xl font-black text-purple-500">{(userState.doublesRating || 2.500).toFixed(3)}</span>
                 </div>
               </div>
             </div>
@@ -1079,7 +1192,8 @@ export default function ProfilePage({ params }: { params: { username: string } }
           <motion.div variants={itemVariants} className="flex flex-col gap-8">
             
             {/* ⭐ GRAND HOLO-SHOWCASE PODIUM: ÖNE ÇIKAN 3 ROZET VİTRİNİ */}
-            <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-white dark:from-slate-900 via-emerald-50/40 dark:via-slate-900 to-emerald-100/50 dark:to-indigo-950 p-6 sm:p-8 border border-gray-200 dark:border-amber-500/30 shadow-xl dark:shadow-2xl shadow-emerald-900/5">
+            {hasShowcase && (
+              <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-white dark:from-slate-900 via-emerald-50/40 dark:via-slate-900 to-emerald-100/50 dark:to-indigo-950 p-6 sm:p-8 border border-gray-200 dark:border-amber-500/30 shadow-xl dark:shadow-2xl shadow-emerald-900/5">
               {/* Background Ambient Gold Glow */}
               <div className="absolute top-0 right-0 w-96 h-96 bg-pb-green/10 dark:bg-amber-500/10 rounded-full blur-[100px] pointer-events-none" />
               <div className="absolute bottom-0 left-0 w-80 h-80 bg-pb-green/10 dark:bg-pb-blue/10 rounded-full blur-[80px] pointer-events-none" />
@@ -1104,18 +1218,6 @@ export default function ProfilePage({ params }: { params: { username: string } }
                   </div>
                 </div>
 
-                {isOwnProfile && (
-                  <button
-                    onClick={() => {
-                      setSelectedShowcaseIds(activeFeaturedIds);
-                      setShowBadgeShowcaseModal(true);
-                    }}
-                    className="inline-flex items-center gap-2 px-5 py-2.5 rounded-2xl bg-gradient-to-r from-amber-500 via-orange-400 to-amber-500 text-slate-950 font-black text-xs hover:scale-105 transition-all shadow-lg shadow-amber-500/20 cursor-pointer"
-                  >
-                    <Sparkles className="w-4 h-4" />
-                    <span>✨ Vitrini Düzenle</span>
-                  </button>
-                )}
               </div>
 
               {/* 3 Luxury Holographic Podium Cards */}
@@ -1194,32 +1296,33 @@ export default function ProfilePage({ params }: { params: { username: string } }
 })}
               </div>
             </div>
+            )}
             
-            {/* ROW 1: 4 Key Performance Metric Cards */}
+            {/* ROW 1: 4 Key Performance Metric Cards + 4 New Stats */}
             <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
               <div className="bg-white dark:bg-slate-900 p-5 rounded-3xl border border-gray-200/80 dark:border-slate-800 shadow-sm flex flex-col justify-between">
                 <div className="flex items-center justify-between mb-3">
-                  <span className="text-xs font-black uppercase tracking-wider text-gray-400 dark:text-gray-500">Tekli Rating (1v1)</span>
+                  <span className="text-xs font-black uppercase tracking-wider text-gray-400 dark:text-gray-500">Double Puanı</span>
                   <div className="w-8 h-8 rounded-xl bg-pb-blue/10 text-pb-blue flex items-center justify-center">
-                    <Trophy className="w-4 h-4" />
+                    <Users className="w-4 h-4" />
                   </div>
                 </div>
                 <div>
-                  <span className="text-3xl font-black text-slate-900 dark:text-white block">{(userState.singlesRating || 1200).toFixed(1)}</span>
-                  <span className="text-xs font-bold text-pb-green block mt-1">Seviye {Math.floor(userState.singlesRating / 200) + 1} Oyuncu</span>
+                  <span className="text-3xl font-black text-slate-900 dark:text-white block">{analytics?.doublePoints?.toFixed(3) || "2.500"}</span>
+                  <span className="text-xs font-bold text-pb-green block mt-1">Erkek-Erkek / Kız-Kız Puanı</span>
                 </div>
               </div>
 
               <div className="bg-white dark:bg-slate-900 p-5 rounded-3xl border border-gray-200/80 dark:border-slate-800 shadow-sm flex flex-col justify-between">
                 <div className="flex items-center justify-between mb-3">
-                  <span className="text-xs font-black uppercase tracking-wider text-gray-400 dark:text-gray-500">Eşli Rating (2v2)</span>
+                  <span className="text-xs font-black uppercase tracking-wider text-gray-400 dark:text-gray-500">Mix Puanı</span>
                   <div className="w-8 h-8 rounded-xl bg-purple-500/10 text-purple-500 flex items-center justify-center">
-                    <Medal className="w-4 h-4" />
+                    <Heart className="w-4 h-4" />
                   </div>
                 </div>
                 <div>
-                  <span className="text-3xl font-black text-slate-900 dark:text-white block">{(userState.doublesRating || 1200).toFixed(1)}</span>
-                  <span className="text-xs font-bold text-purple-400 block mt-1">Seviye {Math.floor(userState.doublesRating / 200) + 1} Çiftler</span>
+                  <span className="text-3xl font-black text-slate-900 dark:text-white block">{analytics?.mixPoints?.toFixed(3) || "2.500"}</span>
+                  <span className="text-xs font-bold text-purple-400 block mt-1">Erkek-Kız Puanı</span>
                 </div>
               </div>
 
@@ -1244,8 +1347,60 @@ export default function ProfilePage({ params }: { params: { username: string } }
                   </div>
                 </div>
                 <div>
-                  <span className="text-3xl font-black text-slate-900 dark:text-white block">{formTrend[formTrend.length - 1] === "W" ? "🔥 Ateşte" : "⚡ Dengeli"}</span>
-                  <span className="text-xs font-bold text-orange-500 block mt-1">Son Maç: {formTrend[formTrend.length - 1] === "W" ? "Galibiyet" : "Mağlubiyet"}</span>
+                  <span className="text-3xl font-black text-slate-900 dark:text-white block">{formTrend.length > 0 ? (formTrend[formTrend.length - 1] === "W" ? "🔥 Ateşte" : "⚡ Dengeli") : "Bekleniyor"}</span>
+                  <span className="text-xs font-bold text-orange-500 block mt-1">Son Maç: {formTrend.length > 0 ? (formTrend[formTrend.length - 1] === "W" ? "Galibiyet" : "Mağlubiyet") : "Yok"}</span>
+                </div>
+              </div>
+
+              <div className="bg-white dark:bg-slate-900 p-5 rounded-3xl border border-gray-200/80 dark:border-slate-800 shadow-sm flex flex-col justify-between">
+                <div className="flex items-center justify-between mb-3">
+                  <span className="text-xs font-black uppercase tracking-wider text-gray-400 dark:text-gray-500">Ortalama Partner</span>
+                  <div className="w-8 h-8 rounded-xl bg-cyan-500/10 text-cyan-500 flex items-center justify-center">
+                    <Users className="w-4 h-4" />
+                  </div>
+                </div>
+                <div>
+                  <span className="text-3xl font-black text-slate-900 dark:text-white block">{analytics?.avgPartnerRating ? analytics.avgPartnerRating.toFixed(3) : "2.500"}</span>
+                  <span className="text-xs font-bold text-gray-500 dark:text-gray-400 block mt-1">Eşli Maçlardaki Partner Ort.</span>
+                </div>
+              </div>
+
+              <div className="bg-white dark:bg-slate-900 p-5 rounded-3xl border border-gray-200/80 dark:border-slate-800 shadow-sm flex flex-col justify-between">
+                <div className="flex items-center justify-between mb-3">
+                  <span className="text-xs font-black uppercase tracking-wider text-gray-400 dark:text-gray-500">Ortalama Rakip</span>
+                  <div className="w-8 h-8 rounded-xl bg-rose-500/10 text-rose-500 flex items-center justify-center">
+                    <Shield className="w-4 h-4" />
+                  </div>
+                </div>
+                <div>
+                  <span className="text-3xl font-black text-slate-900 dark:text-white block">{analytics?.avgOpponentRating ? analytics.avgOpponentRating.toFixed(3) : "2.500"}</span>
+                  <span className="text-xs font-bold text-gray-500 dark:text-gray-400 block mt-1">Tüm Maçlardaki Rakip Ort.</span>
+                </div>
+              </div>
+
+              <div className="bg-white dark:bg-slate-900 p-5 rounded-3xl border border-gray-200/80 dark:border-slate-800 shadow-sm flex flex-col justify-between">
+                <div className="flex items-center justify-between mb-3">
+                  <span className="text-xs font-black uppercase tracking-wider text-gray-400 dark:text-gray-500">Galibiyet Farkı</span>
+                  <div className="w-8 h-8 rounded-xl bg-emerald-500/10 text-emerald-500 flex items-center justify-center">
+                    <TrendingUp className="w-4 h-4" />
+                  </div>
+                </div>
+                <div>
+                  <span className="text-3xl font-black text-slate-900 dark:text-white block">+{analytics?.avgWinDiff?.toFixed(1) || "0"}</span>
+                  <span className="text-xs font-bold text-gray-500 dark:text-gray-400 block mt-1">Ortalama Kazanılan Sayı Farkı</span>
+                </div>
+              </div>
+
+              <div className="bg-white dark:bg-slate-900 p-5 rounded-3xl border border-gray-200/80 dark:border-slate-800 shadow-sm flex flex-col justify-between">
+                <div className="flex items-center justify-between mb-3">
+                  <span className="text-xs font-black uppercase tracking-wider text-gray-400 dark:text-gray-500">Mağlubiyet Farkı</span>
+                  <div className="w-8 h-8 rounded-xl bg-red-500/10 text-red-500 flex items-center justify-center">
+                    <TrendingUp className="w-4 h-4" />
+                  </div>
+                </div>
+                <div>
+                  <span className="text-3xl font-black text-slate-900 dark:text-white block">-{analytics?.avgLossDiff?.toFixed(1) || "0"}</span>
+                  <span className="text-xs font-bold text-gray-500 dark:text-gray-400 block mt-1">Ortalama Kaybedilen Sayı Farkı</span>
                 </div>
               </div>
             </div>
