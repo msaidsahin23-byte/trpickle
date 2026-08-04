@@ -7,11 +7,10 @@ import {
   MessageCircle, 
   Send, 
   UserCheck, 
-  ArrowLeft, 
-  Search, 
   Sparkles,
   Users,
-  Trash2
+  Trash2,
+  ChevronLeft
 } from "lucide-react";
 import FriendBadge, { isMutualFriend } from "@/components/FriendBadge";
 
@@ -25,12 +24,22 @@ function MessagesContent() {
   const sendDirectMessage = useStore(state => state.sendDirectMessage);
   const deleteDirectMessage = useStore(state => state.deleteDirectMessage);
   const markMessagesAsRead = useStore(state => state.markMessagesAsRead);
+  const setActiveChatUserId = useStore(state => state.setActiveChatUserId);
 
+  // We do NOT auto-select on mobile so the user sees the list first.
+  // On desktop, they see the empty state until they select a friend.
   const [selectedFriendId, setSelectedFriendId] = useState<number | string | null>(
     initialUserIdParam ? initialUserIdParam : null
   );
+  
   const [messageText, setMessageText] = useState("");
   const messagesEndRef = useRef<HTMLDivElement>(null);
+
+  // Sync activeChatUserId to store for NotificationBanner
+  useEffect(() => {
+    setActiveChatUserId(selectedFriendId);
+    return () => setActiveChatUserId(null); // Cleanup on unmount
+  }, [selectedFriendId, setActiveChatUserId]);
 
   // A mutual friend is a user where currentUser follows them AND they follow currentUser
   const mutualFriends = users.filter(u => {
@@ -40,13 +49,6 @@ function MessagesContent() {
       currentUser.followers?.includes(u.id)
     );
   });
-
-  // If no initial selectedFriendId and we have mutual friends, default to the first
-  useEffect(() => {
-    if (selectedFriendId === null && mutualFriends.length > 0) {
-      setSelectedFriendId(mutualFriends[0].id);
-    }
-  }, [mutualFriends, selectedFriendId]);
 
   // Mark messages as read when a chat is opened
   useEffect(() => {
@@ -60,7 +62,7 @@ function MessagesContent() {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [directMessages, selectedFriendId]);
 
-  const selectedFriend = users.find(u => u.id === selectedFriendId);
+  const selectedFriend = users.find(u => String(u.id) === String(selectedFriendId));
 
   const currentChatMessages = directMessages
     .filter(
@@ -91,16 +93,16 @@ function MessagesContent() {
   }
 
   return (
-    <div className="w-full max-w-6xl mx-auto py-4 sm:py-6 px-3 sm:px-8 flex flex-col gap-4 sm:gap-6">
-      {/* Top Banner (Sleek & Compact on Mobile) */}
-      <div className="flex items-center justify-between bg-white dark:bg-slate-900/90 p-5 sm:p-6 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-sm mb-2">
+    <div className="w-full max-w-6xl mx-auto py-4 sm:py-6 px-3 sm:px-8 flex flex-col gap-4 sm:gap-6 h-full min-h-[calc(100vh-100px)]">
+      {/* Top Banner (Hidden on mobile when chat is open) */}
+      <div className={`items-center justify-between bg-white dark:bg-slate-900/90 p-5 sm:p-6 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-sm mb-2 ${selectedFriendId ? 'hidden md:flex' : 'flex'}`}>
         <div className="flex items-center gap-4 sm:gap-5">
           <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-2xl bg-pb-green/10 text-pb-green flex items-center justify-center shrink-0 shadow-inner">
             <MessageCircle className="w-7 h-7" />
           </div>
           <div>
             <h1 className="text-xl sm:text-2xl font-black text-slate-800 dark:text-white tracking-tight">
-              Arkadaşlar Arası Mesajlar (DM)
+              Mesajlar (DM)
             </h1>
             <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 font-medium mt-1">
               Sadece karşılıklı takipleştiğiniz arkadaşlar ile özel mesajlaşabilirsiniz.
@@ -110,9 +112,9 @@ function MessagesContent() {
       </div>
 
       {/* Main Chat Layout */}
-      <div className="bg-white dark:bg-[#1a2332] rounded-3xl border border-slate-200 dark:border-slate-800 shadow-xl overflow-hidden flex flex-col md:flex-row min-h-[600px] h-[75vh]">
+      <div className="bg-white dark:bg-[#1a2332] sm:rounded-3xl border-0 sm:border border-slate-200 dark:border-slate-800 sm:shadow-xl overflow-hidden flex flex-col md:flex-row flex-1 h-[75vh]">
         {/* Friends Sidebar */}
-        <div className="w-full md:w-80 border-b md:border-b-0 md:border-r border-slate-200 dark:border-slate-800 flex flex-col bg-slate-50/50 dark:bg-[#1a2332]">
+        <div className={`w-full md:w-80 md:border-r border-slate-200 dark:border-slate-800 flex-col bg-slate-50/50 dark:bg-[#1a2332] ${selectedFriendId ? 'hidden md:flex' : 'flex'} flex-1 md:flex-none`}>
           <div className="p-5 border-b border-slate-200 dark:border-slate-800 bg-white dark:bg-[#1a2332] flex items-center justify-between shrink-0">
             <h3 className="font-extrabold text-sm text-slate-700 dark:text-slate-200 flex items-center gap-2">
               <Users className="w-4 h-4 text-pb-green" /> Arkadaş Listeniz ({mutualFriends.length})
@@ -141,18 +143,21 @@ function MessagesContent() {
                   <button
                     key={friend.id}
                     onClick={() => setSelectedFriendId(friend.id)}
-                    className={`w-full text-left p-3.5 sm:p-4 flex items-center justify-between transition-all ${
+                    className={`w-full text-left p-4 flex items-center justify-between transition-all ${
                       String(selectedFriendId) === String(friend.id)
                         ? "bg-pb-green/15 dark:bg-pb-green/20 border-l-4 border-pb-green"
                         : "hover:bg-slate-50 dark:hover:bg-slate-700/40"
                     }`}
                   >
                     <div className="flex items-center gap-3 min-w-0">
-                      <div className="w-10 h-10 rounded-full bg-slate-100 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 flex items-center justify-center font-bold text-base shrink-0 overflow-hidden">
+                      <div className="w-12 h-12 rounded-full bg-slate-100 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 flex items-center justify-center font-bold text-base shrink-0 overflow-hidden relative">
                         {friend.avatarUrl ? (
                           <img src={friend.avatarUrl} alt={friend.name} className="w-full h-full object-cover" />
                         ) : (
                           friend.name.charAt(0)
+                        )}
+                        {unreadCount > 0 && (
+                          <span className="absolute -top-1 -right-1 w-4 h-4 rounded-full bg-red-500 border-2 border-white dark:border-slate-800"></span>
                         )}
                       </div>
                       <div className="min-w-0">
@@ -160,11 +165,8 @@ function MessagesContent() {
                           <span className="font-extrabold text-sm text-slate-900 dark:text-white truncate">
                             {friend.name}
                           </span>
-                          <span className="inline-flex items-center px-1.5 py-0.5 rounded-full bg-lime-500/15 text-lime-600 dark:text-lime-400 text-[9px] font-black shrink-0">
-                            🤝 Arkadaş
-                          </span>
                         </div>
-                        <div className="text-[10px] text-gray-500 font-semibold truncate px-1">
+                        <div className="text-[11px] text-gray-500 font-semibold truncate mt-0.5">
                           {friend.city || "Türkiye"} • {friend.singlesRating.toFixed(2)} Rating
                         </div>
                       </div>
@@ -183,12 +185,18 @@ function MessagesContent() {
         </div>
 
         {/* Chat Window */}
-        <div className="flex-1 flex flex-col bg-slate-50/30 dark:bg-slate-900/30">
+        <div className={`flex-1 flex-col bg-slate-50/30 dark:bg-slate-900/30 relative ${selectedFriendId ? 'flex' : 'hidden md:flex'}`}>
           {selectedFriend ? (
             <>
               {/* Chat Header */}
-              <div className="p-4 border-b border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 flex items-center justify-between">
+              <div className="p-3 sm:p-4 border-b border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 flex items-center justify-between shrink-0">
                 <div className="flex items-center gap-3">
+                  <button 
+                    onClick={() => setSelectedFriendId(null)}
+                    className="md:hidden p-2 -ml-2 text-slate-500 hover:text-slate-800 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-700 rounded-full transition-colors"
+                  >
+                    <ChevronLeft className="w-6 h-6" />
+                  </button>
                   <div className="w-10 h-10 rounded-full bg-slate-100 dark:bg-slate-700 flex items-center justify-center font-bold overflow-hidden">
                     {selectedFriend.avatarUrl ? (
                       <img src={selectedFriend.avatarUrl} alt={selectedFriend.name} className="w-full h-full object-cover" />
@@ -219,7 +227,7 @@ function MessagesContent() {
               {/* Message History */}
               <div className="flex-1 p-4 sm:p-6 overflow-y-auto flex flex-col gap-3">
                 {currentChatMessages.length === 0 ? (
-                  <div className="m-auto text-center p-6 bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 max-w-sm">
+                  <div className="m-auto text-center p-6 bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 max-w-sm shadow-sm">
                     <Sparkles className="w-8 h-8 text-pb-green mx-auto mb-2" />
                     <p className="text-xs font-bold text-slate-600 dark:text-slate-300">
                       {selectedFriend.name} ile konuşmaya başla 🎾
@@ -231,15 +239,15 @@ function MessagesContent() {
                     return (
                       <div
                         key={msg.id}
-                        className={`flex flex-col max-w-[80%] sm:max-w-[65%] ${
+                        className={`flex flex-col max-w-[85%] sm:max-w-[70%] ${
                           isMine ? "self-end items-end" : "self-start items-start"
                         }`}
                       >
                         <div
-                          className={`px-4 py-2.5 rounded-2xl text-xs sm:text-sm font-medium relative group ${
+                          className={`px-4 py-3 rounded-2xl text-[13px] sm:text-sm font-medium relative group shadow-sm ${
                             isMine
-                              ? "bg-pb-green text-pb-dark rounded-br-none shadow-sm font-bold pr-10"
-                              : "bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-100 rounded-bl-none border border-slate-200 dark:border-slate-700 shadow-sm"
+                              ? "bg-pb-green text-pb-dark rounded-br-none font-bold pr-10"
+                              : "bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-100 rounded-bl-none border border-slate-200 dark:border-slate-700"
                           }`}
                         >
                           {msg.content}
@@ -258,7 +266,7 @@ function MessagesContent() {
                             </button>
                           )}
                         </div>
-                        <span className="text-[10px] text-slate-400 mt-1 px-1">
+                        <span className="text-[10px] text-slate-400 mt-1 px-1 font-semibold">
                           {new Date(msg.createdAt).toLocaleTimeString("tr-TR", {
                             hour: "2-digit",
                             minute: "2-digit"
@@ -273,29 +281,29 @@ function MessagesContent() {
 
               {/* Input Form or Non-Friend Warning */}
               {isMutualFriend(currentUser, selectedFriend) ? (
-                <form onSubmit={handleSendMessage} className="p-3 sm:p-4 border-t border-slate-200 dark:border-slate-700/80 bg-white/90 dark:bg-slate-800/90 backdrop-blur-md flex items-center gap-2.5">
+                <form onSubmit={handleSendMessage} className="p-3 sm:p-4 border-t border-slate-200 dark:border-slate-700/80 bg-white dark:bg-slate-800 flex items-center gap-2 sm:gap-3 shrink-0">
                   <input
                     type="text"
-                    placeholder={`${selectedFriend.name} ile mesajlaş...`}
+                    placeholder="Mesaj yaz..."
                     value={messageText}
                     onChange={(e) => setMessageText(e.target.value)}
-                    className="flex-1 px-4.5 py-3.5 bg-slate-100/80 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-2xl text-xs sm:text-sm font-semibold text-slate-900 dark:text-white outline-none focus:border-pb-green focus:ring-2 focus:ring-pb-green/20 transition-all placeholder:text-slate-400"
+                    className="flex-1 px-4 py-3.5 bg-slate-100 dark:bg-slate-900 border border-transparent rounded-2xl text-[13px] sm:text-sm font-semibold text-slate-900 dark:text-white outline-none focus:border-pb-green focus:bg-white dark:focus:bg-slate-800 transition-all placeholder:text-slate-400"
                   />
                   <button
                     type="submit"
                     disabled={!messageText.trim()}
-                    className="px-5 py-3.5 bg-gradient-to-r from-pb-green to-lime-400 text-slate-950 font-black rounded-2xl text-xs sm:text-sm flex items-center gap-2 disabled:opacity-40 disabled:grayscale hover:scale-105 active:scale-95 shadow-md hover:shadow-pb-green/30 transition-all cursor-pointer shrink-0"
+                    className="w-12 h-12 sm:w-auto sm:h-auto sm:px-5 sm:py-3.5 bg-gradient-to-r from-pb-green to-lime-400 text-slate-950 font-black rounded-2xl flex items-center justify-center gap-2 disabled:opacity-40 disabled:grayscale hover:scale-105 active:scale-95 shadow-md hover:shadow-pb-green/30 transition-all shrink-0"
                   >
-                    <span>Gönder</span>
-                    <Send className="w-4 h-4" />
+                    <span className="hidden sm:inline">Gönder</span>
+                    <Send className="w-5 h-5 sm:w-4 sm:h-4 ml-0.5 sm:ml-0" />
                   </button>
                 </form>
               ) : (
-                <div className="p-4 border-t border-slate-200 dark:border-slate-700 bg-amber-50 dark:bg-amber-950/30 text-amber-800 dark:text-amber-300 flex flex-col sm:flex-row items-center justify-between gap-4">
+                <div className="p-4 border-t border-slate-200 dark:border-slate-700 bg-amber-50 dark:bg-amber-950/30 text-amber-800 dark:text-amber-300 flex flex-col sm:flex-row items-center justify-between gap-4 shrink-0">
                   <div className="flex items-center gap-3 text-center sm:text-left">
                     <UserCheck className="w-5 h-5 shrink-0 text-amber-600 dark:text-amber-400" />
                     <span className="text-xs sm:text-sm font-bold">
-                      {selectedFriend.name} ile mesajlaşabilmek için karşılıklı takipleşmeniz (Arkadaş olmanız) gerekir.
+                      Mesajlaşabilmek için karşılıklı takipleşmeniz gerekir.
                     </span>
                   </div>
                   <Link

@@ -21,6 +21,7 @@ export default function NotificationBanner() {
   const currentUser = useStore((state) => state.currentUser);
   const users = useStore((state) => state.users);
   const directMessages = useStore((state) => state.directMessages);
+  const activeChatUserId = useStore((state) => state.activeChatUserId);
 
   const [toasts, setToasts] = useState<ToastAlert[]>([]);
   const seenIdsRef = useRef<Set<string>>(new Set());
@@ -51,7 +52,8 @@ export default function NotificationBanner() {
       if (
         String(msg.receiverId) === String(currentUser.id) &&
         !msg.isRead &&
-        !seenIdsRef.current.has(msgIdStr)
+        !seenIdsRef.current.has(msgIdStr) &&
+        String(msg.senderId) !== String(activeChatUserId)
       ) {
         seenIdsRef.current.add(msgIdStr);
         const sender = users.find((u) => String(u.id) === String(msg.senderId));
@@ -113,7 +115,7 @@ export default function NotificationBanner() {
         return unique.slice(0, 3);
       });
     }
-  }, [directMessages, currentUser, users]);
+  }, [directMessages, currentUser, users, activeChatUserId]);
 
   // Auto-dismiss each toast after 5 seconds
   useEffect(() => {

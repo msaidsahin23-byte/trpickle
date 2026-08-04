@@ -212,6 +212,8 @@ export type StoreState = {
   courts: CourtRecord[];
   currentUser: User | null;
   activeSessions: User[];
+  activeChatUserId: string | number | null;
+  setActiveChatUserId: (id: string | number | null) => void;
   directMessages: DirectMessage[];
   theme: 'light' | 'dark';
 
@@ -443,6 +445,8 @@ export const useStore = create<StoreState>()(
         return newCount;
       },
       activeSessions: [],
+      activeChatUserId: null,
+      setActiveChatUserId: (id) => set({ activeChatUserId: id }),
     deleteOwnAccount: async (password: string) => {
         const currentUser = get().currentUser;
         if (!currentUser) return;

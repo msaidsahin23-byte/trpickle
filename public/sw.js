@@ -19,7 +19,16 @@ self.addEventListener('push', function (event) {
           }
         ]
       }
-      event.waitUntil(self.registration.showNotification(data.title, options))
+      event.waitUntil(
+        clients.matchAll({ type: 'window', includeUncontrolled: true }).then(function (clientList) {
+          const isVisible = clientList.some(client => client.visibilityState === 'visible' && client.focused);
+          if (isVisible) {
+            // App is visible, suppress system notification to avoid double notification
+            return;
+          }
+          return self.registration.showNotification(data.title, options);
+        })
+      )
     } catch (e) {
       console.error('Error parsing push data', e)
     }
