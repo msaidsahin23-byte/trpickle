@@ -26,6 +26,10 @@ export async function GET() {
       bio: u.bio || '',
       avatarUrl: u.avatar_url,
       bannerUrl: u.banner_url,
+      level: u.level || 1,
+      xp: u.xp || 0,
+      unlockedAchievements: u.unlocked_achievements || [],
+      claimedWeeklyQuests: u.claimed_weekly_quests || [],
     }));
 
     const matches = (dbMatches || []).map(m => ({

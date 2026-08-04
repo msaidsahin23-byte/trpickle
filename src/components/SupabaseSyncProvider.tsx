@@ -47,7 +47,9 @@ export default function SupabaseSyncProvider() {
                 appTheme: userData.app_theme || "light",
                 notificationsEnabled: userData.notifications_enabled ?? true,
                 notificationPreferences: typeof userData.notification_preferences === 'string' ? JSON.parse(userData.notification_preferences) : userData.notification_preferences,
-                showPostsOnProfile: userData.show_posts_on_profile ?? true
+                showPostsOnProfile: userData.show_posts_on_profile ?? true,
+                unlockedAchievements: userData.unlocked_achievements || [],
+                claimedWeeklyQuests: userData.claimed_weekly_quests || [],
               }));
 
               let currentUser = mappedUsers.find(u => String(u.id) === String(session.user.id)) || null;
@@ -175,13 +177,14 @@ export default function SupabaseSyncProvider() {
                   ...existing, 
                   ...mu,
                   notifications: userNotifs.length > 0 ? userNotifs : existing.notifications,
-                  level: existing.level || mu.level,
-                  xp: existing.xp || mu.xp,
-                  paddle: existing.paddle || mu.paddle,
-                  favoriteCourt: existing.favoriteCourt || mu.favoriteCourt,
-                  accentColor: existing.accentColor || mu.accentColor,
-                  appTheme: existing.appTheme || mu.appTheme,
-                  unlockedAchievements: existing.unlockedAchievements || []
+                  level: mu.level ?? existing.level,
+                  xp: mu.xp ?? existing.xp,
+                  paddle: mu.paddle ?? existing.paddle,
+                  favoriteCourt: mu.favoriteCourt ?? existing.favoriteCourt,
+                  accentColor: mu.accentColor ?? existing.accentColor,
+                  appTheme: mu.appTheme ?? existing.appTheme,
+                  unlockedAchievements: mu.unlockedAchievements ?? existing.unlockedAchievements,
+                  claimedWeeklyQuests: mu.claimedWeeklyQuests ?? existing.claimedWeeklyQuests
                 } : mu;
               });
               
