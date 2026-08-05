@@ -996,7 +996,7 @@ export default function ProfilePage({ params }: { params: { username: string } }
                     )}
 
                     <span className="bg-pb-blue/15 text-pb-blue text-xs font-black px-3 py-1 rounded-full border border-pb-blue/30">
-                      Seviye {Math.floor(userState.singlesRating / 200) + 1}
+                      Seviye {userState.level || 1}
                     </span>
                   </div>
 
