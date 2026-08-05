@@ -2107,8 +2107,6 @@ export const useStore = create<StoreState>()(
         };
 
         supabase.from('users').update({
-           claimed_weekly_quests: updatedUser.claimedWeeklyQuests,
-           unlocked_achievements: updatedUser.unlockedAchievements,
            xp: updatedUser.xp,
            level: updatedUser.level
         }).eq('id', updatedUser.id.toString()).then();
