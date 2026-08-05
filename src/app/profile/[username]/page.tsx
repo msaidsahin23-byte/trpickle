@@ -445,20 +445,7 @@ function getBadges(history: MatchRecord[], user: User) {
 }
 
 function getBadgeOwnershipInfo(badgeId: string) {
-  const statsMap: Record<string, { count: number; percentage: number; label: string }> = {
-    "season-1-champion": { count: 3, percentage: 6, label: "Efsanevi Nadirlik" },
-    "first-match": { count: 42, percentage: 88, label: "Yaygın Başarım" },
-    "first-win": { count: 38, percentage: 79, label: "Yaygın Başarım" },
-    "streak-3": { count: 19, percentage: 40, label: "Seçkin Başarım" },
-    "streak-5": { count: 7, percentage: 15, label: "Nadir Başarım" },
-    "doubles-master": { count: 24, percentage: 50, label: "Yaygın Başarım" },
-    "flawless-win": { count: 5, percentage: 10, label: "Çok Nadir" },
-    "court-explorer": { count: 31, percentage: 65, label: "Yaygın Başarım" },
-    "social-popular": { count: 4, percentage: 8, label: "Çok Nadir" },
-    "match-100": { count: 2, percentage: 4, label: "Efsanevi Nadirlik" }
-  };
-
-  return statsMap[badgeId] || { count: 14, percentage: 29, label: "Seçkin Başarım" };
+  return { count: 0, percentage: 0, label: "Keşfedilmedi" };
 }
 
 const TAG_CATEGORIES = {
