@@ -55,8 +55,25 @@ export default function LandingPage() {
     visible: { opacity: 1, y: 0, transition: { type: "spring", stiffness: 100, damping: 20 } }
   };
 
+  const structuredData = {
+    "@context": "https://schema.org",
+    "@type": "SportsClub",
+    "name": "TRPickle",
+    "url": "https://trpickle.com.tr",
+    "logo": "https://trpickle.com.tr/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Flogo.xxxx.png&w=256&q=75",
+    "description": "Türkiye'nin ilk ve tek Pickleball topluluk platformu. Maç yapacak partner bulun, kortları keşfedin, skorlarınızı kaydedin ve Pickleball seviyenizi yükseltin.",
+    "keywords": "trpickle, pickleball, pickleball türkiye, türkiye pickleball topluluğu, pickleball kortları, pickleball maçları, istanbul pickleball",
+    "areaServed": "TR",
+    "knowsAbout": ["Pickleball", "Sports", "Community"]
+  };
+
   return (
-    <div className="relative min-h-screen overflow-hidden bg-white  text-pb-dark  selection:bg-pb-green/30 transition-colors duration-300">
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
+      />
+      <div className="relative min-h-screen overflow-hidden bg-white  text-pb-dark  selection:bg-pb-green/30 transition-colors duration-300">
       
       {/* Animated Breathing Background */}
       <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none">
@@ -256,5 +273,6 @@ export default function LandingPage() {
 
       </div>
     </div>
+    </>
   );
 }

@@ -12,8 +12,45 @@ import { Analytics } from '@vercel/analytics/next';
 const spaceGrotesk = Space_Grotesk({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "TRPickle",
-  description: "Türkiye'nin Pickleball Topluluğu",
+  metadataBase: new URL('https://trpickle.com.tr'),
+  title: {
+    default: "TRPickle | Türkiye Pickleball Topluluğu",
+    template: "%s | TRPickle"
+  },
+  description: "Türkiye'nin ilk ve tek Pickleball topluluk platformu. Maç yapacak partner bulun, kortları keşfedin, skorlarınızı kaydedin ve Pickleball seviyenizi yükseltin.",
+  keywords: ["trpickle", "pickleball", "pickleball türkiye", "türkiye pickleball topluluğu", "pickleball kortları", "pickleball maçları", "istanbul pickleball", "pickleball oyna", "pickleball kuralları", "pickleball tr"],
+  authors: [{ name: "TRPickle" }],
+  creator: "TRPickle",
+  publisher: "TRPickle",
+  formatDetection: {
+    email: false,
+    address: false,
+    telephone: false,
+  },
+  openGraph: {
+    title: "TRPickle | Türkiye Pickleball Topluluğu",
+    description: "Türkiye'nin Pickleball topluluğuna katılın! Kortları bulun, partner bulun ve maçlarınızı kaydederek seviyenizi yükseltin.",
+    url: "https://trpickle.com.tr",
+    siteName: "TRPickle",
+    locale: "tr_TR",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "TRPickle | Türkiye Pickleball Topluluğu",
+    description: "Türkiye'nin Pickleball topluluğuna katılın! Kortları bulun, partner bulun ve maçlarınızı kaydederek seviyenizi yükseltin.",
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      'max-video-preview': -1,
+      'max-image-preview': 'large',
+      'max-snippet': -1,
+    },
+  },
 };
 
 export default function RootLayout({
