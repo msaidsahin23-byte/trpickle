@@ -1250,7 +1250,7 @@ export default function ProfilePage({ params }: { params: { username: string } }
                       </div>
 
                       {(() => {
-                        const ownerInfo = getBadgeOwnershipInfo(badge.id, allUsers);
+                        const ownerInfo = getBadgeOwnershipInfo(badge.id, users);
                         return (
                           <div className="w-full pt-3 border-t border-white/10 flex flex-col gap-1.5 items-center justify-center">
                             <span className="text-xs font-bold text-gray-300 flex items-center gap-1.5">
@@ -1636,7 +1636,7 @@ export default function ProfilePage({ params }: { params: { username: string } }
                       </p>
 
                       {(() => {
-                        const ownerInfo = getBadgeOwnershipInfo(badge.id, allUsers);
+                        const ownerInfo = getBadgeOwnershipInfo(badge.id, users);
                         return (
                           <div className="w-full pt-3 mt-1 border-t border-gray-200/60 dark:border-slate-800 flex items-center justify-between text-[11px]">
                             <span className="font-bold text-gray-500 dark:text-gray-400 flex items-center gap-1.5">
@@ -1683,7 +1683,7 @@ export default function ProfilePage({ params }: { params: { username: string } }
                     </p>
 
                     {(() => {
-                      const ownerInfo = getBadgeOwnershipInfo(badge.id, allUsers);
+                      const ownerInfo = getBadgeOwnershipInfo(badge.id, users);
                       return (
                         <div className="w-full pt-3 mt-1 border-t border-gray-200/60 dark:border-slate-800/80 flex items-center justify-between text-[11px]">
                           <span className="font-bold text-gray-500 dark:text-gray-400 flex items-center gap-1.5">
