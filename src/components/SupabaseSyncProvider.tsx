@@ -184,9 +184,7 @@ export default function SupabaseSyncProvider() {
                   paddle: mu.paddle ?? existing.paddle,
                   favoriteCourt: mu.favoriteCourt ?? existing.favoriteCourt,
                   accentColor: mu.accentColor ?? existing.accentColor,
-                  appTheme: mu.appTheme ?? existing.appTheme,
-                  unlockedAchievements: mu.unlockedAchievements ?? existing.unlockedAchievements,
-                  claimedWeeklyQuests: mu.claimedWeeklyQuests ?? existing.claimedWeeklyQuests
+                  appTheme: mu.appTheme ?? existing.appTheme
                 } : mu;
               });
               
