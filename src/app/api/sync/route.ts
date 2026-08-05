@@ -28,6 +28,10 @@ export async function GET() {
       bannerUrl: u.banner_url,
       level: u.level || 1,
       xp: u.xp || 0,
+      paddle: u.paddle || undefined,
+      favoriteCourt: u.favorite_court || undefined,
+      accentColor: u.accent_color || undefined,
+      appTheme: u.app_theme || undefined,
       unlockedAchievements: u.unlocked_achievements || [],
       claimedWeeklyQuests: u.claimed_weekly_quests || [],
     }));

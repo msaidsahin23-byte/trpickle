@@ -1003,6 +1003,10 @@ export const useStore = create<StoreState>()(
         if (details.bio !== undefined) dbUpdate.bio = details.bio;
         if (details.birthdate !== undefined) dbUpdate.birthdate = details.birthdate;
         if (details.city !== undefined) dbUpdate.city = details.city;
+        if (details.paddle !== undefined) dbUpdate.paddle = details.paddle;
+        if (details.favoriteCourt !== undefined) dbUpdate.favorite_court = details.favoriteCourt;
+        if (details.accentColor !== undefined) dbUpdate.accent_color = details.accentColor;
+        if (details.appTheme !== undefined) dbUpdate.app_theme = details.appTheme;
         
         if (Object.keys(dbUpdate).length > 0) {
           await supabase.from('users').update(dbUpdate).eq('id', userId);
