@@ -179,6 +179,8 @@ export default function SupabaseSyncProvider() {
                   notifications: userNotifs.length > 0 ? userNotifs : existing.notifications,
                   level: Math.max(mu.level ?? 1, existing.level ?? 1),
                   xp: Math.max(mu.xp ?? 0, existing.xp ?? 0),
+                  unlockedAchievements: Array.from(new Set([...(mu.unlockedAchievements || []), ...(existing.unlockedAchievements || [])])),
+                  claimedWeeklyQuests: Array.from(new Set([...(mu.claimedWeeklyQuests || []), ...(existing.claimedWeeklyQuests || [])])),
                   paddle: mu.paddle ?? existing.paddle,
                   favoriteCourt: mu.favoriteCourt ?? existing.favoriteCourt,
                   accentColor: mu.accentColor ?? existing.accentColor,
