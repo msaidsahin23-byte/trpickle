@@ -715,7 +715,7 @@ export const useStore = create<StoreState>()(
 
         // Check if all participants have approved
         const allParticipants = [...match.team1, ...match.team2];
-        const allApproved = allParticipants.every(p => currentApprovedBy.includes(state.users.find(u => u.id === p)?.name || ""));
+        const allApproved = allParticipants.every(p => currentApprovedBy.includes(state.users.find(u => String(u.id) === String(p))?.name || ""));
 
         if (!allApproved) {
           // Not everyone has approved yet, just update the approvedBy array
@@ -740,11 +740,11 @@ export const useStore = create<StoreState>()(
         // UNANIMOUS CONSENT REACHED!
         // 1. Calculate Elo changes based on current ratings
         const t1Ratings = match.team1.map(id => {
-          const u = state.users.find(u => u.id === id);
+          const u = state.users.find(u => String(u.id) === String(id));
           return u ? (match.matchFormat === 'singles' ? u.singlesRating : u.doublesRating) : 3.0;
         });
         const t2Ratings = match.team2.map(id => {
-          const u = state.users.find(u => u.id === id);
+          const u = state.users.find(u => String(u.id) === String(id));
           return u ? (match.matchFormat === 'singles' ? u.singlesRating : u.doublesRating) : 3.0;
         });
 
@@ -753,7 +753,7 @@ export const useStore = create<StoreState>()(
         // 2. Prepare user updates
         const updates: { id: number | string; singlesChange: number; doublesChange: number }[] = [];
         match.team1.forEach((id, idx) => {
-          const u = state.users.find(u => u.id === id);
+          const u = state.users.find(u => String(u.id) === String(id));
           if (u) {
             updates.push({
               id: u.id,
@@ -763,7 +763,7 @@ export const useStore = create<StoreState>()(
           }
         });
         match.team2.forEach((id, idx) => {
-          const u = state.users.find(u => u.id === id);
+          const u = state.users.find(u => String(u.id) === String(id));
           if (u) {
             updates.push({
               id: u.id,
@@ -775,7 +775,7 @@ export const useStore = create<StoreState>()(
 
         // Apply updates to users
         const newUsers = state.users.map(u => {
-          const update = updates.find(up => up.id === u.id);
+          const update = updates.find(up => String(up.id) === String(u.id));
           if (update) {
             return {
               ...u,
@@ -882,7 +882,7 @@ export const useStore = create<StoreState>()(
 
           // Sync user rating changes to Supabase
           updates.forEach(up => {
-            const u = newUsers.find(nu => nu.id === up.id);
+            const u = newUsers.find(nu => String(nu.id) === String(up.id));
             if (u) {
               supabase.from('users').update({ 
                 singles_rating: u.singlesRating, 
